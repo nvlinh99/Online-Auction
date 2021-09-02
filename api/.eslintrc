@@ -1,0 +1,88 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "globals": {},
+  "extends": [
+    "airbnb-base"
+  ],
+  "rules": {
+    "prefer-destructuring": 0,
+    "no-underscore-dangle": [
+      2,
+      {
+        "allow": [
+          "__",
+          "_id"
+        ]
+      }
+    ],
+    "comma-dangle": [
+      "error",
+      "always"
+    ],
+    "key-spacing": "off",
+    "consistent-return": "off",
+    "array-bracket-spacing": "off",
+    "func-names": "off",
+    "semi": [
+      "error",
+      "never"
+    ],
+    "global-require": 0,
+    "arrow-body-style": 0,
+    "no-trailing-spaces": 0,
+    "indent": [
+      "warn",
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "no-var": [
+      "warn"
+    ],
+    "no-unused-vars": [
+      "warn"
+    ],
+    "quotes": [
+      "warn",
+      "single"
+    ],
+    "linebreak-style": 0,
+    "no-multi-spaces": "off",
+    "no-multiple-empty-lines": [
+      "warn",
+      {
+        "max": 1
+      }
+    ],
+    "max-len": [
+      "warn",
+      300
+    ],
+    "no-mixed-operators": "off",
+    "no-param-reassign": "off",
+    "class-methods-use-this": "off",
+    "newline-per-chained-call": [
+      "error",
+      {
+        "ignoreChainWithDepth": 10
+      }
+    ],
+    "import/no-dynamic-require": "off",
+    "import/no-extraneous-dependencies": "off",
+    "object-curly-newline": "off",
+    "no-useless-catch": "off"
+  }
+}
