@@ -1,19 +1,32 @@
+const _ = require('lodash')
 const Dotenv = require('dotenv')
 const Path = require('path')
 
-let config = null
+const config = {
+  env: 'development',
+  server: {
+    port: 3000,
+  },
+  cors: {
+    enable: false,
+    opts: undefined,
+  },
+  compression: {
+    enable: false,
+    opts: undefined,
+  },
+}
 
 function toBool(string) {
   return string === 'true'
 }
 
 function loadConfig(path) {
-  if (config) return config
-
   path = path || Path.join(__dirname, '../../.env')
   Dotenv.config({ path, })
 
-  config = {
+  const loadedConfig = {
+    env: process.env.NODE_ENV,
     server: {
       port: parseInt(process.env.PORT, 10),
     },
@@ -37,11 +50,12 @@ function loadConfig(path) {
     },
   }
 
+  _.merge(config, loadedConfig)
   return config
 }
 
 function getConfig() {
-  return loadConfig()
+  return config
 }
 
 module.exports = {

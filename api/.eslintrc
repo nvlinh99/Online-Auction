@@ -31,6 +31,7 @@
       "error",
       "always"
     ],
+    "comma-spacing": "off",
     "key-spacing": "off",
     "consistent-return": "off",
     "array-bracket-spacing": "off",
