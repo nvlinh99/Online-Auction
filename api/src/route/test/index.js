@@ -1,8 +1,8 @@
 const { Router, } = require('express')
-const HelloController = require('./hello-world')
+const helloController = require('./hello-world')
 
-const TestRoute = Router()
+module.exports.path = '/test'
 
-TestRoute.get('/hello', HelloController.preHandler, HelloController.handler)
-
-module.exports = TestRoute
+const testRouter = Router()
+testRouter.get('/hello', helloController)
+module.exports.router = testRouter

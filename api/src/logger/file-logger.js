@@ -1,9 +1,9 @@
-const Moment = require('moment')
-const Path = require('path')
-const FS = require('fs')
+const moment = require('moment')
+const path = require('path')
+const fs = require('fs')
 
-const logDir = Path.join(__dirname, '../../../.logs')
-if (!FS.existsSync(logDir)) FS.mkdirSync(logDir)
+const logDir = path.join(__dirname, '../../.logs')
+if (!fs.existsSync(logDir)) fs.mkdirSync(logDir)
 
 const INFO_TAG = 'INFO'
 const WARN_TAG = 'WARN'
@@ -18,7 +18,7 @@ const EXTENDED_TAG_STR = ' '
 const EXTENDED_SCOPE_STR = ' '
 
 function getFileNameAndLogLinePrefix() {
-  const now = Moment()
+  const now = moment()
 
   const dateAsString = now.format(DATE_FORMAT)
   const timeAsString = now.format(TIME_FORAMT)
@@ -36,12 +36,12 @@ function addLog(tag, scope, text) {
   const extendedTag = EXTENDED_TAG_STR.repeat(extendedTagLength)
   const extendedScope = EXTENDED_SCOPE_STR.repeat(extendedScopeLength)
   // eslint-disable-next-line no-console
-  FS.open(`${logDir}/${fileName}`, 'a', (err, fileDescriptor) => {
+  fs.open(`${logDir}/${fileName}`, 'a', (err, fileDescriptor) => {
     if (!err && fileDescriptor) {
       // Append to file and close it
-      FS.appendFile(fileDescriptor, `${linePrefix}  [${tag}]${extendedTag}[${scope}]${extendedScope} ${text}\n`, (_err) => {
+      fs.appendFile(fileDescriptor, `${linePrefix}  [${tag}]${extendedTag}[${scope}]${extendedScope} ${text}\n`, (_err) => {
         if (!_err) {
-          FS.close(fileDescriptor, (__err) => {
+          fs.close(fileDescriptor, (__err) => {
             if (!__err) {
               return true
             }
@@ -72,7 +72,7 @@ function error(text) {
   return addLog(ERROR_TAG, this.scope, text)
 }
 
-function getLogger(scope) {
+module.exports.getLogger = function (scope) {
   const instance = {
     scope,
     info,
@@ -81,8 +81,4 @@ function getLogger(scope) {
   }
 
   return instance
-}
-
-module.exports = {
-  getLogger,
 }

@@ -1,3 +1,1 @@
-const App = require('./provider/app')
-
-App.start()
+require('./app').start()

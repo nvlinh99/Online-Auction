@@ -1,4 +1,4 @@
-const Moment = require('moment')
+const moment = require('moment')
 
 const INFO_TAG = 'INFO'
 const WARN_TAG = 'WARN'
@@ -13,7 +13,7 @@ const EXTENDED_TAG_STR = ' '
 const EXTENDED_SCOPE_STR = ' '
 
 function getLogLinePrefix() {
-  const now = Moment()
+  const now = moment()
 
   const dateAsString = now.format(DATE_FORMAT)
   const timeAsString = now.format(TIME_FORAMT)
@@ -45,7 +45,7 @@ function error(text) {
   return addLog(ERROR_TAG, this.scope, text)
 }
 
-function getLogger(scope) {
+module.exports.getLogger = function (scope) {
   const instance = {
     scope,
     info,
@@ -54,8 +54,4 @@ function getLogger(scope) {
   }
 
   return instance
-}
-
-module.exports = {
-  getLogger,
 }

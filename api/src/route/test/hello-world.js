@@ -1,21 +1,19 @@
-const Joi = require('joi')
-const RequestValidation = require('../../middleware/request-validation')
+const joi = require('joi')
+const genRequestValidation = require('../../middleware/gen-request-validation')
 
-const preHandler = [
-  RequestValidation({
-    query: Joi.object({
-      msg: Joi.string().required(),
-    }),
+const requestValidationHandler = genRequestValidation({
+  query: joi.object({
+    msg: joi.string().required(),
   }),
-]
+})
 
-const handler = (req, res) => {
+const helloWorldHandler = (req, res) => {
   res.json({
     message: `hello world!! ${req.query.msg}`,
   })
 }
 
-module.exports = {
-  preHandler,
-  handler,
-}
+module.exports = [
+  requestValidationHandler,
+  helloWorldHandler,
+]

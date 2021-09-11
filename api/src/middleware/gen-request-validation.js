@@ -1,5 +1,5 @@
 
-function genValidationHandler(validation) {
+module.exports = function (validation) {
   return async function (req, res, next) {
     if (validation.query) {
       try {
@@ -35,5 +35,3 @@ function genValidationHandler(validation) {
     return next()
   }
 }
-
-module.exports = genValidationHandler
