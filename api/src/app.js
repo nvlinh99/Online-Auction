@@ -6,9 +6,13 @@ const compression = require('compression')
 const filehound = require('filehound')
 const path = require('path')
 const configuration = require('./configuration')
+const model = require('./model')
 const logger = require('./logger').getLogger('Server')
 
-module.exports.start = async function () {
+exports.start = async function () {
+  // connect to db server
+  await model.connect()
+
   // create express app - apply glocal middleware
   const app = express()
   if (configuration.compression.enable) app.use(compression(configuration.compression.opts))
@@ -24,8 +28,8 @@ module.exports.start = async function () {
     .ext('.js')
     .glob('index.js')
     .find()
-  _.forEach(routeFilePaths, (roteFilePath) => {
-    const route = require(roteFilePath)
+  _.forEach(routeFilePaths, (routeFilePath) => {
+    const route = require(routeFilePath)
     app.use(route.path, route.router)
   })
 

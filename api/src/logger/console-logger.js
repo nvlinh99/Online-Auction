@@ -45,7 +45,7 @@ function error(text) {
   return addLog(ERROR_TAG, this.scope, text)
 }
 
-module.exports.getLogger = function (scope) {
+exports.getLogger = function (scope) {
   const instance = {
     scope,
     info,
