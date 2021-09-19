@@ -39,7 +39,7 @@ exports.start = async function () {
       message: 'Endpoint not found!',
     })
   })
-  app.use((err, req, res) => {
+  app.use(function (err, req, res, next) {
     logger.error(err.stack || err.message)
     res.status(500).json({
       message: 'Unknow error!',

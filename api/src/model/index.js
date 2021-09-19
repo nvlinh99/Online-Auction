@@ -1,17 +1,9 @@
 const _ = require('lodash')
 const filehound = require('filehound')
-const Sequelize = require('sequelize').Sequelize
+const mongoose = require('mongoose')
 const configuration = require('../configuration')
 
-const postgresqlConfig = configuration.postgresql
-const sequelize = new Sequelize(
-  postgresqlConfig.db,
-  postgresqlConfig.user,
-  postgresqlConfig.password,
-  postgresqlConfig.config
-)
-exports.sequelize = sequelize
-exports.Sequelize = Sequelize
+const mongodbConfig = configuration.mongodb
 
 const modelFilePaths = filehound.create()
   .path(__dirname)
@@ -20,9 +12,10 @@ const modelFilePaths = filehound.create()
   .glob('index.js')
   .findSync()
 _.forEach(modelFilePaths, (modelFilePath) => {
-  const model = require(modelFilePath)(sequelize)
-  exports[model.name] = model
+  const model = require(modelFilePath)
+  exports[model.modelName] = model
 })
+
 exports.connect = function () {
-  return sequelize.sync()
+  return mongoose.connect(mongodbConfig.uri, mongodbConfig.opts)
 }

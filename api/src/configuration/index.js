@@ -14,19 +14,11 @@ module.exports = deepFreeze({
   server: {
     port: parseInt(process.env.PORT, 10) || 3000,
   },
-  postgresql: {
-    user: process.env.POSTGRESQL_USER || 'postgres',
-    password: process.env.POSTGRESQL_PASSWORD,
-    db: process.env.POSTGRESQL_DBNAME || 'online_auction',
-    config: {
-      host: process.env.POSTGRESQL_HOST || 'localhost',
-      dialect: 'postgres',
-      pool: {
-        max: 10,
-        min: 0,
-        acquire: 30000,
-        idle: 10000,
-      },
+  mongodb: {
+    uri: process.env.MONGODB_URI,
+    opts: {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     },
   },
   cors: {

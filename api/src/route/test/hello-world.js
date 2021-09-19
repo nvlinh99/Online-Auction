@@ -1,5 +1,5 @@
 const joi = require('joi')
-const { Account, } = require('../../model')
+const { Test, } = require('../../model')
 const genRequestValidation = require('../../middleware/gen-request-validation')
 
 const requestValidationHandler = genRequestValidation({
@@ -9,11 +9,9 @@ const requestValidationHandler = genRequestValidation({
 })
 
 const helloWorldHandler = (req, res) => {
-  Account.findOne({
-    where: {
-      id: 123,
-    },
-  }).then((ac) => console.log(ac.id, ac.email, ac.fullname, ac.address))
+  Test.create({
+    username: 'haudeptrai',
+  }).then(console.log)
   res.json({
     message: `hello world!! ${req.query.msg}`,
   })
