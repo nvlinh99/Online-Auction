@@ -1,17 +1,12 @@
-import logo from './logo.svg';
-import './App.css';
+import { Component, useMemo } from 'react'
+import { useRoutes } from 'react-router-dom'
+import { getRoutes } from 'routes'
+import './styles/global.scss'
+const App = () => {
+  const userRoutes = useMemo(() => getRoutes(), [])
+  const routes = useRoutes(userRoutes)
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-				<p>
-          Welcome to Auction Online.
-        </p>
-      </header>
-    </div>
-  );
+  return <div>{routes}</div>
 }
 
-export default App;
+export default App
