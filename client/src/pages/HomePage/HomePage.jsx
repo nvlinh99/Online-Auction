@@ -12,7 +12,7 @@ const HomePage = () => {
   return (
     <div>
       <h1 className='bg-[#ff1111] text-lg'>
-        <Typography variant='h1'>Hello home</Typography>
+        <Typography variant='h1'>Hello home 123</Typography>
       </h1>
       <ul>
         {allCategories?.map((cat) => {
