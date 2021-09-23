@@ -12,6 +12,7 @@ dotenv.config({ path: envPath, })
 module.exports = deepFreeze({
   env: process.env.NODE_ENV || 'development',
   server: {
+    host: 'http://localhost:2404',
     port: parseInt(process.env.PORT, 10) || 3000,
   },
   mongodb: {
@@ -39,4 +40,7 @@ module.exports = deepFreeze({
       extended: false,
     },
   },
+  confirmEmailRedirectUrl: process.env.CONFIRM_EMAIL_REDIRECT_URL || 'http://localhost:2404/test/confirm',
+  verifyCodeBytesLength: 128,
+  bcryptSaltRounds: process.env.BCRYPT_SALT_ROUNDS || 10,
 })
