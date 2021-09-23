@@ -1,15 +1,16 @@
 /* eslint-disable no-console */
-const path = require('path')
-const nodemailer = require('nodemailer')
+const path = require("path");
+const nodemailer = require("nodemailer");
 
-const envPath = path.join(__dirname, '../../.env')
-require('dotenv').config({ path: envPath, })
+const envPath = path.join(__dirname, "../../.env");
+require("dotenv").config({ path: envPath });
+console.log(process.env.EMAIL_HOST);
 
 class EmailService {
   constructor(user) {
-    this.to = user.email
-    this.displayName = user.name
-    this.from = process.env.EMAIL_FROM
+    this.to = user.email;
+    this.displayName = user.name;
+    this.from = process.env.EMAIL_FROM;
   }
 
   newTransport() {
@@ -21,7 +22,7 @@ class EmailService {
         user: process.env.EMAIL_USERNAME,
         pass: process.env.EMAIL_PASSWORD,
       },
-    })
+    });
   }
 
   async send(template, subject) {
@@ -30,24 +31,24 @@ class EmailService {
       to: this.to,
       subject,
       html: template,
-    }
+    };
     await this.newTransport().sendMail(mailOptions, (err, response) => {
       if (err) {
-        console.log(err)
+        console.log(err);
       }
-      console.log(response)
-    })
+      console.log(response);
+    });
   }
 
   async sendResetPasswordCode(verifyCode) {
-    const template = `Your verify code is: ${verifyCode}. Don't share it with anyone.`
-    await this.send(template, 'Reset your password!')
+    const template = `Your verify code is: ${verifyCode}. Don't share it with anyone.`;
+    await this.send(template, "Reset your password!");
   }
 
   async sendOTPCode(otpCode) {
-    const template = `Your OTP code is: ${otpCode}.`
-    await this.send(template, 'Verify OTP Code!')
+    const template = `Your OTP code is: ${otpCode}.`;
+    await this.send(template, "Verify OTP Code!");
   }
 }
 
-module.exports = EmailService
+module.exports = EmailService;
