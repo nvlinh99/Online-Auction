@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
+const nanoid = require('../util/nanoid')
 
 const userSchema = new mongoose.Schema({
-  id: { type: Number, required: true, },
+  id: { type: Number, required: true,default: nanoid.getGenFunction(), },
   firstName: { type: String, },
   lastName: { type: String, },
   address: { type: String, },
@@ -15,6 +16,8 @@ const userSchema = new mongoose.Schema({
   status: { type: Number, required: true, },
   avatarUrl: { type: String, },
   verifyCode: { type: String, },
+}, {
+  timestamps: true,
 })
 
 module.exports = mongoose.model('User', userSchema)

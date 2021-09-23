@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
+const nanoid = require('../util/nanoid')
 
 const productSchema = new mongoose.Schema({
-  id: { type: Number, required: true, },
+  id: { type: Number, required: true,default: nanoid.getGenFunction(), },
   name: { type: String, required: true, },
   description: { type: String, },
   categoryId: { type: Number, required: true, },
@@ -23,6 +24,8 @@ const productSchema = new mongoose.Schema({
   },
   autoRenew: Boolean,
   bannedUser: [Number, ],
+}, {
+  timestamps: true,
 })
 
 module.exports = mongoose.model('Product', productSchema)
