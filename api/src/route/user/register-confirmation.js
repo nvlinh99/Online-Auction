@@ -20,6 +20,7 @@ const registerConfirmationHandler = async (req, res) => {
   const hashedToken = md5(token)
   const userData = await UserModel.findOne({
     verifyCode: hashedToken,
+    verifyCodeExpireAt: { $gte: new Date(), },
     status: UserConstant.USER_STATUS.INACTIVE,
   })
   if (!userData) {

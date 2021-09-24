@@ -1,22 +1,22 @@
-const dotenv = require("dotenv");
-const path = require("path");
-const deepFreeze = require("deepfreeze");
+const dotenv = require('dotenv')
+const path = require('path')
+const deepFreeze = require('deepfreeze')
 
 function toBool(string) {
-  return string === "true";
+  return string === 'true'
 }
 
-const envPath = path.join(__dirname, "../../.env");
-dotenv.config({ path: envPath });
+const envPath = path.join(__dirname, '../../.env')
+dotenv.config({ path: envPath, })
 
 module.exports = deepFreeze({
-  env: process.env.NODE_ENV || "development",
+  env: process.env.NODE_ENV || 'development',
   server: {
-    host: "http://localhost:2404",
+    host: 'http://localhost:2404',
     port: parseInt(process.env.PORT, 10) || 3000,
   },
   client: {
-    host: "http://localhost:3000",
+    host: 'http://localhost:3000',
   },
   mongodb: {
     uri: process.env.MONGODB_URI,
@@ -44,8 +44,9 @@ module.exports = deepFreeze({
     },
   },
   confirmEmailRedirectUrl:
-    process.env.CONFIRM_EMAIL_REDIRECT_URL ||
-    "http://localhost:2404/test/confirm",
+    process.env.CONFIRM_EMAIL_REDIRECT_URL
+    || 'http://localhost:2404/test/confirm',
   verifyCodeBytesLength: 128,
+  verifyCodeExpireTimeInMin: 30,
   bcryptSaltRounds: process.env.BCRYPT_SALT_ROUNDS || 10,
-});
+})

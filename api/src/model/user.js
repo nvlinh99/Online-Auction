@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema({
   status: { type: Number, required: true, },
   avatarUrl: { type: String, },
   verifyCode: { type: String, },
+  verifyCodeExpireAt: { type: Date, },
 }, {
   timestamps: true,
 })

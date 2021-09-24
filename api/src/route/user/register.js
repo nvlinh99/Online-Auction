@@ -2,6 +2,7 @@ const joi = require('joi')
 const bcrypt = require('bcrypt')
 const crypto = require('crypto')
 const md5 = require('md5')
+const moment = require('moment')
 const SendEmailService = require('../../service/emailService')
 const UserModel = require('../../model/user')
 const UserConstant = require('../../constant/user')
@@ -57,12 +58,14 @@ const registerHandler = async (req, res) => {
     })
   })
   const hashedVerifyCode = md5(verifyCode)
+  const verifyCodeExpireAt = moment().add(configuration.verifyCodeExpireTimeInMin, 'minutes').toDate()
 
   delete data.confirmPassword
   data.password = hasedPassword
   data.role =  UserConstant.USER_ROLE.BIDDER
   data.status = UserConstant.USER_STATUS.INACTIVE
   data.verifyCode = hashedVerifyCode
+  data.verifyCodeExpireAt = verifyCodeExpireAt
 
   let userData = null
   if (existsUser) {
@@ -120,7 +123,8 @@ module.exports = [
 
 function getConfirmationEmailContent(link) {
   return `
-    <p>You have registered account at Online Auction web. Please click link below to confirm the account.</p>
+    <p>Bạn vừa đăng kí tài khoản trên hệ thống Online Auction.</p>
+    <p>Vui lòng click vào link bên dưới để xác nhận tài khoản (trong vòng ${configuration.verifyCodeExpireTimeInMin} phút). Nếu không phải là bạn, xin vui lòng bỏ qua email này.</p>
     <a href="${link}"><p>${link}</p></a>
   `
 }
