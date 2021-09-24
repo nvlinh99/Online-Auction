@@ -23,5 +23,5 @@
     }
   },
   "include": ["./src", "**/*.js", "**/*.jsx"],
-  "exclude": ["node_modules", "**/*.spec.tsx"]
+  "exclude": ["node_modules", "**/*.spec.tsx", "dist"]
 }

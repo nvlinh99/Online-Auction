@@ -1,3 +1,4 @@
+// @ts-nocheck
 const paths = require('./paths')
 const Dotenv = require('dotenv-webpack')
 const { merge } = require('webpack-merge')
@@ -18,7 +19,6 @@ module.exports = merge(common, {
     compress: true,
     hot: true,
     port: 3000,
-    static: paths.build,
   },
 
   module: {

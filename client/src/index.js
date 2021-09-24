@@ -2,9 +2,9 @@ import ReactDOM from 'react-dom'
 import { Provider as ReduxProvider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import { StylesProvider } from '@mui/styles'
+import React from 'react'
 
 import { ThemeProvider } from '@mui/material/styles'
-
 import store from 'store/store'
 import App from './App'
 import muiTheme from 'styles/muiTheme'

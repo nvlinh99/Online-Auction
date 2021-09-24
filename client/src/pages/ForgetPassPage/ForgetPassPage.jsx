@@ -5,11 +5,11 @@ import React, {
   useMemo,
   useState,
 } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
 import { Button, Typography, TextField, Box, IconButton } from '@mui/material'
 import { FiArrowLeft } from 'react-icons/fi'
 import ForgetPassEmail from './ForgetPassEmail'
 import ForgetPassEmailSuccess from './ForgetPassEmailSuccess'
+import { useLocation, useNavigate } from 'react-router-dom'
 const FORM_STEPS = {
   INPUT_EMAIL: 0,
   INPUT_EMAIL_SUCCESS: 1,
@@ -64,7 +64,7 @@ const ForgetPassPage = () => {
         }}
       >
         <div className='mb-10 flex'>
-          <IconButton onClick={onClickGoBack} variant='text'>
+          <IconButton onClick={onClickGoBack}>
             <FiArrowLeft />
           </IconButton>
           <Typography variant='h5' className='text-center flex-1 !mr-10'>
@@ -78,13 +78,9 @@ const ForgetPassPage = () => {
             formInputData={formInputData}
           />
         ) : curFormStep === FORM_STEPS.INPUT_EMAIL_SUCCESS ? (
-          <ForgetPassEmailSuccess
-            onClickGoBack={onClickGoBack}
-            formInputData={formInputData}
-          />
+          <ForgetPassEmailSuccess />
         ) : (
           <ForgetPassEmail
-            onClickGoBack={onClickGoBack}
             onClicSubmitEmail={onClicSubmitEmail}
             onChangeInput={onChangeInput}
             formInputData={formInputData}
