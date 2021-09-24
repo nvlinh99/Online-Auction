@@ -2,6 +2,8 @@ import MainLayout from 'Layouts/MainLayout'
 import HomePage from 'pages/HomePage/HomePage'
 import ProductDetailPage from 'pages/ProductDetailPage'
 import ProductListPage from 'pages/ProductListPage'
+import ForgetPassPage from 'pages/ForgetPassPage'
+
 export default [
   {
     path: '/',
@@ -30,5 +32,9 @@ export default [
         ],
       },
     ],
+  },
+  {
+    path: '/forget-password',
+    element: <ForgetPassPage />,
   },
 ]

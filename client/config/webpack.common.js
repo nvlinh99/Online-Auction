@@ -20,7 +20,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.json', '.jsx', '.scss'],
 
-    modules: [paths.src, 'node_modules'],
+    modules: [paths.src, paths.nodeModules],
   },
   // Customize the webpack build process
   plugins: [
