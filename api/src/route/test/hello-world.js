@@ -9,11 +9,8 @@ const requestValidationHandler = genRequestValidation({
 })
 
 const helloWorldHandler = (req, res) => {
-  Test.create({
-    username: 'haudeptrai',
-  }).then(console.log)
   res.json({
-    message: `hello world!! ${req.query.msg}`,
+    message: req.query.msg,
   })
 }
 
