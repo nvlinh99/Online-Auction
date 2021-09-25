@@ -1,6 +1,9 @@
 {
   "name": "online-auction-api",
   "version": "1.0.0",
+  "engines": {
+    "node": "14.x"
+  },
   "description": "online auction api",
   "main": "src/index.js",
   "dependencies": {
@@ -35,7 +38,8 @@
     "eslint-plugin-standard": "^5.0.0"
   },
   "scripts": {
-    "dev": "nodemon src"
+    "dev": "nodemon src",
+    "start": "node src/index.js"
   },
   "keywords": [],
   "author": "",
