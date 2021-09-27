@@ -35,12 +35,15 @@
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
-    "eslint-plugin-standard": "^5.0.0"
+    "eslint-plugin-standard": "^5.0.0",
+    "supertest": "^6.1.6"
   },
   "scripts": {
     "dev": "nodemon src",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+		"test": "mocha src/test/routes.test.js"
   },
+	
   "keywords": [],
   "author": "",
   "license": "ISC"
