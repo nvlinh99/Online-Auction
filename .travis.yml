@@ -6,7 +6,7 @@ script:
   - echo 'install dependencies'
   - cd api && npm install
   - echo 'Running test'
-  - cd api && npm run test
+  - npm run test
 deploy:
   provider: heroku
   api_key: $heroku_key
