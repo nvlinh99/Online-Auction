@@ -20,6 +20,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
+    "mocha": "^9.1.2",
     "moment": "^2.29.1",
     "mongoose": "^6.0.7",
     "nanoid": "^3.1.25",
@@ -41,9 +42,8 @@
   "scripts": {
     "dev": "nodemon src",
     "start": "node src/index.js",
-		"test": "mocha src/test/routes.test.js"
+    "test": "mocha src/test/routes.test.js"
   },
-	
   "keywords": [],
   "author": "",
   "license": "ISC"
