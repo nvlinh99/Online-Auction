@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - "node"
+warnings_are_errors: false
+install:
+  - npm install
+script:
+  - npm run build
+deploy:
+  provider: firebase
+  skip_cleanup: true
+  token:
+    secure: $firebase_token
+  on:
+    branch: client
