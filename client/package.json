@@ -27,21 +27,24 @@
     "react-icons": "^4.2.0",
     "react-redux": "^7.2.5",
     "react-router-dom": "^6.0.0-beta.4",
+    "react-toastify": "^8.0.3",
     "redux": "^4.1.1",
     "reselect": "^4.0.0",
+    "serve": "^12.0.1",
     "tailwindcss": "^2.2.7"
   },
   "main": "index.js",
   "scripts": {
     "test": "jest",
     "start": "cross-env TAILWIND_MODE=watch NODE_ENV=development  webpack serve --config config/webpack.dev.js",
-    "build": "NODE_ENV=production webpack --config config/webpack.prod.js",
-    "build-staging": "NODE_ENV=production webpack --config config/webpack.stag.js",
+    "build": "cross-env NODE_ENV=production webpack --config config/webpack.prod.js",
+    "build-staging": "cross-env NODE_ENV=production webpack --config config/webpack.stag.js",
     "prettify": "yarn prettier \"**/*.*(js|jsx)\" --ignore-path=.prettierignore --write",
     "lint": "eslint src --ext .js,.jsx && yarn prettify",
     "lint-fix": "eslint src --ext .js,.jsx --fix && yarn prettify",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "prod": "serve -s dist"
   },
   "husky": {
     "hooks": {
