@@ -1,16 +1,17 @@
 /* eslint-disable no-console */
-const path = require("path");
-const nodemailer = require("nodemailer");
+const path = require('path')
+const nodemailer = require('nodemailer')
 
-const envPath = path.join(__dirname, "../../.env");
-require("dotenv").config({ path: envPath });
-console.log(process.env.EMAIL_HOST);
+const configuration = require('../configuration')
+
+const envPath = path.join(__dirname, '../../.env')
+require('dotenv').config({ path: envPath, })
 
 class EmailService {
   constructor(user) {
-    this.to = user.email;
-    this.displayName = user.name;
-    this.from = process.env.EMAIL_FROM;
+    this.to = user.email
+    this.displayName = user.name
+    this.from = process.env.EMAIL_FROM
   }
 
   newTransport() {
@@ -22,7 +23,7 @@ class EmailService {
         user: process.env.EMAIL_USERNAME,
         pass: process.env.EMAIL_PASSWORD,
       },
-    });
+    })
   }
 
   async send(template, subject) {
@@ -31,24 +32,32 @@ class EmailService {
       to: this.to,
       subject,
       html: template,
-    };
+    }
     await this.newTransport().sendMail(mailOptions, (err, response) => {
       if (err) {
-        console.log(err);
+        console.log(err)
       }
-      console.log(response);
-    });
+      console.log(response)
+    })
+  }
+  
+  async sendConfirmMail(verifyCode) {
+    const template = `
+      <p>Bạn vừa đăng kí tài khoản trên hệ thống Online Auction.</p>
+      <p>Vui lòng click vào link bên dưới để xác nhận tài khoản (link có hiệu lực trong vòng <strong>${configuration.verifyCodeExpireTimeInMin} phút</strong>). Nếu không phải là bạn, xin vui lòng bỏ qua email này.</p>
+      <p><a href='${configuration.server.host}/users/register/confirmation?token=${encodeURIComponent(verifyCode)}' target='_blank'> CLICK VÀO ĐÂY</a> để xác nhận tài khoản.</p>
+    `
+    await this.send(template, '[Online Auction] - Xác nhận đăng ký tài khoản!')
   }
 
-  async sendResetPasswordCode(verifyCode) {
-    const template = `Your verify code is: ${verifyCode}. Don't share it with anyone.`;
-    await this.send(template, "Reset your password!");
-  }
-
-  async sendOTPCode(otpCode) {
-    const template = `Your OTP code is: ${otpCode}.`;
-    await this.send(template, "Verify OTP Code!");
+  async sendResetPassword(verifyCode) {
+    const template = `
+    <p>Bạn vừa gửi yêu cầu Quên mật khẩu. </p>
+    <p>Vui lòng click vào link bên dưới để đổi mật khẩu (link có hiệu lực trong vòng <strong>${configuration.verifyCodeExpireTimeInMin} phút </strong>). Nếu không phải là bạn, xin vui lòng bỏ qua email này.</p>
+    <p><a href='${configuration.client.host}/forget-password?token=${encodeURIComponent(verifyCode)}' target='_blank'> CLICK VÀO ĐÂY</a> để đổi mật khẩu.</p>
+    `
+    await this.send(template, '[Online Auction] - Quên mật khẩu')
   }
 }
 
-module.exports = EmailService;
+module.exports = EmailService

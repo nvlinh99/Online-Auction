@@ -65,16 +65,6 @@ const forgetPasswordHandler = async (req, res) => {
     email: updatedUser.email,
   })
 
-  const confirmationLink = `${
-    configuration.client.host
-  }/forget-password?token=${encodeURIComponent(verifyCode)}`
-  const content = getConfirmationEmailContent(confirmationLink)
-  sendEmailService.send(content, '[AUCTION ONLINE] - Quên mật khẩu')
-}
-function getConfirmationEmailContent(link) {
-  return `
-    <p>Bạn vừa gửi yêu cầu forget mật khẩu, Ấn vào link bên dưới đẻ thực hiện forget mật khẩu (trong vòng ${configuration.verifyCodeExpireTimeInMin} phút)</p>
-    <a href="${link}"><p>${link}</p></a>
-  `
+  await sendEmailService.sendResetPassword(verifyCode)
 }
 module.exports = [requestValidationHandler, forgetPasswordHandler,]

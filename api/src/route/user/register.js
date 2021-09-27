@@ -9,9 +9,6 @@ const UserConstant = require('../../constant/user')
 const configuration = require('../../configuration')
 const genRequestValidation = require('../../middleware/gen-request-validation')
 
-const REGISTER_CONFIRM_PATH = '/users/register/confirmation'
-const REGISTER_CONFIRM_EMAIL_SUBJECT = '[Online Auction] - Register account confirmation!'
-
 const requestValidationHandler = genRequestValidation({
   body: joi.object({
     firstName: joi.string().trim().required().invalid('', null),
@@ -110,21 +107,10 @@ const registerHandler = async (req, res) => {
     name: `${userData.firstName} ${userData.lastName}`, 
     email: userData.email, 
   })
-  
-  const confirmationLink = `${configuration.server.host}${REGISTER_CONFIRM_PATH}?token=${encodeURIComponent(verifyCode)}`
-  const content = getConfirmationEmailContent(confirmationLink)
-  sendEmailService.send(content, REGISTER_CONFIRM_EMAIL_SUBJECT)
+  await sendEmailService.sendConfirmMail(verifyCode)
 }
 
 module.exports = [
   requestValidationHandler,
   registerHandler,
 ]
-
-function getConfirmationEmailContent(link) {
-  return `
-    <p>Bạn vừa đăng kí tài khoản trên hệ thống Online Auction.</p>
-    <p>Vui lòng click vào link bên dưới để xác nhận tài khoản (trong vòng ${configuration.verifyCodeExpireTimeInMin} phút). Nếu không phải là bạn, xin vui lòng bỏ qua email này.</p>
-    <a href="${link}"><p>${link}</p></a>
-  `
-}
