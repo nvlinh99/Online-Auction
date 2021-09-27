@@ -2,9 +2,11 @@ language: node_js
 node_js:
   - "node"
 warnings_are_errors: false
-install:
-  - npm install
 script:
+  - echo '*** Starting build ***' 
+  - echo 'install dependencies'
+  - cd client && npm install
+  - echo 'Running Build'
   - npm run build
 deploy:
   provider: firebase
