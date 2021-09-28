@@ -8,6 +8,16 @@ export const register = async (body) => {
     return [false, 'Đăng kí không thành công']
   }
 }
+
+export const login = async (body) => {
+	try {
+    const { succeeded, data } = await api.post('/users/login', body)
+    return [succeeded, data.message, data.token]
+  } catch (err) {
+    return [false, 'Đăng nhập không thành công']
+  }
+}
+
 export const forgetPassword = async (body) => {
   return api.post('/users/forget-password', body)
 }
