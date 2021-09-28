@@ -10,8 +10,7 @@ script:
 - npm run build
 deploy:
   provider: firebase
-  token:
-    secure: "$firebase_token"
+  skip_cleanup: true
   on:
     branch: client
 env:
