@@ -11,6 +11,8 @@ script:
 deploy:
   provider: firebase
   skip_cleanup: true
+  token:
+    secure: "$firebase_token"
   on:
     branch: client
 env:
