@@ -12,11 +12,8 @@ exports.authorize = async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(' ')[1]
   } else {
-    return res.json({
-      code: 401,
-      data: {
-        message: 'Bạn không đăng nhập! Vui lòng đăng nhập để có quyền truy cập!',
-      },
+    return res.status(401).json({
+      message: 'Bạn không đăng nhập! Vui lòng đăng nhập để có quyền truy cập!',
     })
   }
 

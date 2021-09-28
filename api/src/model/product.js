@@ -10,6 +10,7 @@ const productSchema = new mongoose.Schema({
   imageUrls: [String, ],
   status: { type: Number, required: true, },
   startPrice: { type: Number, required: true, },
+  currentPrice: { type: Number, default: null, },
   stepPrice: { type: Number, required: true, },
   purchasePrice: { type: Number, required: true, },
   publishedDate: { type: Date, default: Date.now(), },
@@ -27,5 +28,7 @@ const productSchema = new mongoose.Schema({
 }, {
   timestamps: true,
 })
+
+productSchema.index({ name: 'text', }, { weights: { name: 5, }, })
 
 module.exports = mongoose.model('Product', productSchema)

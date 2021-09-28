@@ -16,8 +16,8 @@ const requestValidationHandler = genRequestValidation({
   }).unknown(false),
 })
 
-const signToken = (type, id) => {
-  return jwt.sign({ type, id, }, process.env.JWT_SECRET, {
+const signToken = (type, role, id) => {
+  return jwt.sign({ type, id, role, }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   })
 }
@@ -55,7 +55,7 @@ const loginHandler = async (req, res) => {
   }
 
   // Create login token and send to client
-  const token = signToken('user', user.id)
+  const token = signToken('user', user.role, user.id)
 
   res.status(200).json({
     data: {
