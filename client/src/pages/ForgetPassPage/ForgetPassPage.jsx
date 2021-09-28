@@ -53,11 +53,12 @@ const ForgetPassPage = () => {
         if (!email) {
           return toast.error('Email không hợp lệ')
         }
-        const [succeeded, resData] = await userAPI.forgetPassword({ email })
+        const { succeeded, data: resData } = await userAPI.forgetPassword({
+          email,
+        })
         if (!succeeded) {
           return toast.error(resData.message)
         }
-        toast.success(resData.message)
       } catch (error) {
         toast.error(error.message)
       } finally {
