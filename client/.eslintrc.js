@@ -27,7 +27,6 @@ module.exports = {
     'prettier/prettier': 'error',
     'react/no-typos': 'error',
     'react/no-unused-state': 'error',
-    'react/jsx-no-bind': 'error',
     'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
     'react-hooks/exhaustive-deps': 'warn', // Checks effect dependencies
     'react/jsx-uses-react': 'off',
@@ -36,6 +35,8 @@ module.exports = {
     'consistent-return': 'error',
     'babel/no-invalid-this': 'error',
     'no-unused-vars': ['off', { argsIgnorePattern: '^_' }],
+    "react/prop-types": "off",
+    "@typescript-eslint/no-explicit-any": "off"
   },
   settings: {
     react: {

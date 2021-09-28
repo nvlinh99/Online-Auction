@@ -54,7 +54,7 @@ const ForgetPassPage = () => {
           }}
         >
           <div className='mb-10 flex'>
-            <IconButton onClick={onClickGoBack} variant='text'>
+            <IconButton onClick={onClickGoBack}>
               <FiArrowLeft />
             </IconButton>
             <Typography variant='h5' className='text-center flex-1 !mr-10'>

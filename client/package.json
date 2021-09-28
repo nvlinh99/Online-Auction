@@ -47,16 +47,6 @@
     "deploy": "gh-pages -d dist",
     "prod": "serve -s dist"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint-staged --verbose"
-    }
-  },
-  "lint-staged": {
-    "*.{js,jsx}": [
-      "eslint --fix"
-    ]
-  },
   "jest": {
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",

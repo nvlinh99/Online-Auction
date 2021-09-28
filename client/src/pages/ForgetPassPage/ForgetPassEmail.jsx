@@ -7,6 +7,7 @@ const ForgetPassEmail = ({
   onChangeInput,
   formInputData,
   onClicSubmitEmail,
+  isSubmiting,
 }) => {
   return (
     <div className='mx-10'>
@@ -20,7 +21,12 @@ const ForgetPassEmail = ({
         onChange={onChangeInput}
         value={formInputData.email}
       />
-      <Button fullWidth onClick={onClicSubmitEmail} variant='contained'>
+      <Button
+        fullWidth
+        onClick={onClicSubmitEmail}
+        variant='contained'
+        disabled={isSubmiting}
+      >
         Tiếp theo
       </Button>
     </div>
