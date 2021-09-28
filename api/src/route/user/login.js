@@ -29,15 +29,13 @@ const loginHandler = async (req, res) => {
   if (user) {
     switch (user.status) {
       case UserConstant.USER_STATUS.INACTIVE:
-        return res.json({
-          code: 400,
+        return res.status(400).json({
           data: {
             message: 'Tài khoản của bạn chưa kích hoạt!',
           },
         })
       case UserConstant.USER_STATUS.BLOCKED:
-        return res.json({
-          code: 400,
+        return res.status(400).json({
           data: {
             message: 'Tài khoản của bạn đã bị khoá!',
           },
@@ -49,8 +47,7 @@ const loginHandler = async (req, res) => {
   if (
     !user || !(await passwordValidator.verifyHashedPassword(data.password, user.password))
   ) {
-    return res.json({
-      code: 400,
+    return res.status(400).json({
       data: {
         message: 'Email/Mật khẩu không đúng!',
       },
@@ -60,8 +57,7 @@ const loginHandler = async (req, res) => {
   // Create login token and send to client
   const token = signToken('user', user.id)
 
-  res.json({
-    code: 200,
+  res.status(200).json({
     data: {
       message: 'Đăng nhập thành công.',
       token,
