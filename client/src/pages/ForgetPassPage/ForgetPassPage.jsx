@@ -10,6 +10,8 @@ import { FiArrowLeft } from 'react-icons/fi'
 import ForgetPassEmail from './ForgetPassEmail'
 import ForgetPassEmailSuccess from './ForgetPassEmailSuccess'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { userAPI } from 'services'
 const FORM_STEPS = {
   INPUT_EMAIL: 0,
   INPUT_EMAIL_SUCCESS: 1,
@@ -23,6 +25,7 @@ const ForgetPassPage = () => {
     password: '',
     confirmPassword: '',
   })
+  const [isSubmiting, setIsSubmiting] = useState(false)
   const [curFormStep, setCurFormStep] = useState(FORM_STEPS.INPUT_EMAIL)
   const token = useMemo(() => {
     const searchParams = new URLSearchParams(location.search)
@@ -41,9 +44,29 @@ const ForgetPassPage = () => {
     },
     [formInputData]
   )
-  const onClicSubmitEmail = useCallback(() => {
-    setCurFormStep(FORM_STEPS.INPUT_EMAIL_SUCCESS)
-  }, [])
+  const onClicSubmitEmail = useCallback(
+    async (e) => {
+      e.preventDefault()
+      const { email } = formInputData
+      setIsSubmiting(true)
+      try {
+        if (!email) {
+          return toast.error('Email không hợp lệ')
+        }
+        const [succeeded, resData] = await userAPI.forgetPassword({ email })
+        if (!succeeded) {
+          return toast.error(resData.message)
+        }
+        toast.success(resData.message)
+      } catch (error) {
+        toast.error(error.message)
+      } finally {
+        setIsSubmiting(false)
+      }
+      setCurFormStep(FORM_STEPS.INPUT_EMAIL_SUCCESS)
+    },
+    [formInputData]
+  )
 
   useEffect(() => {
     if (token) {
@@ -76,6 +99,7 @@ const ForgetPassPage = () => {
             onClicSubmitEmail={onClicSubmitEmail}
             onChangeInput={onChangeInput}
             formInputData={formInputData}
+            isSubmiting={isSubmiting}
           />
         ) : curFormStep === FORM_STEPS.INPUT_EMAIL_SUCCESS ? (
           <ForgetPassEmailSuccess />
@@ -84,6 +108,7 @@ const ForgetPassPage = () => {
             onClicSubmitEmail={onClicSubmitEmail}
             onChangeInput={onChangeInput}
             formInputData={formInputData}
+            isSubmiting={isSubmiting}
           />
         )}
       </Box>
