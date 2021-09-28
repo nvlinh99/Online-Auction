@@ -8,6 +8,7 @@ import React, {
 } from 'react'
 import { Button, Typography, TextField, Box, IconButton } from '@mui/material'
 import { FiArrowLeft } from 'react-icons/fi'
+import { toast } from 'react-toastify'
 import { useLocation, useNavigate, Link } from 'react-router-dom'
 import * as UserAPI from 'services/userApi'
 import * as Validation from 'utils/validation'
@@ -85,33 +86,15 @@ const ForgetPassPage = () => {
   )
 
   const registerFail = (msg) => {
-    console.log(msg)
+    toast.error(msg)
     setTimeout(() => setLoading(false), 500)
   }
+
   const onSubmitRegister = useCallback(() => {
     setLoading(true)
     const body = formDataRef.current
-    if (!body.email) {
-      return registerFail('Yeu cau nhap email')
-    }
-    if (!body.firstName) {
-      return registerFail('Yeu cau nhap firstName')
-    }
-    if (!body.lastName) {
-      return registerFail('Yeu cau nhap lastName')
-    }
-    if (!body.address) {
-      return registerFail('Yeu cau nhap address')
-    }
-    if (!body.password) {
-      return registerFail('Yeu cau nhap password')
-    }
-    if (!body.confirmPassword) {
-      return registerFail('Yeu cau nhap confirmPassword')
-    }
-    if (!Validation.isEmail(body.email)) {
-      return registerFail('Email khong hop le')
-    }
+    const errMsg = inputValidation(body)
+    if (errMsg) return registerFail(errMsg)
     return UserAPI.register(body).then((res) => {
       const [succeeded, message] = res
       if (!succeeded) return registerFail(message)
@@ -159,7 +142,7 @@ const ForgetPassPage = () => {
               disabled={loading}
               className='!mb-5'
               id='outlined-basic'
-              label='First Name'
+              label='Tên'
               variant='outlined'
               fullWidth
               name='firstName'
@@ -170,7 +153,7 @@ const ForgetPassPage = () => {
               disabled={loading}
               className='!mb-5'
               id='outlined-basic'
-              label='Last Name'
+              label='Họ'
               variant='outlined'
               fullWidth
               name='lastName'
@@ -181,7 +164,7 @@ const ForgetPassPage = () => {
               disabled={loading}
               className='!mb-5'
               id='outlined-basic'
-              label='Address'
+              label='Địa chỉ'
               variant='outlined'
               fullWidth
               name='address'
@@ -192,7 +175,7 @@ const ForgetPassPage = () => {
               disabled={loading}
               className='!mb-5'
               id='outlined-basic'
-              label='Password'
+              label='Mật khẩu'
               type='password'
               variant='outlined'
               fullWidth
@@ -204,7 +187,7 @@ const ForgetPassPage = () => {
               disabled={loading}
               className='!mb-5'
               id='outlined-basic'
-              label='Confirm Password'
+              label='Xác nhận mật khẩu'
               type='password'
               variant='outlined'
               fullWidth
@@ -243,3 +226,29 @@ const ForgetPassPage = () => {
 }
 
 export default ForgetPassPage
+
+const inputValidation = (data) => {
+  if (!data.email) {
+    return 'Yêu cầu nhập email'
+  }
+  if (!data.firstName) {
+    return 'Yêu cầu nhập tên'
+  }
+  if (!data.lastName) {
+    return 'Yêu cầu nhập họ'
+  }
+  if (!data.address) {
+    return 'Yêu cầu nhập địa chỉ'
+  }
+  if (!data.password) {
+    return 'Yêu cầu nhập mật khẩu'
+  }
+  if (!data.confirmPassword) {
+    return 'Yêu cầu nhập xác nhận mật khẩu'
+  }
+  if (!Validation.isEmail(data.email)) {
+    return 'Email không hợp lệ'
+  }
+
+  return null
+}

@@ -4,6 +4,7 @@ import ProductDetailPage from 'pages/ProductDetailPage'
 import ProductListPage from 'pages/ProductListPage'
 import ForgetPassPage from 'pages/ForgetPassPage'
 import RegisterPage from 'pages/RegisterPage'
+import RegisterConfirmationPage from 'pages/RegisterPage/RegisterConfirmationPage'
 
 export default [
   {
@@ -41,5 +42,9 @@ export default [
   {
     path: '/register',
     element: <RegisterPage />,
+  },
+  {
+    path: '/register-confirmation',
+    element: <RegisterConfirmationPage />,
   },
 ]
