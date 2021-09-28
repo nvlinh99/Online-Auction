@@ -43,6 +43,7 @@ module.exports = deepFreeze({
       extended: false,
     },
   },
+  grecaptchaV3Secret: process.env.RECAPTCHA_SECRET_KEY,
   confirmEmailRedirectUrl:
     process.env.CONFIRM_EMAIL_REDIRECT_URL
     || 'http://localhost:2404/test/confirm',

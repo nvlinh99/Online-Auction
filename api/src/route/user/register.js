@@ -8,6 +8,7 @@ const UserModel = require('../../model/user')
 const UserConstant = require('../../constant/user')
 const configuration = require('../../configuration')
 const genRequestValidation = require('../../middleware/gen-request-validation')
+const recaptchaValidation = require('../../middleware/grecaptcha-v3-validation')
 
 const requestValidationHandler = genRequestValidation({
   body: joi.object({
@@ -112,5 +113,6 @@ const registerHandler = async (req, res) => {
 
 module.exports = [
   requestValidationHandler,
+  recaptchaValidation,
   registerHandler,
 ]
