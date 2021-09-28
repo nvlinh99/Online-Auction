@@ -31,7 +31,8 @@
     "redux": "^4.1.1",
     "reselect": "^4.0.0",
     "serve": "^12.0.1",
-    "tailwindcss": "^2.2.7"
+    "tailwindcss": "^2.2.7",
+		"cross-env": "^7.0.3"
   },
   "main": "index.js",
   "scripts": {
@@ -79,7 +80,6 @@
     "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^7.0.0",
-    "cross-env": "^7.0.3",
     "css-loader": "^5.2.6",
     "css-minimizer-webpack-plugin": "^2.0.0",
     "dotenv-webpack": "^6.0.4",
@@ -96,7 +96,7 @@
     "jest": "^26.6.3",
     "lint-staged": "^10.5.4",
     "mini-css-extract-plugin": "^1.6.1",
-    "node-sass": "^4.14.1",
+    "node-sass": "^6.0.1",
     "postcss": "^8.3.6",
     "postcss-import": "^14.0.2",
     "postcss-loader": "^5.3.0",
