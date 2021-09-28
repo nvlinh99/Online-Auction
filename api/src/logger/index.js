@@ -3,9 +3,10 @@ const consoleLogger = require('./console-logger')
 const fileLogger = require('./file-logger')
 
 exports.getLogger = function (scope) {
-  if (configuration.env === 'development') {
-    return consoleLogger.getLogger(scope)
-  }
+  return consoleLogger.getLogger(scope)
+  // if (configuration.env === 'development') {
+  //   return consoleLogger.getLogger(scope)
+  // }
 
-  return fileLogger.getLogger(scope)
+  // return fileLogger.getLogger(scope)
 }
