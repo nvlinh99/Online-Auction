@@ -1,77 +1,93 @@
-import React, {
-  Component,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
-import { Button, Typography, TextField, Box, IconButton } from '@mui/material'
-import { FiArrowLeft } from 'react-icons/fi'
-import { toast } from 'react-toastify'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
+import { Button, Typography, TextField, Box, FormControlLabel, Alert, Checkbox, } from '@mui/material'
 import { useLocation, useNavigate, Link } from 'react-router-dom'
-import * as UserAPI from 'services/userApi'
+import { login } from 'services/userApi'
 import * as Validation from 'utils/validation'
+import { NotificationManager } from 'react-notifications';
+import qs from 'querystring';
 
-// Utils
-import { createCookie, getErrorMessage } from '../../utils/helpers/cookie'
+export default function LoginView() {
+	const [loading, setLoading] = useState(false)
+  const navigate = useNavigate();
+  const [loginStatus, setLoginStatus] = useState({
+    loading: false,
+    error: null,
+    success: false,
+  });
+  const [formValues, setFormValues] = useState({
+    email: '',
+    password: '',
+    rememeber:false,
+    submiting: false,
+  });
+  const [formError, setFormErrors] = useState({
+    email: '',
+    password: '',
+    submiting: '',
+  });
 
-const LoginPage = () => {
-  const navigate = useNavigate()
-  const onClickGoBack = useCallback(() => {
-    navigate(-1)
-  }, [navigate])
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [isConfirmPhase, setIsConfirmPhase] = useState(false)
-  const formDataRef = useRef({
-    email,
-    password,
-  })
-
-  const onEmailChange = useCallback(
-    (e) => {
-      const { value } = e.target
-      formDataRef.current.email = value
-      setEmail(value)
-    },
-    [setEmail]
-  )
-
-  const onPasswordChange = useCallback(
-    (e) => {
-      const { value } = e.target
-      formDataRef.current.password = value
-      setPassword(value)
-    },
-    [setPassword]
-  )
-
-  const loginFail = (msg) => {
-    toast.error(msg)
-    setTimeout(() => setLoading(false), 500)
-  }
-
-  const onSubmitLogin = useCallback(() => {
-    setLoading(true)
-    const body = formDataRef.current
-    const errMsg = inputValidation(body)
-    if (errMsg) return loginFail(errMsg)
-    return UserAPI.login(body).then((res) => {
-      const [succeeded, message, token] = res
-      console.log(token)
+  const handleChange = e => {
+    const { name, value,checked } = e.target;
+    if (name === "remember") {
+      setFormValues({ ...formValues, [name]: checked });
+      return 
+    }
+    setFormValues({ ...formValues, [name]: value });
+  };
+  const handleSubmit = async e => {
+		setLoading(true)
+    e.preventDefault();
+    const { email, password, remember } = formValues;
+   
+    setLoginStatus({
+      error: null,
+      success: false,
+      loading: true,
+    });
+    try {
+      const [succeeded, data] = await login({ email, password });
       if (!succeeded) {
-        return loginFail(message)
+        setLoginStatus({
+          error: 'Email hoặc mật khẩu không hợp lệ.',
+          success: false,
+          loading: false,
+        });
+        return;
       }
-      createCookie(TOKEN_KEY, token)
-      history.push('/')
-      return setIsConfirmPhase(true)
-    })
-  }, [formDataRef])
+      const result = data || {};
+      setLoginStatus({
+        error: null,
+        success: true,
+        loading: false,
+      });
+      if (result.token) {
+        localStorage.setItem('USER_TOKEN', result.token);
+        localStorage.setItem('USER_INFO', JSON.stringify(result.user));
+        if (remember) {
+          localStorage.setItem('EMAIL', email);
+          localStorage.setItem('PASSWORD', password);
+        }
 
-  return (
+        const { retRef } = qs.parse(location.search.slice(1));
+        NotificationManager.success('Đăng nhập thành công', null, 1500);
+        navigate(retRef || '/app');
+      }
+    } catch (error) {
+      setLoginStatus({
+        error: error.toString(),
+        success: false,
+        loading: false,
+      });
+    }
+  };
+  useEffect(() => {
+    const email = localStorage.getItem('EMAIL');
+    const password = localStorage.getItem('PASSWORD');
+    setFormValues({ email, password });
+  }, []);
+
+	return (
     <div className='w-full h-screen flex justify-center items-center'>
       <Box
         sx={{
@@ -84,95 +100,94 @@ const LoginPage = () => {
         }}
       >
         <div className='mb-10 flex'>
-          <IconButton disabled={loading} onClick={onClickGoBack}>
-            <FiArrowLeft />
-          </IconButton>
           <Typography variant='h5' className='text-center flex-1 !mr-10'>
             Đăng nhập
           </Typography>
         </div>
-        {isConfirmPhase ? (
-          <p>Đăng nhập thành công.</p>
-        ) : (
-          <>
-            <TextField
-              disabled={loading}
-              className='!mb-5'
-              id='outlined-basic'
-              label='Email'
-              variant='outlined'
-              fullWidth
-              type='email'
-              name='email'
-              onChange={onEmailChange}
-              value={email}
-            />
-            <TextField
-              disabled={loading}
-              className='!mb-5'
-              id='outlined-basic'
-              label='Mật khẩu'
-              type='password'
-              variant='outlined'
-              fullWidth
-              name='password'
-              onChange={onPasswordChange}
-              value={password}
-            />
-            <Button
-              disabled={loading}
-              onClick={onSubmitLogin}
-              className='!mb-5'
-              fullWidth
-              variant='contained'
-            >
-              Đăng nhập
-            </Button>
-            <p style={{ textAlign: 'center' }}>
-              <span>Chưa có tài khoản? </span>
-              <Link
-                disabled={loading}
-                style={{
-                  [loading ? 'pointerEvents' : '']: 'none',
-                  textDecoration: 'underline',
-                  textAlign: 'center',
-                }}
-                to='/register'
-              >
-                Đăng ký
-              </Link>
-            </p>
-            <p style={{ textAlign: 'center' }}>
-              <Link
-                disabled={loading}
-                style={{
-                  [loading ? 'pointerEvents' : '']: 'none',
-                  textDecoration: 'underline',
-                  textAlign: 'center',
-                }}
-                to='/forget-password'
-              >
-                Quên mật khẩu
-              </Link>
-            </p>
-          </>
-        )}
+				{loginStatus.error && (
+					<Alert severity="error">
+						{loginStatus.error}
+					</Alert>
+				)}
+				<TextField
+						variant="outlined"
+						margin="normal"
+						required
+						fullWidth
+						id="email"
+						label="Email"
+						name="email"
+						autoComplete="email"
+						autoFocus
+						value={formValues.email}
+						onChange={handleChange}
+						helperText={formError.email}
+						error={!!formError.email}
+					/>
+					<TextField
+						variant="outlined"
+						margin="normal"
+						required
+						fullWidth
+						name="password"
+						label="Mật khẩu"
+						type="password"
+						id="password"
+						autoComplete="current-password"
+						value={formValues.password}
+						onChange={handleChange}
+						helperText={formError.password}
+						error={!!formError.password}
+					/>
+					<FormControlLabel
+						control={
+							<Checkbox
+								name="remember"
+								value = "true"
+								color="primary"
+								checked={formValues.remember}
+								onChange={handleChange}
+							/>
+						}
+						label="Ghi nhớ tôi"
+					/>
+					<Button
+						disabled={loading}
+						onClick={handleSubmit}
+						className='!mb-5'
+						fullWidth
+						variant='contained'
+					>
+						Đăng nhập
+					</Button>
+					<p style={{ textAlign: 'center' }}>
+						<span>Chưa có tài khoản? </span>
+						<Link
+							disabled={loading}
+							style={{
+								[loading ? 'pointerEvents' : '']: 'none',
+								textDecoration: 'underline',
+								textAlign: 'center',
+							}}
+							to='/register'
+						>
+							Đăng ký
+						</Link>
+					</p>
+					<p style={{ textAlign: 'center' }}>
+						<Link
+							disabled={loading}
+							style={{
+								[loading ? 'pointerEvents' : '']: 'none',
+								textDecoration: 'underline',
+								textAlign: 'center',
+							}}
+							to='/forget-password'
+						>
+							Quên mật khẩu
+						</Link>
+        </p>
       </Box>
     </div>
   )
-}
-
-export default LoginPage
-
-const inputValidation = (data) => {
-  if (!data.email) {
-    return 'Yêu cầu nhập email'
-  }
-  if (!data.password) {
-    return 'Yêu cầu nhập mật khẩu'
-  }
-  if (!Validation.isEmail(data.email)) {
-    return 'Email không hợp lệ'
-  }
-  return null
 }

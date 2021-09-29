@@ -1,4 +1,4 @@
-import { api } from './api'
+import { api, authHeader } from './api'
 
 export const register = async (body) => {
   try {
@@ -11,8 +11,8 @@ export const register = async (body) => {
 
 export const login = async (body) => {
 	try {
-    const { succeeded, data } = await api.post('/users/login', body)
-    return [succeeded, data.message, data.token]
+    const { succeeded, data } = await api.post('/users/login', body, { headers: { ...authHeader() } })
+    return [succeeded, data]
   } catch (err) {
     return [false, 'Đăng nhập không thành công']
   }

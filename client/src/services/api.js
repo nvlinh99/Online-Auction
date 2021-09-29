@@ -1,5 +1,16 @@
 import axios from 'axios'
-import { readCookie, eraseCookie } from '../utils/helpers/cookie';
+import qs from 'qs'
+import { userToken } from '../constants/GlobalConstants';
+
+export function authHeader() {
+  // return authorization header with jwt token
+  const token = userToken();
+	console.log(token);
+  if (token) {
+    return { Authorization: `Bearer ${token}` };
+  }
+  return {};
+}
 
 export const api = axios.create({
   baseURL: process.env.API_URL,
@@ -7,30 +18,27 @@ export const api = axios.create({
     Accept: 'application/json',
     'Content-Type': 'application/json',
   },
+  paramsSerializer: (params) => {
+    return qs.stringify(params, { arrayFormat: 'repeat' });
+  },
   timeout: 5000,
 })
-export const TOKEN_KEY = 'token';
-//config send request header
-api.interceptors.request.use(
-  config => {
-    if (!config.headers.Authorization) {
-      const token = readCookie(TOKEN_KEY);
-			console.log(token);
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    }
-    return config;
-  },
-  error => Promise.reject(error)
-);
+
+api.interceptors.request.use(config => {
+  config.headers = {
+    ...config.headers,
+    ...authHeader(),
+  };
+  return config;
+});
+
 
 api.interceptors.response.use(
   function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     const { code, data } = response.data || {}
-    return { succeeded: code === 200, data }
+    return { succeeded: code === 1000, data }
   },
   function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
