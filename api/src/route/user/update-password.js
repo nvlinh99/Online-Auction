@@ -6,10 +6,12 @@ const UserModel = require("../../model/user");
 const UserConstant = require("../../constant/user");
 const configuration = require("../../configuration");
 const genRequestValidation = require("../../middleware/gen-request-validation");
+const passwordValidator = require("../../util/passwordValidator");
 
 const requestValidationHandler = genRequestValidation({
   body: joi
     .object({
+      oldPassword: joi.string().trim().required().invalid("", null),
       password: joi.string().trim().required().invalid("", null),
       confirmPassword: joi.string().trim().required().invalid("", null),
     })
@@ -17,7 +19,7 @@ const requestValidationHandler = genRequestValidation({
 });
 
 const updatePasswordHandler = async (req, res) => {
-  const { password, confirmPassword } = req.body;
+  const { password, confirmPassword, oldPassword } = req.body;
   const id = req.user;
   if (password !== confirmPassword) {
     return res.json({
@@ -27,11 +29,15 @@ const updatePasswordHandler = async (req, res) => {
       },
     });
   }
+
   const user = await UserModel.findOne({
     id,
     status: UserConstant.USER_STATUS.ACTIVE,
   });
-  if (!user) {
+  if (
+    !user ||
+    !(await passwordValidator.verifyHashedPassword(oldPassword, user.password))
+  ) {
     return res.json({
       code: -1000,
       data: {
