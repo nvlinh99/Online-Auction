@@ -34,14 +34,21 @@ const updatePasswordHandler = async (req, res) => {
     id,
     status: UserConstant.USER_STATUS.ACTIVE,
   });
+  if (!user) {
+    return res.json({
+      code: -1000,
+      data: {
+        message: "Tài khoản không tồn tại",
+      },
+    });
+  }
   if (
-    !user ||
     !(await passwordValidator.verifyHashedPassword(oldPassword, user.password))
   ) {
     return res.json({
       code: -1000,
       data: {
-        message: "Tài khoản không tồn tại",
+        message: "Mật khẩu cũ không chính xác",
       },
     });
   }
