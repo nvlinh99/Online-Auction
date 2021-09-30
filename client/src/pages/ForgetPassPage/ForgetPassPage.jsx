@@ -12,6 +12,7 @@ import ForgetPassEmailSuccess from './ForgetPassEmailSuccess'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { userAPI } from 'services'
+import ForgetPassChange from './ForgetPassChange'
 const FORM_STEPS = {
   INPUT_EMAIL: 0,
   INPUT_EMAIL_SUCCESS: 1,
@@ -68,6 +69,38 @@ const ForgetPassPage = () => {
     },
     [formInputData]
   )
+  const onClickUpdate = useCallback(
+    async (e) => {
+      e.preventDefault()
+      console.log('rubn')
+      const { password, confirmPassword } = formInputData
+      setIsSubmiting(true)
+      try {
+        if (!password) {
+          return toast.error('Mật khẩu không hợp lệ')
+        }
+        if (!confirmPassword || confirmPassword !== password) {
+          return toast.error('Hai mật khẩu không trùng khớp')
+        }
+        const { succeeded, data: resData } = await userAPI.resetPassword({
+          password,
+          confirmPassword,
+          token,
+        })
+        if (!succeeded) {
+          return toast.error(resData.message)
+        }
+        toast.success(resData.message)
+        navigate('/login')
+      } catch (error) {
+        toast.error(error.message)
+      } finally {
+        setIsSubmiting(false)
+      }
+      setCurFormStep(FORM_STEPS.INPUT_EMAIL_SUCCESS)
+    },
+    [formInputData, token]
+  )
 
   useEffect(() => {
     if (token) {
@@ -84,7 +117,6 @@ const ForgetPassPage = () => {
           borderRadius: '10px',
           boxShadow: '0 3px 10px 0 rgb(0 0 0 / 14%)',
           width: 500,
-          height: 270,
         }}
       >
         <div className='mb-10 flex'>
@@ -105,8 +137,8 @@ const ForgetPassPage = () => {
         ) : curFormStep === FORM_STEPS.INPUT_EMAIL_SUCCESS ? (
           <ForgetPassEmailSuccess />
         ) : (
-          <ForgetPassEmail
-            onClicSubmitEmail={onClicSubmitEmail}
+          <ForgetPassChange
+            onClickUpdate={onClickUpdate}
             onChangeInput={onChangeInput}
             formInputData={formInputData}
             isSubmiting={isSubmiting}
