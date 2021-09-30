@@ -10,8 +10,10 @@ export const register = async (body) => {
 }
 
 export const login = async (body) => {
-	try {
-    const { succeeded, data } = await api.post('/users/login', body, { headers: { ...authHeader() } })
+  try {
+    const { succeeded, data } = await api.post('/users/login', body, {
+      headers: { ...authHeader() },
+    })
     return [succeeded, data]
   } catch (err) {
     return [false, 'Đăng nhập không thành công']
@@ -23,4 +25,7 @@ export const forgetPassword = async (body) => {
 }
 export const resetPassword = async (body) => {
   return await api.post('/users/reset-password', body)
+}
+export const updatePassword = async (body) => {
+  return await api.post('/users/update-password', body)
 }

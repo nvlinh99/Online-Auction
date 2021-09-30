@@ -8,11 +8,11 @@ import {
   Alert,
   Checkbox,
 } from '@mui/material'
-import { useLocation, useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { login } from 'services/userApi'
-import * as Validation from 'utils/validation'
 import qs from 'querystring'
 import { toast } from 'react-toastify'
+import { HOME_PATH } from 'constants/routeConstants'
 
 export default function LoginView() {
   const [loading, setLoading] = useState(false)
@@ -78,7 +78,7 @@ export default function LoginView() {
 
         const { retRef } = qs.parse(location.search.slice(1))
         toast.success('Đăng nhập thành công', null, 1500)
-        navigate(retRef || '/app')
+        navigate(retRef || HOME_PATH)
       }
     } catch (error) {
       setLoginStatus({
