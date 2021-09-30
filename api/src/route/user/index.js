@@ -4,6 +4,7 @@ const registerController = require("./register");
 const registerConfirmationHandler = require("./register-confirmation");
 const forgetPasswordHandler = require("./forget-password");
 const resetPasswordHandler = require("./reset-password");
+const updatePasswordHandler = require("./update-password");
 const updateHandler = require("./update-info");
 const authHandler = require("./auth");
 
@@ -19,5 +20,6 @@ userRouter.post("/reset-password", resetPasswordHandler);
 // Auth route: Action require logged in user
 userRouter.use(authHandler.authorize);
 userRouter.post("/update-info", updateHandler);
+userRouter.post("/update-password", updatePasswordHandler);
 
 exports.router = userRouter;

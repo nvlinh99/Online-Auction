@@ -10,15 +10,15 @@ const genRequestValidation = require("../../middleware/gen-request-validation");
 const requestValidationHandler = genRequestValidation({
   body: joi
     .object({
-      token: joi.string().trim().required().invalid("", null),
       password: joi.string().trim().required().invalid("", null),
       confirmPassword: joi.string().trim().required().invalid("", null),
     })
     .unknown(false),
 });
 
-const resetPasswordHandler = async (req, res) => {
-  const { token, password, confirmPassword } = req.body;
+const updatePasswordHandler = async (req, res) => {
+  const { password, confirmPassword } = req.body;
+  const id = req.user;
   if (password !== confirmPassword) {
     return res.json({
       code: -1000,
@@ -27,9 +27,8 @@ const resetPasswordHandler = async (req, res) => {
       },
     });
   }
-  console.log(md5(token));
   const user = await UserModel.findOne({
-    verifyCode: md5(token),
+    id,
     status: UserConstant.USER_STATUS.ACTIVE,
   });
   if (!user) {
@@ -40,7 +39,6 @@ const resetPasswordHandler = async (req, res) => {
       },
     });
   }
-  console.log("run ");
   const hasedPassword = await new Promise((rsl, rjt) => {
     bcrypt.hash(password, configuration.bcryptSaltRounds, (err, hashed) => {
       if (err) return rjt(err);
@@ -66,8 +64,8 @@ const resetPasswordHandler = async (req, res) => {
   res.json({
     code: 1000,
     data: {
-      message: "Cập nhật mật khẩu thành công",
+      message: "Cập nhật mật khẩu thành công ",
     },
   });
 };
-module.exports = [requestValidationHandler, resetPasswordHandler];
+module.exports = [requestValidationHandler, updatePasswordHandler];
