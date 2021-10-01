@@ -15,7 +15,7 @@ const updateHandler = async (req, res) => {
   const user = req.user
   const data = req.body
 
-  await UserModel.findOneAndUpdate({ id: user, }, {
+  await UserModel.findOneAndUpdate({ id: user.id, }, {
     $set: {
       firstName: data.firstName,
       lastName: data.lastName,
