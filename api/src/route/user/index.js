@@ -1,25 +1,25 @@
-const { Router } = require("express");
-const loginController = require("./login");
-const registerController = require("./register");
-const registerConfirmationHandler = require("./register-confirmation");
-const forgetPasswordHandler = require("./forget-password");
-const resetPasswordHandler = require("./reset-password");
-const updatePasswordHandler = require("./update-password");
-const updateHandler = require("./update-info");
-const authHandler = require("./auth");
+const { Router, } = require('express')
+const loginController = require('./login')
+const registerController = require('./register')
+const registerConfirmationHandler = require('./register-confirmation')
+const forgetPasswordHandler = require('./forget-password')
+const resetPasswordHandler = require('./reset-password')
+const updatePasswordHandler = require('./update-password')
+const updateHandler = require('./update-info')
+const authHandler = require('./auth')
 
-exports.path = "/users";
+exports.path = '/users'
 
-const userRouter = Router();
-userRouter.post("/login", loginController);
-userRouter.post("/register", registerController);
-userRouter.get("/register/confirmation", registerConfirmationHandler);
-userRouter.post("/forget-password", forgetPasswordHandler);
-userRouter.post("/reset-password", resetPasswordHandler);
+const userRouter = Router()
+userRouter.post('/login', loginController)
+userRouter.post('/register', registerController)
+userRouter.get('/register/confirmation', registerConfirmationHandler)
+userRouter.post('/forget-password', forgetPasswordHandler)
+userRouter.post('/reset-password', resetPasswordHandler)
 
 // Auth route: Action require logged in user
-userRouter.use(authHandler.authorize);
-userRouter.post("/update-info", updateHandler);
-userRouter.post("/update-password", updatePasswordHandler);
+userRouter.use(authHandler.authorize)
+userRouter.post('/update-info', updateHandler)
+userRouter.post('/update-password', updatePasswordHandler)
 
-exports.router = userRouter;
+exports.router = userRouter
