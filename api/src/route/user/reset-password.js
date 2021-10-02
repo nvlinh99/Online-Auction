@@ -66,7 +66,7 @@ const resetPasswordHandler = async (req, res) => {
   res.json({
     code: 1000,
     data: {
-      message: "Cập nhật mật khâu thành công thành công",
+      message: "Cập nhật mật khẩu thành công",
     },
   });
 };
