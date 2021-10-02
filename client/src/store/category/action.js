@@ -4,11 +4,11 @@ import { action } from './reducer'
 
 export const getCategoriesFromAPI = async () => {
   try {
-    const res = await categoryAPI.getCategories()
-    if (!res.data) {
+    const { succeeded, data } = await categoryAPI.getCategories()
+    if (!succeeded) {
       return
     }
-    const categories = res.data
+    const categories = data.categories
     dispatch(action.setCategories({ categories }))
   } catch (error) {
     console.error(error)

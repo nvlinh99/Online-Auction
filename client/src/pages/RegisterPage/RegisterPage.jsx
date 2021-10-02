@@ -95,10 +95,19 @@ const ForgetPassPage = () => {
     const body = formDataRef.current
     const errMsg = inputValidation(body)
     if (errMsg) return registerFail(errMsg)
-    return UserAPI.register(body).then((res) => {
-      const [succeeded, message] = res
-      if (!succeeded) return registerFail(message)
-      return setIsConfirmPhase(true)
+    // eslint-disable-next-line no-undef
+    return grecaptcha.ready(function () {
+      // eslint-disable-next-line no-undef
+      grecaptcha
+        .execute(process.env.RECAPTCHA_CLIENT_KEY, { action: 'submit' })
+        .then(function (token) {
+          body.grecaptchaToken = token
+          return UserAPI.register(body).then((res) => {
+            const [succeeded, message] = res
+            if (!succeeded) return registerFail(message)
+            return setIsConfirmPhase(true)
+          })
+        })
     })
   }, [formDataRef])
 

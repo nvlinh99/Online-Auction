@@ -4,13 +4,14 @@ import Footer from './Footer'
 import Header from './Header'
 const MainLayout = () => {
   return (
-    <>
+    <div
+      style={{ display: 'flex', flexDirection: 'column' }}
+      className='h-full'
+    >
       <Header />
-      <main>
-        <Outlet />
-      </main>
+      <Outlet />
       <Footer />
-    </>
+    </div>
   )
 }
 

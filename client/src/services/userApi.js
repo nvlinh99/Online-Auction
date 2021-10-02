@@ -2,7 +2,11 @@ import { api, authHeader } from './api'
 
 export const register = async (body) => {
   try {
-    const { succeeded, data } = await api.post('/users/register', body)
+    const grecaptchaToken = body.grecaptchaToken
+    delete body.grecaptchaToken
+    const { succeeded, data } = await api.post('/users/register', body, {
+      headers: { 'x-grecaptcha-token': grecaptchaToken },
+    })
     return [succeeded, data.message]
   } catch (err) {
     return [false, 'Đăng kí không thành công']
