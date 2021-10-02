@@ -1,11 +1,12 @@
 const UserModel = require('../../model/user')
 const genRequestValidation = require('../../middleware/gen-request-validation')
+const USER_CONSTANTS = require('../../constant/user')
 
 const requestValidationHandler = genRequestValidation({})
 
 const updateHandler = async (req, res) => {
   const currentUser = await UserModel
-    .findOne({ id: req.user.id, })
+    .findOne({ id: req.user.id, status:  USER_CONSTANTS.USER_STATUS.ACTIVE, })
     .select('-_id -password -status -verifyCode -verifyCodeExpireAt')
     .lean()
   if (!currentUser) {
