@@ -16,6 +16,7 @@ import { makeStyles } from '@mui/styles'
 import StarBorder from '@mui/icons-material/StarBorder'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
+import ProductList from './ProductList'
 
 import './home-page.css'
 
@@ -83,11 +84,12 @@ const HomePage = () => {
   }, [])
   return (
     <div style={{ flex: '1', display: 'flex' }}>
-      <div style={{ width: '250px', background: '#E7E9EB' }}>
+      <div style={{ width: '15%', minWidth: '180px', background: '#E7E9EB' }}>
         <Typography
           variant='h6'
           style={{
             padding: '1.5rem 0',
+            paddingRight: '1rem',
             lineHeight: '1rem',
             fontWeight: 'bold',
             paddingLeft: '2rem',
@@ -99,7 +101,9 @@ const HomePage = () => {
           <DropDown key={item.id} category={item} />
         ))}
       </div>
-      <div style={{ flex: '1' }}></div>
+      <div style={{ flex: '1' }}>
+        <ProductList />
+      </div>
     </div>
   )
 }
