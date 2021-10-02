@@ -8,13 +8,9 @@ script:
 - cd client && npm install
 - echo 'Running Build'
 - npm run build
-deploy:
-  provider: firebase
-  skip_cleanup: true
-  token:
-    secure: "$firebase_token"
-  on:
-    branch: client
-env:
-  global:
-    secure: xSUEqzvxNwkD5LkvyAIm/RQx+7rioEFskYmervYJ5Gmt+LYegGub2bIs15FRfK6dKocTS5mPEfDg5dYITnnfAXGt+XXjUgeOyDtI+k7WzNDG9r/t6bmk7GhJuF7Huss0LuNOzxvDp50wP9tnXhlabKSn7BK/ukrBVfiZYWv/JAffKyxxfEJb5hvBBqmCSMH2cOY7QVKZjlf5P44f7W9dCgK5yWkQskUpOPnSbLHGiSMLDMjrQ6YPf+aRKENvlIj/xl4TvSKJA+lqvqoSNlwIjaPojj7Ium4xAjAq+by3208iloCqjgfre1Hwuj11unmVbvZG5hahAJj8q55jxncbvX0akJ52ZTu/JeIQhMtkcbfFXqj3uQKfQaLosvcYIXQ1UXjHTMNoJvoxIJhpWMUUSwp0EwR9VxzNUTG8Q21B5tNyhL2vEWdlcVwYMk27Jd/gTVHP/2NgE7//OW1iqvq0hOkFeG0f1P6Gbg1e1l2/BM5WsksYfbaiMM/rIL7Xa6zkV9xrZTu1B0daF5flqGUq9TGE2k2lPPiYGCf1+6o+NNd0dn/wTwaRWMFCfwt9oxBglytzMraJbqYpdR60kdx5eWPzm/Vec+dnvmRWht7GrOCprBu6b2obEg7GEzQhYVDKr+hfgyCc6Dz4JeMPDcBSFEDOvFzwh2dcNOsEsrBrhtA=
+after_success:
+  - npm install -g firebase-tools
+  - firebase --non-interactive deploy --token "$FIREBASE_TOKEN"
+cache:
+  directories:
+  - node_modules

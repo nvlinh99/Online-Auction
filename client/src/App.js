@@ -6,7 +6,6 @@ import 'styles/global.scss'
 const App = () => {
   const userRoutes = useMemo(() => getRoutes(), [])
   const routes = useRoutes(userRoutes)
-  console.log(process.env.API_URL)
 
   return <div>{routes}</div>
 }

@@ -1,3 +1,4 @@
+import React from 'react'
 import MainLayout from 'Layouts/MainLayout'
 import HomePage from 'pages/HomePage/HomePage'
 import ProductDetailPage from 'pages/ProductDetailPage'
@@ -5,7 +6,8 @@ import ProductListPage from 'pages/ProductListPage'
 import ForgetPassPage from 'pages/ForgetPassPage'
 import RegisterPage from 'pages/RegisterPage'
 import RegisterConfirmationPage from 'pages/RegisterPage/RegisterConfirmationPage'
-
+import LoginPage from 'pages/LoginPage'
+import UpdatePasswordPage from 'pages/UpdatePasswordPage'
 export default [
   {
     path: '/',
@@ -40,11 +42,19 @@ export default [
     element: <ForgetPassPage />,
   },
   {
+    path: '/update-password',
+    element: <UpdatePasswordPage />,
+  },
+  {
     path: '/register',
     element: <RegisterPage />,
   },
   {
     path: '/register-confirmation',
     element: <RegisterConfirmationPage />,
+  },
+  {
+    path: '/login',
+    element: <LoginPage />,
   },
 ]
