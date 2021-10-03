@@ -35,12 +35,12 @@ exports.authorize = async (req, res, next) => {
 
 exports.restrictToAdmin = () => {
   return (req, res, next) => {
-    if (req.user.role !== 0) {
+    if (req.user && req.user.role !== 0) {
       return res.status(403).json({
         code: -1000,
         message: 'Forbidden! Bạn không có quyền truy cập.',
       })
     }
-    return next()
+    next()
   }
 }
