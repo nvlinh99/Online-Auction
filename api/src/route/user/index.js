@@ -7,6 +7,7 @@ const resetPasswordHandler = require('./reset-password')
 const updatePasswordHandler = require('./update-password')
 const updateHandler = require('./update-info')
 const authHandler = require('./auth')
+const getCurrentUserHandler = require('./get-current-user')
 
 exports.path = '/users'
 
@@ -21,5 +22,6 @@ userRouter.post('/reset-password', resetPasswordHandler)
 userRouter.use(authHandler.authorize)
 userRouter.post('/update-info', updateHandler)
 userRouter.post('/update-password', updatePasswordHandler)
+userRouter.post('/get-current-user', getCurrentUserHandler)
 
 exports.router = userRouter

@@ -12,7 +12,7 @@ dotenv.config({ path: envPath, })
 module.exports = deepFreeze({
   env: process.env.NODE_ENV || 'development',
   server: {
-    host: 'http://localhost:2404',
+    host: process.env.SERVER_HOST || 'http://localhost:2404',
     port: parseInt(process.env.PORT, 10) || 3000,
   },
   client: {
