@@ -27,7 +27,7 @@ exports.authorize = async (req, res, next) => {
   } catch (err) {
     return res.status(401).json({
       code: -1000,
-      message: 'Token không hợp lệ!',
+      message: 'Token không hợp lệ hoặc đẵ hết hạn! Vui lòng thử đăng nhập lại.',
     })
   }
   return next()
