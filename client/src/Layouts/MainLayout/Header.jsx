@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import IconLogin from '@mui/icons-material/Login'
 import { Container } from '@mui/material'
 import { useSelector } from 'react-redux'
@@ -22,6 +22,7 @@ const Logo = () => {
   )
 }
 const Header = () => {
+  const location = useLocation()
   const currentUser = useSelector(selectCurrentUser)
   console.log(currentUser)
   return (
@@ -34,11 +35,13 @@ const Header = () => {
       <Container>
         <div className='flex justify-between'>
           <Logo />
-          <div className='flex'>
+          <div className='flex items-center'>
             {currentUser ? (
               <HeaderUserInfo currentUser={currentUser} />
             ) : (
-              <NavLink to='/login'>
+              <NavLink
+                to={`/login?retRef=${location.pathname + location.search}`}
+              >
                 Sign in
                 <IconLogin style={{ marginLeft: '0.5rem' }} />
               </NavLink>

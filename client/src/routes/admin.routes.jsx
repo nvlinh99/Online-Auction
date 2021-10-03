@@ -1,8 +1,9 @@
+import { ADMIN_PATH } from 'constants/routeConstants'
 import DashboardLayout from 'Layouts/DashboardLayout'
 
 export default [
   {
-    path: '/admin',
+    path: ADMIN_PATH,
     element: <DashboardLayout />,
     children: [],
   },

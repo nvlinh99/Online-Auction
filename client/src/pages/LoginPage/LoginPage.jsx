@@ -15,7 +15,6 @@ import { toast } from 'react-toastify'
 import { HOME_PATH } from 'constants/routeConstants'
 
 export default function LoginView() {
-  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const [loginStatus, setLoginStatus] = useState({
     loading: false,
@@ -43,7 +42,6 @@ export default function LoginView() {
     setFormValues({ ...formValues, [name]: value })
   }
   const handleSubmit = async (e) => {
-    setLoading(true)
     e.preventDefault()
     const { email, password, remember } = formValues
 
@@ -93,7 +91,7 @@ export default function LoginView() {
     const password = localStorage.getItem('PASSWORD')
     setFormValues({ email, password })
   }, [])
-
+  const loading = loginStatus.loading
   return (
     <div className='w-full h-screen flex justify-center items-center'>
       <Box
