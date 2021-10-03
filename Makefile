@@ -1,4 +1,4 @@
-.PHONY: client,api
+.PHONY: client api
 
 client:
 	cd client && npm start

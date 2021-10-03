@@ -72,7 +72,6 @@ const ForgetPassPage = () => {
   const onClickUpdate = useCallback(
     async (e) => {
       e.preventDefault()
-      console.log('rubn')
       const { password, confirmPassword } = formInputData
       setIsSubmiting(true)
       try {

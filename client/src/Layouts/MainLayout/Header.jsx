@@ -4,6 +4,7 @@ import IconLogin from '@mui/icons-material/Login'
 import { Container } from '@mui/material'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from 'store/user/selector'
+import HeaderUserInfo from './HeaderUserInfo'
 
 const Logo = () => {
   return (
@@ -20,43 +21,6 @@ const Logo = () => {
     </Link>
   )
 }
-
-// const Header = () => {
-//   return (
-//     <header
-//       style={{
-//         display: 'flex',
-//         background: '#e0e0e0',
-//       }}
-//     >
-//       <Logo />
-//       <div
-//         style={{
-//           flex: 1,
-//           display: 'flex',
-//           alignItems: 'center',
-//           flexDirection: 'row-reverse',
-//         }}
-//       >
-//         <NavLink
-//           style={{
-//             height: '2rem',
-//             fontWeight: 'bold',
-//             background: '#bdbdbd',
-//             padding: '0 10px',
-//             borderRadius: '7px',
-//             display: 'flex',
-//             alignItems: 'center',
-//           }}
-//           to='/register'
-//         >
-//           <span style={{ marginBottom: '4px' }}>Sign in</span>
-//         </NavLink>
-//       </div>
-//     </header>
-//   )
-// }
-
 const Header = () => {
   const currentUser = useSelector(selectCurrentUser)
   console.log(currentUser)
@@ -67,31 +31,19 @@ const Header = () => {
         background: '#282A35',
       }}
     >
-      <Container
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <div style={{ flex: '1' }} />
-        <Logo />
-
-        <div style={{ flex: '1' }}>
-          <NavLink
-            style={{
-              float: 'right',
-              display: 'inline-block',
-              fontWeight: 'bold',
-              // background: '#bdbdbd',
-              padding: '5px 10px',
-              borderRadius: '7px',
-            }}
-            to='/login'
-          >
-            Sign in
-            <IconLogin style={{ marginLeft: '0.5rem' }} />
-          </NavLink>
+      <Container>
+        <div className='flex justify-between'>
+          <Logo />
+          <div className='flex'>
+            {currentUser ? (
+              <HeaderUserInfo currentUser={currentUser} />
+            ) : (
+              <NavLink to='/login'>
+                Sign in
+                <IconLogin style={{ marginLeft: '0.5rem' }} />
+              </NavLink>
+            )}
+          </div>
         </div>
       </Container>
     </header>
