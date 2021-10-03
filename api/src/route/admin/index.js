@@ -14,6 +14,10 @@ adminRouter
   .route('/category')
   .get(categoryController.getAllCategories)
   .post(categoryController.createCategory)
-adminRouter.get('/category/:id', categoryController.getCategory)
+
+adminRouter
+  .route('/category/:id')
+  .get(categoryController.getCategory)
+  .post(categoryController.updateCategory)
 
 exports.router = adminRouter

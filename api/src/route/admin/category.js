@@ -89,3 +89,38 @@ exports.createCategory = async (req, res) => {
     },
   })
 }
+
+exports.updateCategory = async (req, res) => {
+  genRequestValidation({
+    body: joi.object({
+      title: joi.string().trim().required().invalid('', null),
+      parentId: joi.number().integer().min(0),
+    })
+      .unknown(false), })
+
+  const { id, } = req.params
+  const data = req.body
+
+  const isUpdate = await Category.findOneAndUpdate({ id, }, {
+    $set: {
+      title: data.title,
+      parentId: data.parentId,
+    },
+  }, { returnOriginal: false, })
+
+  if (!isUpdate) {
+    res.json({
+      code: -1000,
+      data: {
+        message: 'Cập nhật thông tin thất bại.',
+      },
+    })
+  }
+
+  res.json({
+    code: 1000,
+    data: {
+      message: 'Cập nhật thông tin thành công.',
+    },
+  })
+}
