@@ -33,3 +33,6 @@ export const resetPassword = async (body) => {
 export const updatePassword = async (body) => {
   return await api.post('/users/update-password', body)
 }
+export const getCurrentUser = async (body) => {
+  return await api.post('/users/get-current-user', body)
+}

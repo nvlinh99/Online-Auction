@@ -1,15 +1,16 @@
 import axios from 'axios'
 import qs from 'qs'
-import { userToken } from '../constants/GlobalConstants';
+import { logout } from 'store/user/action'
+import { userToken } from '../constants/GlobalConstants'
 
 export function authHeader() {
   // return authorization header with jwt token
-  const token = userToken();
-	console.log(token);
+  const token = userToken()
+  console.log(token)
   if (token) {
-    return { Authorization: `Bearer ${token}` };
+    return { Authorization: `Bearer ${token}` }
   }
-  return {};
+  return {}
 }
 
 export const api = axios.create({
@@ -19,19 +20,18 @@ export const api = axios.create({
     'Content-Type': 'application/json',
   },
   paramsSerializer: (params) => {
-    return qs.stringify(params, { arrayFormat: 'repeat' });
+    return qs.stringify(params, { arrayFormat: 'repeat' })
   },
   timeout: 5000,
 })
 
-api.interceptors.request.use(config => {
+api.interceptors.request.use((config) => {
   config.headers = {
     ...config.headers,
     ...authHeader(),
-  };
-  return config;
-});
-
+  }
+  return config
+})
 
 api.interceptors.response.use(
   function (response) {
@@ -43,6 +43,9 @@ api.interceptors.response.use(
   function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
+    if (error.response.status === 401) {
+      logout()
+    }
     return Promise.reject(error)
   }
 )
