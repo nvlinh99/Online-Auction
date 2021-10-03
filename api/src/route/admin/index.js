@@ -11,5 +11,6 @@ userRouter.post('/login', loginController)
 // Auth route: Action require logged in user
 userRouter.use(authHandler.authorize, authHandler.restrictToAdmin())
 userRouter.get('/category', categoryController.getAllCategories)
+userRouter.get('/category/:id', categoryController.getCategory)
 
 exports.router = userRouter

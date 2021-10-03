@@ -26,3 +26,21 @@ exports.getAllCategories = async (req, res, next) => {
       })
     })
 }
+
+exports.getCategory = async (req, res, next) => {
+  const { id, } = req.params
+
+  const category = await Category.findOne({ id, })
+
+  if (!category) {
+    return res.status(404).json({
+      code: -1000,
+      message: 'Không tìm thấy loại này!',
+    })
+  }
+
+  return res.status(200).json({
+    code: 1000,
+    data: category,
+  })
+}
