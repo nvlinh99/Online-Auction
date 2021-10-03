@@ -5,6 +5,7 @@ import { action } from './reducer'
 
 export const getCurrentUserFromAPI = async () => {
   try {
+    dispatch(action.setCurrentUserLoading({ isLoading: true }))
     const { succeeded, data } = await userAPI.getCurrentUser()
     if (!succeeded) {
       return
@@ -13,6 +14,8 @@ export const getCurrentUserFromAPI = async () => {
     dispatch(action.setCurrentUser({ currentUser }))
   } catch (error) {
     console.error(error)
+  } finally {
+    dispatch(action.setCurrentUserLoading({ isLoading: false }))
   }
 }
 export const logout = async () => {

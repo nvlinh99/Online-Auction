@@ -3,7 +3,10 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import IconLogin from '@mui/icons-material/Login'
 import { Container } from '@mui/material'
 import { useSelector } from 'react-redux'
-import { selectCurrentUser } from 'store/user/selector'
+import {
+  selectCurrentUser,
+  selectCurrentUserLoading,
+} from 'store/user/selector'
 import HeaderUserInfo from './HeaderUserInfo'
 
 const Logo = () => {
@@ -24,7 +27,7 @@ const Logo = () => {
 const Header = () => {
   const location = useLocation()
   const currentUser = useSelector(selectCurrentUser)
-  console.log(currentUser)
+  const isCurrentUserLoading = useSelector(selectCurrentUserLoading)
   return (
     <header
       style={{
@@ -38,6 +41,8 @@ const Header = () => {
           <div className='flex items-center'>
             {currentUser ? (
               <HeaderUserInfo currentUser={currentUser} />
+            ) : isCurrentUserLoading ? (
+              <div className='circle-loader'></div>
             ) : (
               <NavLink
                 to={`/login?retRef=${location.pathname + location.search}`}
