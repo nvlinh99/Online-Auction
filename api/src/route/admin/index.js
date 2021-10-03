@@ -1,6 +1,7 @@
 const { Router, } = require('express')
 const loginController = require('./login')
 const categoryController = require('./category')
+const productController = require('./product')
 const authHandler = require('../../middleware/auth')
 
 exports.path = '/admin'
@@ -20,5 +21,9 @@ adminRouter
   .get(categoryController.getCategory)
   .put(categoryController.updateCategory)
   .delete(categoryController.deleteCategory)
+
+adminRouter
+  .route('/product/:id')
+  .delete(productController.deleteProduct)
 
 exports.router = adminRouter
