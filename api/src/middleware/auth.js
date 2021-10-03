@@ -44,3 +44,15 @@ exports.restrictToAdmin = () => {
     next()
   }
 }
+
+exports.restrictToUser = () => {
+  return (req, res, next) => {
+    if (req.user && req.user.role === 0) {
+      return res.status(403).json({
+        code: -1000,
+        message: 'Forbidden! Bạn không có quyền truy cập vào trang User',
+      })
+    }
+    next()
+  }
+}
