@@ -1,8 +1,7 @@
 const joi = require('joi')
-const moment = require('moment')
-const configuration = require('../../configuration')
 const genRequestValidation = require('../../middleware/gen-request-validation')
 const Category = require('../../model/category')
+const Product = require('../../model/product')
 
 const getPagination = (page, limit) => {
   const size = limit ? +limit : 10
@@ -49,13 +48,12 @@ exports.getCategory = async (req, res, next) => {
   })
 }
 
-exports.requestValidationHandler = genRequestValidation({
-  body: joi.object({
-    title: joi.string().trim().required().invalid('', null),
-  }).unknown(false),
-})
-
 exports.createCategory = async (req, res) => {
+  genRequestValidation({
+    body: joi.object({
+      title: joi.string().trim().required().invalid('', null),
+    }).unknown(false),
+  })
   const data = req.body
 
   const existsCategory = await Category.findOne({ title: data.title, })
@@ -122,5 +120,30 @@ exports.updateCategory = async (req, res) => {
     data: {
       message: 'Cập nhật thông tin thành công.',
     },
+  })
+}
+
+exports.deleteCategory = async (req, res) => {
+  const { id, } = req.params
+  const product = await Product.find({ categoryId: id, })
+  if (!product) {
+    res.json({
+      code: -1000,
+      data: {
+        message: 'Không thể xoá danh mục này!',
+      },
+    })
+  }
+
+  const isDel = await Category.deleteOne({ id, })
+  if (!isDel) {
+    res.json({
+      code: -1000,
+      message: 'Xoá danh mục thất bại!',
+    })
+  }
+  res.json({
+    code: 1000,
+    message: 'Xoá danh mục thành công',
   })
 }

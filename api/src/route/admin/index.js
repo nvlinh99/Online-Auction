@@ -18,6 +18,7 @@ adminRouter
 adminRouter
   .route('/category/:id')
   .get(categoryController.getCategory)
-  .post(categoryController.updateCategory)
+  .put(categoryController.updateCategory)
+  .delete(categoryController.deleteCategory)
 
 exports.router = adminRouter
