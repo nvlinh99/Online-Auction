@@ -2,6 +2,7 @@ const { Router, } = require('express')
 const loginController = require('./login')
 const categoryController = require('./category')
 const productController = require('./product')
+const userController = require('./user')
 const authHandler = require('../../middleware/auth')
 
 exports.path = '/admin'
@@ -25,5 +26,16 @@ adminRouter
 adminRouter
   .route('/product/:id')
   .delete(productController.deleteProduct)
+
+adminRouter
+  .route('/user')
+  .get(userController.getAllUsers)
+  .post(userController.createUser)
+
+adminRouter
+  .route('/user/:id')
+  .get(userController.getUser)
+  .put(userController.updateUser)
+  .delete(userController.deleteUser)
 
 exports.router = adminRouter

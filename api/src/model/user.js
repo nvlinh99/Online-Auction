@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const mongoosePaginate = require('mongoose-paginate-v2')
 const nanoid = require('../util/nanoid')
 
 const userSchema = new mongoose.Schema({
@@ -20,5 +21,7 @@ const userSchema = new mongoose.Schema({
 }, {
   timestamps: true,
 })
+
+userSchema.plugin(mongoosePaginate)
 
 module.exports = mongoose.model('User', userSchema)
