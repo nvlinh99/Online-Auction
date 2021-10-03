@@ -5,12 +5,15 @@ const authHandler = require('../../middleware/auth')
 
 exports.path = '/admin'
 
-const userRouter = Router()
-userRouter.post('/login', loginController)
+const adminRouter = Router()
+adminRouter.post('/login', loginController)
 
 // Auth route: Action require logged in user
-userRouter.use(authHandler.authorize, authHandler.restrictToAdmin())
-userRouter.get('/category', categoryController.getAllCategories)
-userRouter.get('/category/:id', categoryController.getCategory)
+adminRouter.use(authHandler.authorize, authHandler.restrictToAdmin())
+adminRouter
+  .route('/category')
+  .get(categoryController.getAllCategories)
+  .post(categoryController.createCategory)
+adminRouter.get('/category/:id', categoryController.getCategory)
 
-exports.router = userRouter
+exports.router = adminRouter

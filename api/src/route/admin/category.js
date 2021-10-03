@@ -1,3 +1,7 @@
+const joi = require('joi')
+const moment = require('moment')
+const configuration = require('../../configuration')
+const genRequestValidation = require('../../middleware/gen-request-validation')
 const Category = require('../../model/category')
 
 const getPagination = (page, limit) => {
@@ -42,5 +46,46 @@ exports.getCategory = async (req, res, next) => {
   return res.status(200).json({
     code: 1000,
     data: category,
+  })
+}
+
+exports.requestValidationHandler = genRequestValidation({
+  body: joi.object({
+    title: joi.string().trim().required().invalid('', null),
+  }).unknown(false),
+})
+
+exports.createCategory = async (req, res) => {
+  const data = req.body
+
+  const existsCategory = await Category.findOne({ title: data.title, })
+  if (existsCategory) {
+    return res.json({
+      code: -1000,
+      data: {
+        message: 'Tên danh mục đã tồn tại!',
+      },
+    })
+  }
+
+  let categoryData = null
+  categoryData = await Category.create(data)
+  if (!categoryData) {
+    return res.json({
+      code: -1000,
+      data: {
+        message: 'Tạo danh mục thất bại!!',
+      },
+    })
+  }
+
+  res.status(201).json({
+    code: 1000,
+    data: {
+      message: 'Tạo danh mục thành công!',
+      category: {
+        title: categoryData.title,
+      },
+    },
   })
 }
