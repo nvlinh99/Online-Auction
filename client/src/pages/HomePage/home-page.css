@@ -1,3 +1,29 @@
-.category-link:hover {
-  background-color: #cccccc;
+.cate-list,
+.MuiCircularProgress-root {
+  color: rgb(40, 42, 53) !important;
+}
+
+.spinner {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.Mui-selected,
+.MuiListItemButton-root:hover {
+  border-left: 6px solid rgb(40, 42, 53) !important;
+}
+
+.expand-icon {
+  padding: 12px;
+  padding-right: 1.7rem;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  outline: none;
+}
+
+.expand-icon:focus {
+  outline: none;
 }

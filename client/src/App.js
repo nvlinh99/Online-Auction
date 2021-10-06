@@ -21,7 +21,7 @@ const App = () => {
       getCurrentUserFromAPI()
     }
   }, [token])
-  return <div id='layoutContainer'>{routes}</div>
+  return <div style={{ height: '100%' }}>{routes}</div>
 }
 
 export default App

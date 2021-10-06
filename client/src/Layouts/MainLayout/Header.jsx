@@ -16,6 +16,7 @@ const Logo = () => {
       style={{
         display: 'block',
         padding: '0.8rem',
+        paddingLeft: '2rem',
         fontWeight: 'bold',
         fontSize: '1.5rem',
       }}
@@ -45,6 +46,7 @@ const Header = () => {
               <div className='circle-loader'></div>
             ) : (
               <NavLink
+                style={{ marginRight: '2rem' }}
                 to={`/login?retRef=${location.pathname + location.search}`}
               >
                 Sign in
