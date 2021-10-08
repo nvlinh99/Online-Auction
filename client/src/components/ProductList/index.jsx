@@ -5,7 +5,7 @@ import ArrowR from '@mui/icons-material/ArrowForwardIosSharp'
 import ArrowL from '@mui/icons-material/ArrowBackIosSharp'
 import IconFavorit from '@mui/icons-material/FavoriteBorder'
 import { Avatar } from '@mui/material'
-import { formatProductList, formatProductItem } from './util'
+import { formatProductList, formatProductItem } from 'utils/product-util'
 import ImgList from '../ImgList'
 import './index.css'
 const imgSrc =

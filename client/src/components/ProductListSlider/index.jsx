@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Slider from 'react-slick'
-import { formatProductList, formatProductItem } from './util'
+import { formatProductList, formatProductItem } from 'utils/product-util'
 import './index.css'
 import { ProductItem } from 'components/ProductList'
 

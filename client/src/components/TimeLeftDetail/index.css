@@ -3,5 +3,13 @@
   color: #000;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 25px;
   justify-content: space-around;
-  padding: 20px 0;
+  padding: 15px 0;
+}
+
+.product-detail-time-left .time-block div strong {
+  font-size: 22px;
+}
+
+.product-detail-time-left .time-block div span {
+  font-size: 13px;
 }

@@ -23,42 +23,54 @@ const TimeLeft = ({ initHoursLeft, initMinutesLeft, initSecondsLeft }) => {
   return (
     <div className='product-detail-time-left text-center flex'>
       <div className='time-block'>
-        <div>{monthsLeft > 0 ? monthsLeft : 0}</div>
         <div>
-          <strong>THÁNG </strong>
+          <strong>{monthsLeft > 0 ? monthsLeft : 0}</strong>
+        </div>
+        <div>
+          <span>THÁNG</span>
         </div>
       </div>
       <div className='time-block'>
-        <div>{weeksLeft > 0 ? weeksLeft : 0}</div>
         <div>
-          <strong>TUẦN </strong>
+          <strong>{weeksLeft > 0 ? weeksLeft : 0}</strong>
+        </div>
+        <div>
+          <span>TUẦN</span>
         </div>
       </div>
       <div className='time-block'>
-        <div>{daysLeft > 0 ? daysLeft : 0}</div>
         <div>
-          <strong>NGÀY </strong>
+          <strong>{daysLeft > 0 ? daysLeft : 0}</strong>
         </div>
-      </div>
-
-      <div className='time-block'>
-        <div>{hoursLeft > 0 ? hoursLeft : 0}</div>
         <div>
-          <strong>GIỜ </strong>
-        </div>
-      </div>
-
-      <div className='time-block'>
-        <div>{minutesLeft > 0 ? minutesLeft : 0}</div>
-        <div>
-          <strong>PHÚT </strong>
+          <span>NGÀY</span>
         </div>
       </div>
 
       <div className='time-block'>
-        <div>{secondsLeft > 0 ? secondsLeft : 0}</div>
         <div>
-          <strong>GIÂY</strong>
+          <strong>{hoursLeft > 0 ? hoursLeft : 0}</strong>
+        </div>
+        <div>
+          <span>GIỜ</span>
+        </div>
+      </div>
+
+      <div className='time-block'>
+        <div>
+          <strong>{minutesLeft > 0 ? minutesLeft : 0}</strong>
+        </div>
+        <div>
+          <span>PHÚT</span>
+        </div>
+      </div>
+
+      <div className='time-block'>
+        <div>
+          <strong>{secondsLeft > 0 ? secondsLeft : 0}</strong>
+        </div>
+        <div>
+          <span>GIÂY</span>
         </div>
       </div>
     </div>

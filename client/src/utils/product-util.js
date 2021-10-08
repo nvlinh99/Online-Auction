@@ -27,32 +27,60 @@ export function calcTimeLeft(t1, t2) {
 
 export function formatProductItem(product) {
   const result = {}
+
+  // basic info
   result.id = _.get(product, 'id', null)
+  result.title = _.get(product, 'title')
   result.avatarUrl = _.get(product, 'avatarUrl', null)
   result.imageUrls = _.get(product, 'imageUrls', null)
-  result.title = _.get(product, 'title')
-  result.startPrice = _.get(product, 'startPrice', null)
-  result.currentPrice = _.get(product, 'currentPrice', null)
-  result.purchasePrice = _.get(product, 'purchasePrice', null)
-  result.publishedDate = _.get(product, 'publishedDate', null)
-  result.expiredDate = _.get(product, 'expiredDate', null)
   result.totalBid = _.get(product, 'totalBid', null)
+
+  // cate info
   result.categoryId = _.get(product, 'categoryInfo.id', null)
   result.categoryTitle = _.get(product, 'categoryInfo.title', null)
+
+  // prices info
+  result.startPrice = _.get(product, 'startPrice', null)
+  if (result.startPrice)
+    result.formatedStartPrice = numeral(result.startPrice).format(0, 0)
+
+  result.currentPrice = _.get(product, 'currentPrice', null)
+  if (result.currentPrice)
+    result.formatedCurrentPrice = numeral(result.currentPrice).format(0, 0)
+
+  result.purchasePrice = _.get(product, 'purchasePrice', null)
+  if (result.purchasePrice)
+    result.formatedPurchasePrice = numeral(result.purchasePrice).format(0, 0)
+
+  result.stepPrice = _.get(product, 'stepPrice', null)
+  if (result.stepPrice)
+    result.formatedStepPrice = numeral(result.stepPrice).format(0, 0)
+
+  // bider info
+  result.biderId = _.get(product, 'biderInfo.id', null)
   result.biderFirstname = _.get(product, 'biderInfo.firstName', null)
   result.biderLastname = _.get(product, 'biderInfo.lastName', null)
   result.biderName =
     _.trim(`${result.biderFirstname || ''} ${result.biderLastname || ''}`) ||
     null
+  result.biderRateTotal = _.get(product, 'biderInfo.rateTotal', null)
+  result.biderRateIncrease = _.get(product, 'biderInfo.rateIncrease', null)
+  result.biderRateDecrease = _.get(product, 'biderInfo.rateDecrease', null)
 
-  if (result.startPrice)
-    result.formatedStartPrice = numeral(result.startPrice).format(0, 0)
+  // seller info
+  result.sellerId = _.get(product, 'sellerInfo.id', null)
+  result.sellerFirstname = _.get(product, 'sellerInfo.firstName', null)
+  result.sellerLastname = _.get(product, 'sellerInfo.lastName', null)
+  result.sellerName =
+    _.trim(`${result.sellerFirstname || ''} ${result.sellerLastname || ''}`) ||
+    null
+  result.sellerRateTotal = _.get(product, 'sellerInfo.rateTotal', null)
+  result.sellerRateIncrease = _.get(product, 'sellerInfo.rateIncrease', null)
+  result.sellerRateDecrease = _.get(product, 'sellerInfo.rateDecrease', null)
 
-  if (result.currentPrice)
-    result.formatedCurrentPrice = numeral(result.currentPrice).format(0, 0)
-
-  if (result.purchasePrice)
-    result.formatedPurchasePrice = numeral(result.purchasePrice).format(0, 0)
+  // datetime info
+  result.publishedDate = _.get(product, 'publishedDate', null)
+  result.expiredDate = _.get(product, 'expiredDate', null)
 
   if (result.publishedDate)
     result.formatedPublishedDate = moment(result.publishedDate).format(
