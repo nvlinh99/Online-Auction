@@ -81,7 +81,11 @@ function LeftArrow() {
     <button
       type='button'
       disabled={isFirstItemVisible}
-      onClick={() => scrollPrev()}
+      onClick={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        scrollPrev()
+      }}
       className='product-item-imgli-btn product-item-imgli-lbtn'
     >
       <ArrowL />
@@ -97,7 +101,11 @@ function RightArrow() {
       className='product-item-imgli-btn product-item-imgli-rbtn'
       type='button'
       disabled={isLastItemVisible}
-      onClick={() => scrollNext()}
+      onClick={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        scrollNext()
+      }}
     >
       <ArrowR />
     </button>

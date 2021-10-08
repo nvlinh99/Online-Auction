@@ -5,8 +5,14 @@ import numeral from 'numeral'
 export function calcTimeLeft(t1, t2) {
   t1 = moment(t1)
   t2 = moment(t2)
-  const duration = moment.duration(t1.diff(t2))
-  const hours = duration.hours()
+  const max = Math.max(t2.toDate(), t1.toDate())
+  const min = Math.min(t2.toDate(), t1.toDate())
+  moment(new Date(max)).diff(moment(new Date(min)))
+  const duration = moment.duration(
+    moment(new Date(max)).diff(moment(new Date(min)))
+  )
+
+  const hours = Math.floor(duration.asHours())
   const minutes = duration.minutes()
   const seconds = duration.seconds()
 
@@ -16,7 +22,6 @@ export function calcTimeLeft(t1, t2) {
   } else if (minutes > 0) {
     parseTime = `${minutes} phút ${seconds} giây`
   } else parseTime = `${seconds} giây`
-
   return [hours, minutes, seconds, parseTime]
 }
 
@@ -24,7 +29,9 @@ export function formatProductItem(product) {
   const result = {}
   result.id = _.get(product, 'id', null)
   result.avatarUrl = _.get(product, 'avatarUrl', null)
+  result.imageUrls = _.get(product, 'imageUrls', null)
   result.title = _.get(product, 'title')
+  result.startPrice = _.get(product, 'startPrice', null)
   result.currentPrice = _.get(product, 'currentPrice', null)
   result.purchasePrice = _.get(product, 'purchasePrice', null)
   result.publishedDate = _.get(product, 'publishedDate', null)
@@ -35,8 +42,12 @@ export function formatProductItem(product) {
   result.biderFirstname = _.get(product, 'biderInfo.firstName', null)
   result.biderLastname = _.get(product, 'biderInfo.lastName', null)
   result.biderName =
-    (result.biderFirstname || '') + (result.biderLastname || '')
-  result.biderName = result.biderName || null
+    _.trim(`${result.biderFirstname || ''} ${result.biderLastname || ''}`) ||
+    null
+
+  if (result.startPrice)
+    result.formatedStartPrice = numeral(result.startPrice).format(0, 0)
+
   if (result.currentPrice)
     result.formatedCurrentPrice = numeral(result.currentPrice).format(0, 0)
 
@@ -45,12 +56,12 @@ export function formatProductItem(product) {
 
   if (result.publishedDate)
     result.formatedPublishedDate = moment(result.publishedDate).format(
-      'hh:mm DD/MM/YYYY'
+      'hh:mm - DD/MM/YYYY'
     )
 
   if (result.expiredDate) {
     const expiredDateMoment = moment(result.expiredDate)
-    result.formatedExpiredDate = expiredDateMoment.format('hh:mm DD/MM/YYYY')
+    result.formatedExpiredDate = expiredDateMoment.format('hh:mm - DD/MM/YYYY')
     const [hours, minutes, seconds, parseTime] = calcTimeLeft(
       expiredDateMoment,
       new Date()

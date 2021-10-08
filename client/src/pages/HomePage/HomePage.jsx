@@ -18,8 +18,10 @@ import StarBorder from '@mui/icons-material/StarBorder'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import ProductList from 'components/ProductList'
+import ProductListSlider from 'components/ProductListSlider'
 import { productList as dummyProductList } from './dummy-data'
 import './home-page.css'
+import { default as BidLine } from 'assets/svgs/bid-line.svg'
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -109,27 +111,22 @@ const Spinner = ({ style }) => {
 }
 
 const HomePage = () => {
-  const classes = useStyles()
-  const [isLoadCategories, setIsLoadCategories] = useState(true)
-  const [isLoadProducts, setIsLoadProducts] = useState(true)
-  const [productList, setProductList] = useState([])
-  const allCategories = useSelector(categorySelector.selectCategories)
-  const rootElement = document.getElementById('root')
-
   useEffect(() => {
-    getCategoriesFromAPI().finally(() => {
-      setIsLoadCategories(false)
-    })
-    setTimeout(() => {
-      setIsLoadProducts(false)
-      setProductList(dummyProductList)
-    }, 500)
+    document
+      .querySelector('#bidLineRed svg path:nth-child(2)')
+      .setAttribute('fill', '#dd3e29')
+    document
+      .querySelector('#bidLineYellow svg path:nth-child(2)')
+      .setAttribute('fill', '#e5cf02')
+    document
+      .querySelector('#bidLineBlue svg path:nth-child(2)')
+      .setAttribute('fill', '#3a59f5')
   }, [])
+
   return (
     <div
       style={{
         flex: '1',
-        backgroundColor: '#eeeeee',
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -137,52 +134,36 @@ const HomePage = () => {
       <Container
         style={{
           flex: '1',
-          display: 'flex',
+          paddingTop: '5rem',
         }}
       >
-        <div
-          className='cate-list'
-          style={{
-            flex: '1',
-            display: 'flex',
-            marginTop: '2rem',
-          }}
-        >
-          <div
-            style={{
-              width: '100%',
-              maxWidth: '250px',
-              minWidth: '180px',
-              backgroundColor: '#fff',
-            }}
-          >
-            <Typography
-              variant='h6'
-              style={{
-                padding: '1.5rem 2rem',
-                lineHeight: '1rem',
-                fontWeight: 'bold',
-              }}
-            >
-              Danh mục sản phẩm
-            </Typography>
-            {isLoadCategories && <Spinner />}
-            {allCategories.map((item) => (
-              <DropDown key={item.id} category={item} />
-            ))}
+        <div className='cnt-top-product mb-20'>
+          <h3 className='text-center'>sản phẩm gần kết thúc</h3>
+          <div className='flex justify-center  mb-2' id='bidLineRed'>
+            <BidLine />
           </div>
-          <div
-            style={{
-              flex: '1',
-              padding: '0 32px 25px 25px',
-              backgroundColor: '#eee',
-            }}
-          >
-            {isLoadProducts ? (
-              <Spinner style={{ width: '80px', height: '80px' }} />
-            ) : (
-              <ProductList productList={productList} />
-            )}
+          <div id='topExpiredProducts'>
+            <ProductListSlider productList={dummyProductList} />
+          </div>
+        </div>
+
+        <div className='cnt-top-product mb-20'>
+          <h3 className='text-center'>sản phẩm có nhiều lượt ra giá</h3>
+          <div className='flex justify-center mb-2' id='bidLineYellow'>
+            <BidLine />
+          </div>
+          <div id='topBidedProducts'>
+            <ProductListSlider productList={dummyProductList} />
+          </div>
+        </div>
+
+        <div className='cnt-top-product mb-20'>
+          <h3 className='text-center'>sản phẩm có giá cao nhất</h3>
+          <div className='flex justify-center  mb-2' id='bidLineBlue'>
+            <BidLine />
+          </div>
+          <div id='topPriceProducts'>
+            <ProductListSlider productList={dummyProductList} />
           </div>
         </div>
       </Container>

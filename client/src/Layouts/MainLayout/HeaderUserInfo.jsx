@@ -34,7 +34,7 @@ const HeaderUserInfo = ({ currentUser }) => {
   }
   return (
     <ClickAwayListener onClickAway={handleClose}>
-      <div style={{ marginRight: '2rem' }} className='flex items-center'>
+      <div className='flex items-center'>
         <div
           className='flex items-center hover:cursor-pointer'
           onClick={handleClick}
