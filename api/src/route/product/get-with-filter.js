@@ -27,13 +27,11 @@ const getProductsHandler = async (req, res) => {
   if (body.text) filter.textSearch = body.text
   if (body.categoryId) filter.categoryId = body.categoryId
 
-  const products = await ProductService.getProductsWithPaging(filter, body.sort)
+  const data = await ProductService.getProductsWithPaging(filter, body.sort)
 
   return res.json({
     code: 1000,
-    data: {
-      products,
-    },
+    data,
   })
 }
 

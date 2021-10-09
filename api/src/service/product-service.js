@@ -45,7 +45,7 @@ exports.getTopProducts = async function (limit = TOP_COUNT) {
   return [topExpireProducts, topBidedProducts, topPriceProducts,]
 }
 
-exports.getProductsWithPaging = async function ({ categoryId, textSearch, page = 1, }, sort = {}) {
+exports.getProductsWithPaging = async function ({ categoryId, textSearch, page = 1 }, sort = {}) {
   const [skip, limit,] = pageToSkipAndLimit(page)
   const filter = {}
   const args = []
@@ -68,13 +68,20 @@ exports.getProductsWithPaging = async function ({ categoryId, textSearch, page =
     .limit(limit)
     .sort(sort)
     .lean()
+  const totalItems = await ProductModel.countDocuments(filter, ...args)
+const totalPages = Math.ceil(totalItems / limit)
 
   const newTime = moment().subtract(N_MIN_MARK_NEW, 'minutes').toDate()
   _.forEach(products, (product) => {
     delete product.score
     if (product.createdAt > newTime) product.isNew = true
   })
-  return products
+  return {
+    totalItems,
+    items: products,
+    totalPages,
+    currentPage: page,
+  }
 }
 
 function pageToSkipAndLimit(page) {
