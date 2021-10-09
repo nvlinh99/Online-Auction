@@ -1,0 +1,56 @@
+{
+  "name": "online-auction-api",
+  "version": "1.0.0",
+  "engines": {
+    "node": "16.x"
+  },
+  "description": "online auction api",
+  "main": "src/index.js",
+  "dependencies": {
+    "async": "^3.2.1",
+    "axios": "^0.21.4",
+    "bcrypt": "^5.0.1",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "deepfreeze": "^2.0.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "express-fileupload": "^1.2.1",
+    "filehound": "^1.17.4",
+    "helmet": "^4.6.0",
+    "joi": "^17.4.2",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "lru-cache": "^6.0.0",
+    "md5": "^2.3.0",
+    "mocha": "^9.1.2",
+    "moment": "^2.29.1",
+    "mongoose": "^6.0.7",
+    "mongoose-paginate-v2": "^1.4.2",
+    "nanoid": "^3.1.25",
+    "nanoid-dictionary": "^4.3.0",
+    "nodemailer": "^6.6.3",
+    "shortid": "^2.2.16"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-standard": "^5.0.0",
+    "supertest": "^6.1.6"
+  },
+  "scripts": {
+    "dev": "nodemon src",
+    "start": "node src/index.js",
+    "test": "mocha src/test/routes.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

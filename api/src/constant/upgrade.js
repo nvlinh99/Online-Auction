@@ -1,0 +1,5 @@
+exports.UPGRADE_STATUS = {
+  PENDING: 0,
+  APPROVE: 1,
+  REJECT: 2,
+}
