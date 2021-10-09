@@ -2,7 +2,9 @@ import { api } from './api'
 
 export const upload = async (body) => {
   try {
-    const { succeeded, data } = await api.post('/upload/img', body)
+    const { succeeded, data } = await api.post('/upload/img', body, {
+      timeout: 10000,
+    })
     return [succeeded, data]
   } catch (err) {
     return [false]
