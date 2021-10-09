@@ -53,7 +53,7 @@ productRouter.post('/img',  require('../../middleware/auth').authorize, async (r
   for (let i = 0; ;i += 1) {
     const img = imgList[i]
     if (!img) break
-    tasks.push(uploadService.upload(imgList[0]))
+    tasks.push(uploadService.upload(imgList[i]))
   }
   const uploadResponse = await Promise.all(tasks)
   const uploaded = _.map(uploadResponse, 'url')
