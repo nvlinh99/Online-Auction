@@ -26,7 +26,6 @@ const BidAction = ({ initBidPrice, stepPrice }) => {
   const onPriceChange = useCallback(
     (e) => {
       const [code, value] = checkValidValue(e.target.value)
-      console.log(code, value, e.target.value)
       if (code === 1) return
       if (code === 2) setIsSmallerPrice(true)
       if (code === 3) setIsSmallerPrice(false)

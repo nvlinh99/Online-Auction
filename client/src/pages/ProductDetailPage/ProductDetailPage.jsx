@@ -82,7 +82,6 @@ const ProductDetailPage = () => {
         loading: 'lazy',
       }
     })
-    console.log(avatarUrl)
     return (
       <>
         <Container className='mt-14'>
