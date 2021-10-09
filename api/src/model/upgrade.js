@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const mongoosePaginate = require('mongoose-paginate-v2')
 const nanoid = require('../util/nanoid')
 
 const upgradeSchema = new mongoose.Schema({
@@ -9,5 +10,7 @@ const upgradeSchema = new mongoose.Schema({
 }, {
   timestamps: true,
 })
+
+upgradeSchema.plugin(mongoosePaginate)
 
 module.exports = mongoose.model('Upgrade', upgradeSchema)

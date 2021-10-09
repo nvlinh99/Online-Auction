@@ -6,8 +6,8 @@ const shortid = require('shortid')
 exports.path = '/upload'
 
 const productRouter = Router()
-// productRouter.post('/img',  require('../../middleware/auth'), async (req, res) => {
-productRouter.post('/img', async (req, res) => {
+productRouter.post('/img',  require('../../middleware/auth').authorize, async (req, res) => {
+// productRouter.post('/img', async (req, res) => {
   const imgList = _.get(req, 'files', null)
   if (_.isEmpty(imgList)) {
     return res.json({

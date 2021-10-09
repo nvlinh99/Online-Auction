@@ -6,7 +6,7 @@ const forgetPasswordHandler = require('./forget-password')
 const resetPasswordHandler = require('./reset-password')
 const updatePasswordHandler = require('./update-password')
 const updateHandler = require('./update-info')
-const authHandler = require('./auth')
+const authHandler = require('../../middleware/auth')
 const getCurrentUserHandler = require('./get-current-user')
 
 exports.path = '/users'
@@ -19,7 +19,7 @@ userRouter.post('/forget-password', forgetPasswordHandler)
 userRouter.post('/reset-password', resetPasswordHandler)
 
 // Auth route: Action require logged in user
-userRouter.use(authHandler.authorize)
+userRouter.use(authHandler.authorize, authHandler.restrictToUser())
 userRouter.post('/update-info', updateHandler)
 userRouter.post('/update-password', updatePasswordHandler)
 userRouter.post('/get-current-user', getCurrentUserHandler)

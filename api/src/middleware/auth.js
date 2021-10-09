@@ -1,7 +1,11 @@
+const path = require('path')
 const jwt = require('jsonwebtoken')
 const { promisify, } = require('util')
 
-module.exports = async (req, res, next) => {
+const envPath = path.join(__dirname, '../../.env')
+require('dotenv').config({ path: envPath, })
+
+exports.authorize = async (req, res, next) => {
   // Get token
   let token
   if (
@@ -23,8 +27,32 @@ module.exports = async (req, res, next) => {
   } catch (err) {
     return res.status(401).json({
       code: -1000,
-      message: 'Token không hợp lệ!',
+      message: 'Token không hợp lệ hoặc đẵ hết hạn! Vui lòng thử đăng nhập lại.',
     })
   }
   return next()
+}
+
+exports.restrictToAdmin = () => {
+  return (req, res, next) => {
+    if (req.user && req.user.role !== 0) {
+      return res.status(403).json({
+        code: -1000,
+        message: 'Forbidden! Bạn không có quyền truy cập.',
+      })
+    }
+    next()
+  }
+}
+
+exports.restrictToUser = () => {
+  return (req, res, next) => {
+    if (req.user && req.user.role === 0) {
+      return res.status(403).json({
+        code: -1000,
+        message: 'Forbidden! Bạn không có quyền truy cập vào trang User',
+      })
+    }
+    next()
+  }
 }
