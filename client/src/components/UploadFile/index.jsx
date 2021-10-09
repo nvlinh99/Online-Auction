@@ -14,7 +14,6 @@ const UploadFile = () => {
       formData.append(`${i}`, selectedFiles[i])
     }
     const [succeeded, data] = await uploadApi.upload(formData)
-    succeeded && console.log(data)
   }
 
   const renderImgList = () => {

@@ -2,13 +2,13 @@ import { productAPI } from 'services'
 import { dispatch } from 'store/store'
 import { action } from './reducer'
 
-export const getCategoriesFromAPI = async (body) => {
+export const getProductsFromAPI = async (body) => {
   try {
     const { succeeded, data } = await productAPI.getProducts(body)
     if (!succeeded) {
       return
     }
-    dispatch(action.setProducts(data))
+    dispatch(action.setProducts({ products: data }))
   } catch (error) {
     console.error(error)
   }
