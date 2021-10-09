@@ -5,6 +5,8 @@ import { StylesProvider } from '@mui/styles'
 import React from 'react'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import 'react-image-gallery/styles/css/image-gallery.css'
+
 import { ThemeProvider } from '@mui/material/styles'
 import store from 'store/store'
 import App from './App'

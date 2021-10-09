@@ -11,6 +11,7 @@ import IconGavel from '@mui/icons-material/Gavel'
 import IconFavorit from '@mui/icons-material/FavoriteBorder'
 import SellerBiderInfo from './SellerBiderInfo'
 import ImgListModal from './ImgListModal'
+import ImageGallery from 'react-image-gallery'
 
 const ProductDetailPage = () => {
   const params = useParams()
@@ -30,6 +31,7 @@ const ProductDetailPage = () => {
     },
     [params.productId]
   )
+
   if (isNotFound)
     return (
       <Container className='mt-14'>
@@ -73,28 +75,29 @@ const ProductDetailPage = () => {
       sellerRateDecrease,
     } = formatProductItem(product)
     const formatedInitPrice = numeral(currentPrice + stepPrice).format('0,0')
+    const imageSlides = [avatarUrl, ...imageUrls].map((url) => {
+      return {
+        original: url,
+        thumbnail: url,
+        loading: 'lazy',
+      }
+    })
+    console.log(avatarUrl)
     return (
       <>
         <Container className='mt-14'>
           <div className='product-detail-head-info'>
             <p className='product-detail-head-title'>{title}</p>
           </div>
+
           <div className='product-detail-key-info flex'>
             <div className='product-detail-key-info-left'>
-              <div onClick={openModal} className='product-avatar-contaier'>
-                <img src={avatarUrl} />
-              </div>
-              <div className='product-img-list-contaier flex '>
-                {imageUrls?.map((imgUrl, idx) => (
-                  <div
-                    key={imgUrl}
-                    onClick={openModal}
-                    className='product-img-container'
-                  >
-                    <img src={imgUrl} />
-                  </div>
-                ))}
-              </div>
+              <ImageGallery
+                useBrowserFullscreen={false}
+                showPlayButton={false}
+                showIndex={false}
+                items={imageSlides}
+              />
             </div>
             <div className='product-detail-key-info-right'>
               <div className='product-prices flex items-center'>

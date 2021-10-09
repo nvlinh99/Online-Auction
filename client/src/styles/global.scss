@@ -19,3 +19,15 @@
   height: 32px;
   animation: spin 2s linear infinite;
 }
+.image-gallery-thumbnail-image {
+  aspect-ratio: 1/1;
+  object-fit: cover;
+}
+.image-gallery-slide .image-gallery-image {
+  aspect-ratio: 1/1;
+  object-fit: cover;
+}
+.fullscreen .image-gallery-image {
+  aspect-ratio: initial;
+  object-fit: contain !important;
+}
