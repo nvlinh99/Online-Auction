@@ -68,7 +68,6 @@ const Header = () => {
       } else {
         searchParams.delete('categoryId')
       }
-      console.log(searchParams.toString(), searchInputData.text)
       navigate({
         pathname: '/products',
         search: searchParams.toString(),

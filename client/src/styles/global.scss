@@ -31,3 +31,12 @@
   aspect-ratio: initial;
   object-fit: contain !important;
 }
+
+.product-countdown {
+  margin-top: 5px;
+  text-shadow: 0px 5px 3px rgb(245 49 127 / 20%);
+  background: -webkit-linear-gradient(#ff7c6e, #f5317f);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
