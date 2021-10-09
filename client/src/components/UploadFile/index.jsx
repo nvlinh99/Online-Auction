@@ -40,15 +40,25 @@ const UploadFile = () => {
         <input
           type='file'
           multiple
+          style={{ width: '110px' }}
+          className='mr-10'
           accept='image/png, image/jpeg'
           onChange={onFilesChange}
         />
         <button
           style={{ background: 'red', padding: '20px', color: 'white' }}
           type='button'
+          className='mr-10'
           onClick={onFilesUpload}
         >
           Tải hình
+        </button>
+        <button
+          style={{ background: 'red', padding: '20px', color: 'white' }}
+          type='button'
+          onClick={() => setSelectedFiles([])}
+        >
+          Clear
         </button>
       </div>
       <div className='flex flex-wrap'>{renderImgList()}</div>
