@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import _ from 'lodash'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import IconLogin from '@mui/icons-material/Login'
 import { Container, Select, MenuItem, cardHeaderClasses } from '@mui/material'
 import { useSelector } from 'react-redux'
@@ -33,18 +33,53 @@ const Logo = () => {
 }
 const Header = () => {
   const location = useLocation()
+  const navigate = useNavigate()
   const currentUser = useSelector(selectCurrentUser)
   const isCurrentUserLoading = useSelector(selectCurrentUserLoading)
-  const [selectedCateId, setSelectedCateId] = useState(-1)
-
+  const [searchInputData, setSearchInputData] = useState({
+    categoryId: '-1',
+    text: '',
+  })
   const allCategories = useSelector(categorySelector.selectCategories)
+
   const selectedCateIdOnChange = useCallback((e) => {
-    setSelectedCateId(+e?.target?.value)
+    setSearchInputData((searchInputData) => ({
+      ...searchInputData,
+      categoryId: +e?.target?.value,
+    }))
   }, [])
+  const onChangeSearchText = useCallback((e) => {
+    setSearchInputData((searchInputData) => ({
+      ...searchInputData,
+      text: e?.target?.value,
+    }))
+  }, [])
+  const onClickSearch = useCallback(
+    (e) => {
+      const searchParams = new URLSearchParams(location.search)
+      if (searchInputData.text) {
+        searchParams.set('text', searchInputData.text)
+      } else {
+        searchParams.delete('text')
+      }
+      console.log(searchInputData.categoryId !== '-1')
+      if (searchInputData.categoryId !== '-1') {
+        searchParams.set('categoryId', searchInputData.categoryId)
+      } else {
+        searchParams.delete('categoryId')
+      }
+      console.log(searchParams.toString(), searchInputData.text)
+      navigate({
+        pathname: '/products',
+        search: searchParams.toString(),
+      })
+    },
+    [location.search, searchInputData]
+  )
   const renderSelectedCate = useCallback(
     (selectedCateId) => {
       const df = <em>Danh mục</em>
-      if (+selectedCateId > 0) {
+      if (selectedCateId !== '-1') {
         for (let pCate of allCategories) {
           if (pCate?.id === selectedCateId) return pCate.title || df
           if (pCate?.childs) {
@@ -93,7 +128,7 @@ const Header = () => {
               variant='standard'
               className='category-select'
               onChange={selectedCateIdOnChange}
-              value={selectedCateId}
+              value={searchInputData.categoryId}
               renderValue={renderSelectedCate}
             >
               {allCategories?.map((cate) => [
@@ -111,8 +146,14 @@ const Header = () => {
               placeholder='Tìm tên sản phẩm'
               className='txt-search-product'
               type='text'
+              onChange={onChangeSearchText}
+              value={searchInputData.text}
             />
-            <button type='button' className='btn-search'>
+            <button
+              type='button'
+              className='btn-search'
+              onClick={onClickSearch}
+            >
               <div>
                 <IconSearch />
               </div>
