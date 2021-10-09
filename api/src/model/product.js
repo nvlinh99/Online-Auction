@@ -33,3 +33,4 @@ const productSchema = new mongoose.Schema({
 productSchema.index({ name: 'text', }, { weights: { name: 5, }, })
 
 module.exports = mongoose.model('Product', productSchema)
+// commit
