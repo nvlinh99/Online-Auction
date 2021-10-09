@@ -6,12 +6,12 @@ import { ProductItem } from 'components/ProductList'
 
 const sliderSettings = {
   // dots: true,
-  infinite: true,
+  infinite: false,
   speed: 400,
-  centerMode: true,
+  // centerMode: true,
   slidesToShow: 3,
   slidesToScroll: 1,
-  initialSlide: 1,
+  initialSlide: 0,
   // autoplay: true,
 }
 

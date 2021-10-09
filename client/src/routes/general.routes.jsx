@@ -8,7 +8,9 @@ import RegisterPage from 'pages/RegisterPage'
 import RegisterConfirmationPage from 'pages/RegisterPage/RegisterConfirmationPage'
 import LoginPage from 'pages/LoginPage'
 import UpdatePasswordPage from 'pages/UpdatePasswordPage'
-export default [
+import UploadFile from 'components/UploadFile'
+
+const routeConfig = [
   {
     path: '/',
     element: <MainLayout />,
@@ -57,4 +59,10 @@ export default [
     path: '/login',
     element: <LoginPage />,
   },
+  {
+    path: '/development-upload-file',
+    element: <UploadFile />,
+  },
 ]
+
+export default routeConfig

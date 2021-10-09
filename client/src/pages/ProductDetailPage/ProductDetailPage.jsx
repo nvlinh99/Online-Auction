@@ -138,7 +138,7 @@ const ProductDetailPage = () => {
               </div>
               <p className='mb-1'>Nhập số tiền muốn ra giá (VND):</p>
 
-              <div className='flex mb-8'>
+              <div style={{ position: 'relative' }} className='flex mb-8'>
                 <BidAction
                   initBidPrice={currentPrice + stepPrice}
                   stepPrice={stepPrice}

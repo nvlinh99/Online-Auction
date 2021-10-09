@@ -107,7 +107,11 @@
   font-size: 14px;
   color: red;
   position: absolute;
-  bottom: -24px;
+  bottom: -20px;
+  white-space: nowrap;
+}
+.bid-price-err-txt em {
+  width: 100%;
 }
 
 .bid-price-input::-webkit-inner-spin-button,
