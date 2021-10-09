@@ -7,7 +7,7 @@ const configuration = require('../../configuration')
 const getTopProductsHandler = async (req, res) => {
   const [
     topExpireProducts,
-    topRateProducts,
+    topBidedProducts,
     topPriceProducts,
   ] = await ProductService.getTopProducts()
 
@@ -15,7 +15,7 @@ const getTopProductsHandler = async (req, res) => {
     code: 1000,
     data: {
       topExpireProducts,
-      topRateProducts,
+      topBidedProducts,
       topPriceProducts,
     },
   })

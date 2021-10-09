@@ -9,17 +9,24 @@ const configuration = require('./configuration')
 const model = require('./model')
 const logger = require('./logger').getLogger('Server')
 
+// eslint-disable-next-line no-underscore-dangle
+global.__staticPath = path.join(__dirname, '..', 'static')
+
 exports.start = async function () {
   // connect to db server
   await model.connect()
 
   // create express app - apply glocal middleware
   const app = express()
+  app.use(require('helmet')())
   if (configuration.compression.enable) app.use(compression(configuration.compression.opts))
   if (configuration.cors.enable) app.use(cors(configuration.cors.opts))
   app.use(express.json(configuration.bodyParser.json))
   app.use(express.urlencoded(configuration.bodyParser.urlencoded))
   app.disable('x-powered-by')
+  app.use(require('express-fileupload')())
+  // eslint-disable-next-line no-undef
+  app.use('/static', express.static(__staticPath))
 
   // load routes
   const routeDir = path.resolve(__dirname, './route')

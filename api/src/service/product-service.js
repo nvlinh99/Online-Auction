@@ -15,13 +15,17 @@ exports.getTopExpireProducts = async function (limit) {
     .lean()
 }
 
-exports.getTopRateProducts = async function (limit) {
-  return []
+exports.getTopBidedProducts = async function (limit) {
+  return ProductModel
+    .find({ expiredDate: { $gte: new Date(), }, })
+    .limit(limit)
+    .sort({ totalBid: -1, })
+    .lean()
 }
 
 exports.getTopPriceProducts = async function (limit) {
   return ProductModel
-    .find({})
+    .find({ expiredDate: { $gte: new Date(), }, })
     .limit(limit)
     .sort({ currentPrice: -1, })
     .lean()
@@ -30,15 +34,15 @@ exports.getTopPriceProducts = async function (limit) {
 exports.getTopProducts = async function (limit = TOP_COUNT) {
   const [
     topExpireProducts, 
-    topRateProducts, 
+    topBidedProducts, 
     topPriceProducts,
   ] = await Promise.all([
     exports.getTopExpireProducts(limit), 
-    exports.getTopRateProducts(limit), 
+    exports.getTopBidedProducts(limit), 
     exports.getTopPriceProducts(limit),
   ])
 
-  return [topExpireProducts, topRateProducts, topPriceProducts,]
+  return [topExpireProducts, topBidedProducts, topPriceProducts,]
 }
 
 exports.getProductsWithPaging = async function ({ categoryId, textSearch, page = 1, }, sort = {}) {

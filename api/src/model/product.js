@@ -14,6 +14,7 @@ const productSchema = new mongoose.Schema({
   stepPrice: { type: Number, required: true, },
   purchasePrice: { type: Number, required: true, },
   publishedDate: { type: Date, default: Date.now(), },
+  totalBid: { type: Number, default: 0, },
   sellerId: mongoose.Schema.Types.ObjectId,
   winnerId: mongoose.Schema.Types.ObjectId,
   expiredDate: {
