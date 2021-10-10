@@ -64,9 +64,23 @@ exports.getProductsWithPaging = async function ({ categoryId, textSearch, page =
   }
   
   const products = await ProductModel.find(filter, ...args)
+    .populate("totalBids")
+    .populate({
+      path:"currentBid",
+      options:{
+        sort:{
+          price:-1,
+        },
+      },
+    })
+    .populate({
+      path:"watchList",
+   
+      transform:(doc) => doc && doc.userId,
+    })
+    .sort(sort)
     .skip(skip)
     .limit(limit)
-    .sort(sort)
     .lean()
   const totalItems = await ProductModel.countDocuments(filter, ...args)
 const totalPages = Math.ceil(totalItems / limit)

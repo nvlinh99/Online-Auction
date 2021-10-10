@@ -3,8 +3,8 @@ const nanoid = require('../util/nanoid')
 
 const bidSchema = new mongoose.Schema({
   id: { type: Number, required: true, default: nanoid.getGenFunction(), },
-  productId: mongoose.Schema.Types.ObjectId,
-  userId: mongoose.Schema.Types.ObjectId,
+  productId: { type: Number, required: true, },
+  userId: { type: Number, required: true, },
   price: { type: Number, required: true, },
   status: { type: Number, required: true, },
   bidTime: { type: Date, default: Date.now(), },
