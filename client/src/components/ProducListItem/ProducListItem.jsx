@@ -30,11 +30,11 @@ const ProducListItem = ({
           <img src={getImageURL(product.avatarUrl)} alt={product.name} />
         </Link>
         <button
-          disabled={isTogglingWatchList}
+          disabled={isTogglingWatchList === product.id}
           onClick={() => onToggleWatchList(product)}
           className={classNames(
             'flex-center text-white bg-gradient-to-tl from-[#f22876] to-[#942dd9] absolute top-5 right-5 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu',
-            isTogglingWatchList && 'spin-animation'
+            isTogglingWatchList === product.id && 'spin-animation'
           )}
         >
           {isWatched ? <Favorite /> : <FavoriteBorder />}

@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   products: [],
+  isGetProductsLoading: false,
 }
 
 const slice = createSlice({
@@ -29,6 +30,13 @@ const slice = createSlice({
           ...(state.products || {}),
           items: curProducts,
         },
+      }
+    },
+    setGetProductsLoading: (state, action) => {
+      const { isLoading } = action.payload || {}
+      return {
+        ...state,
+        isGetProductsLoading: isLoading,
       }
     },
   },

@@ -5,17 +5,22 @@ import useQuery from 'hooks/useQuery'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { getProductsFromAPI } from 'store/product/action'
-import { selectProducts } from 'store/product/selector'
+import {
+  selectGetProductsLoading,
+  selectProducts,
+} from 'store/product/selector'
 import { parseSortType } from 'utils/helpers/jsHelper'
 import { selectCurrentUser } from 'store/user/selector'
 import { watchListApi } from 'services'
 import { toast } from 'react-toastify'
 import { action } from 'store/product/reducer'
 import { productAction } from 'store/product'
+import LdsLoading from 'components/Loading/LdsLoading'
 
 const ProductListPage = () => {
   const currentUser = useSelector(selectCurrentUser)
-  const [isTogglingWatchList, setIsTogglingWatchList] = useState(false)
+  const [isTogglingWatchList, setIsTogglingWatchList] = useState(-1)
+  const isGetProductsLoading = useSelector(selectGetProductsLoading)
   const { query, onChange } = useQuery()
   const products = useSelector(selectProducts)
   const [sortType, setSortType] = useState('default')
@@ -27,8 +32,8 @@ const ProductListPage = () => {
     setSortType(e.target.value)
   }
   const onToggleWatchList = async (product) => {
-    setIsTogglingWatchList(true)
     const { id: productId } = product || {}
+    setIsTogglingWatchList(productId)
     try {
       const { succeeded, data } = await watchListApi.toggleWatchList({
         productId,
@@ -50,12 +55,13 @@ const ProductListPage = () => {
     } catch (error) {
       toast.error(error.message)
     } finally {
-      setIsTogglingWatchList(false)
+      setIsTogglingWatchList(-1)
     }
     return true
   }
   return (
     <div className='container mx-auto mt-[40px]'>
+      <LdsLoading isFullscreen isLoading={isGetProductsLoading} />
       <div className='flex-col md:flex-row shadow-pane mb-10 border border-[rgba(13, 21, 75, 0.15)] rounded-[5px] flex-between py-[5px] px-4'>
         <h1 className='text-2xl leading-10 font-semibold text-[#171d1c]'>
           Danh Sách sản phẩm
