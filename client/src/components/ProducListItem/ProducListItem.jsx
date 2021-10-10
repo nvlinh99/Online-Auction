@@ -1,19 +1,24 @@
 import useCountdown from 'hooks/useCountdown'
-import moment from 'moment'
 import React from 'react'
 import { RiAuctionFill, RiMoneyDollarCircleFill } from 'react-icons/ri'
 import { getImageURL } from 'utils/helpers/urlHelper'
+import { Link } from 'react-router-dom'
+
 const ProducListItem = ({ product = {} }) => {
   const { countdownTime } = useCountdown({ time: product.expiredDate })
   return (
     <div className='pt-2.5 pb-8 px-2.5 shadow-product bg-white rounded-[10px]'>
       <div className='relative rounded-[10px] overflow-hidden bg-[#f6f6ff] justify-center items-center flex'>
-        {' '}
-        <img src={getImageURL(product.avatarUrl)} alt='' />
+        <Link
+          to={`/products/${product.id}`}
+          className='inline-block bg-transparent'
+        >
+          <img src={getImageURL(product.avatarUrl)} alt={product.name} />
+        </Link>
       </div>
       <div className=''>
         <h6 className=' leading-7 text-xl py-4 font-medium text-[#171d1c]'>
-          {product.name}
+          <Link to={`/products/${product.id}`}> {product.name}</Link>
         </h6>
         <div className='flex flex-wrap'>
           <div className='py-3 px-2.5 flex items-center border-t-2 border-b-2 border-dotted border-[#deddf5] w-1/2 justify-center relative before:block before:absolute before:w-[1px] before:right-0 before:bottom-[15px] before:top-[15px] before:bg-[#bfbee8]'>
@@ -50,9 +55,12 @@ const ProducListItem = ({ product = {} }) => {
           </div>
         </div>
         <div className='text-center'>
-          <button className=' shadow-primary-button bg-gradient-to-t from-[#3da9f5] to-[#683df5] capitalize w-full max-w-[230px] text-white rounded-[30px] font-medium pt-3 pb-2.5 px-[30px] text-lg'>
-            Đấu giá
-          </button>
+          <Link
+            to={`/products/${product.id}`}
+            className=' shadow-primary-button bg-gradient-to-t from-[#3da9f5] to-[#683df5] capitalize w-full max-w-[230px] text-white rounded-[30px] font-medium pt-3 pb-2.5 px-[30px] text-lg'
+          >
+            Xem chi tiết
+          </Link>
         </div>
       </div>
     </div>

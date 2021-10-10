@@ -62,7 +62,6 @@ const Header = () => {
       } else {
         searchParams.delete('text')
       }
-      console.log(searchInputData.categoryId !== '-1')
       if (searchInputData.categoryId !== '-1') {
         searchParams.set('categoryId', searchInputData.categoryId)
       } else {
