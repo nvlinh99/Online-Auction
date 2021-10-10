@@ -13,3 +13,6 @@ export const getProductsFromAPI = async (body) => {
     console.error(error)
   }
 }
+export const updateProduct = async (body) => {
+  dispatch(action.updateProduct(body))
+}

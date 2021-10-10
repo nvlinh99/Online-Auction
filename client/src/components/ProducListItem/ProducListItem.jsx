@@ -1,10 +1,22 @@
 import useCountdown from 'hooks/useCountdown'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { RiAuctionFill, RiMoneyDollarCircleFill } from 'react-icons/ri'
 import { getImageURL } from 'utils/helpers/urlHelper'
 import { Link } from 'react-router-dom'
+import { FavoriteBorder, Favorite } from '@mui/icons-material'
 
-const ProducListItem = ({ product = {} }) => {
+const ProducListItem = ({
+  product = {},
+  currentUser = {},
+  onToggleWatchList,
+}) => {
+  const isWatched = useMemo(() => {
+    if (!product.watchList?.length || !currentUser?.id) {
+      return false
+    }
+    return product.watchList.includes(currentUser.id)
+  }, [product.watchList, currentUser])
+
   const { countdownTime } = useCountdown({ time: product.expiredDate })
   return (
     <div className='pt-2.5 pb-8 px-2.5 shadow-product bg-white rounded-[10px]'>
@@ -15,6 +27,12 @@ const ProducListItem = ({ product = {} }) => {
         >
           <img src={getImageURL(product.avatarUrl)} alt={product.name} />
         </Link>
+        <button
+          onClick={() => onToggleWatchList(product)}
+          className='flex-center text-white bg-gradient-to-tl from-[#f22876] to-[#942dd9] absolute top-5 right-5 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu'
+        >
+          {isWatched ? <Favorite /> : <FavoriteBorder />}
+        </button>
       </div>
       <div className=''>
         <h6 className=' leading-7 text-xl py-4 font-medium text-[#171d1c]'>
@@ -51,7 +69,7 @@ const ProducListItem = ({ product = {} }) => {
         <div className='flex justify-between items-center mt-[5px] text-lg mb-5 mx-2.5'>
           <div className='product-countdown'>{countdownTime}</div>
           <div className='pl-[35px] mt-[5px] text-[#43b055] border-l-[1px] border-[#d0cff0] leading-5'>
-            {30} lần
+            {product.totalBids} đấu giá
           </div>
         </div>
         <div className='text-center'>

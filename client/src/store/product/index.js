@@ -1,2 +1,2 @@
-export { action as productAction } from './reducer'
+export * as productAction from './action'
 export * as productSelector from './selector'

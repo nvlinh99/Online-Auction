@@ -2,7 +2,7 @@ import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 
 const useCountdown = ({ time }) => {
-  const [countdownTime, setCountdownTime] = useState('')
+  const [countdownTime, setCountdownTime] = useState('0d 0h 00m 00s')
   useEffect(() => {
     const diff = moment(time).diff(moment(), 'milliseconds')
     if (diff < 0) {
@@ -23,7 +23,7 @@ const useCountdown = ({ time }) => {
     return () => {
       clearInterval(interval)
     }
-  }, [])
+  }, [time])
 
   return { countdownTime }
 }
