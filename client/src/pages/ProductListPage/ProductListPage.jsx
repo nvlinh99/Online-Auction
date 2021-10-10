@@ -16,8 +16,12 @@ import { toast } from 'react-toastify'
 import { action } from 'store/product/reducer'
 import { productAction } from 'store/product'
 import LdsLoading from 'components/Loading/LdsLoading'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { LOGIN_PATH } from 'constants/routeConstants'
 
 const ProductListPage = () => {
+  const location = useLocation()
+  const navigate = useNavigate()
   const currentUser = useSelector(selectCurrentUser)
   const [isTogglingWatchList, setIsTogglingWatchList] = useState(-1)
   const isGetProductsLoading = useSelector(selectGetProductsLoading)
@@ -33,6 +37,12 @@ const ProductListPage = () => {
   }
   const onToggleWatchList = async (product) => {
     const { id: productId } = product || {}
+    if (!currentUser?.id) {
+      const loginPath = `${LOGIN_PATH}?retRef=${
+        location.pathname + location.search
+      }`
+      return navigate(loginPath)
+    }
     setIsTogglingWatchList(productId)
     try {
       const { succeeded, data } = await watchListApi.toggleWatchList({
