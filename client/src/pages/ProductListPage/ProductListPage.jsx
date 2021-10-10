@@ -15,7 +15,7 @@ import { productAction } from 'store/product'
 
 const ProductListPage = () => {
   const currentUser = useSelector(selectCurrentUser)
-
+  const [isTogglingWatchList, setIsTogglingWatchList] = useState(false)
   const { query, onChange } = useQuery()
   const products = useSelector(selectProducts)
   const [sortType, setSortType] = useState('default')
@@ -27,6 +27,7 @@ const ProductListPage = () => {
     setSortType(e.target.value)
   }
   const onToggleWatchList = async (product) => {
+    setIsTogglingWatchList(true)
     const { id: productId } = product || {}
     try {
       const { succeeded, data } = await watchListApi.toggleWatchList({
@@ -45,10 +46,13 @@ const ProductListPage = () => {
         )
       }
       productAction.updateProduct({ product: newProduct })
-      return toast.success(data.message)
+      toast.success(data.message)
     } catch (error) {
-      return toast.error(error.message)
+      toast.error(error.message)
+    } finally {
+      setIsTogglingWatchList(false)
     }
+    return true
   }
   return (
     <div className='container mx-auto mt-[40px]'>
@@ -69,6 +73,7 @@ const ProductListPage = () => {
               key={product.id}
               product={product}
               onToggleWatchList={onToggleWatchList}
+              isTogglingWatchList={isTogglingWatchList}
             />
           )
         })}

@@ -4,11 +4,13 @@ import { RiAuctionFill, RiMoneyDollarCircleFill } from 'react-icons/ri'
 import { getImageURL } from 'utils/helpers/urlHelper'
 import { Link } from 'react-router-dom'
 import { FavoriteBorder, Favorite } from '@mui/icons-material'
+import classNames from 'classnames'
 
 const ProducListItem = ({
   product = {},
   currentUser = {},
   onToggleWatchList,
+  isTogglingWatchList,
 }) => {
   const isWatched = useMemo(() => {
     if (!product.watchList?.length || !currentUser?.id) {
@@ -28,8 +30,12 @@ const ProducListItem = ({
           <img src={getImageURL(product.avatarUrl)} alt={product.name} />
         </Link>
         <button
+          disabled={isTogglingWatchList}
           onClick={() => onToggleWatchList(product)}
-          className='flex-center text-white bg-gradient-to-tl from-[#f22876] to-[#942dd9] absolute top-5 right-5 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu'
+          className={classNames(
+            'flex-center text-white bg-gradient-to-tl from-[#f22876] to-[#942dd9] absolute top-5 right-5 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu',
+            isTogglingWatchList && 'spin-animation'
+          )}
         >
           {isWatched ? <Favorite /> : <FavoriteBorder />}
         </button>
