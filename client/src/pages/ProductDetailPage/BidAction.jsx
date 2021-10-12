@@ -1,15 +1,40 @@
-import { useCallback, useState } from 'react'
+import { forwardRef, useCallback, useImperativeHandle, useState } from 'react'
 import numeral from 'numeral'
 import _ from 'lodash'
 import './index.css'
+import { toast } from 'react-toastify'
+import { productAPI } from 'services'
 
 const REG_ONLY_NUMER = /^[0-9,]+$/i
 
-const BidAction = ({ initBidPrice, stepPrice }) => {
+const BidAction = forwardRef(({ initBidPrice, stepPrice, product }, ref) => {
   const formatedInitPrice = numeral(initBidPrice).format('0,0')
   const [price, setPrice] = useState(formatedInitPrice)
   const [isSmallerPrice, setIsSmallerPrice] = useState(false)
-
+  const onBid = useCallback(async (cb) => {
+    if (price < initBidPrice) {
+      return toast.error('Giá không hợp lệ')
+    }
+    try {
+      if (product.id) {
+        const { succeeded, data } = await productAPI.bidProduct({
+          productId: product.id,
+          price,
+        })
+        if (!succeeded) {
+          return toast.error(data.message)
+        }
+      }
+    } catch (error) {
+      toast.error(error)
+    } finally {
+      cb?.()
+    }
+    return false
+  }, [])
+  useImperativeHandle(ref, () => ({
+    onBid,
+  }))
   const checkValidValue = useCallback(
     (v) => {
       const passReg = REG_ONLY_NUMER.test(v)
@@ -51,6 +76,6 @@ const BidAction = ({ initBidPrice, stepPrice }) => {
       )}
     </>
   )
-}
-
+})
+BidAction.displayName = 'BidAction'
 export default BidAction

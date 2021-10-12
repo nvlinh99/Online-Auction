@@ -14,6 +14,7 @@ import ImgListModal from './ImgListModal'
 import ImageGallery from 'react-image-gallery'
 
 const ProductDetailPage = () => {
+  const bidAction = useRef({})
   const params = useParams()
   const [isNotFound, setIsNotFound] = useState(false)
   const [product, setProduct] = useState(null)
@@ -21,7 +22,9 @@ const ProductDetailPage = () => {
   const openModal = () => {
     return imgListModal.current.openModal && imgListModal.current.openModal()
   }
-
+  const onClickBid = useCallback(() => {
+    bidAction.current?.onBid()
+  }, [])
   useEffect(
     // eslint-disable-next-line consistent-return
     () => {
@@ -35,12 +38,12 @@ const ProductDetailPage = () => {
   if (isNotFound)
     return (
       <Container className='mt-14'>
-        <p
+        <pproduct
           className='text-center'
           style={{ fontWeight: 'bold', textTransform: 'uppercase' }}
         >
           Sản phẩm bạn đang tìm kiếm không có trong hệ thống!
-        </p>
+        </pproduct>
       </Container>
     )
   if (product) {
@@ -144,12 +147,15 @@ const ProductDetailPage = () => {
                 <BidAction
                   initBidPrice={currentPrice + stepPrice}
                   stepPrice={stepPrice}
+                  ref={bidAction}
+                  product={product}
                 />
                 <button
                   className='bid-btn ml-3 alt'
                   // title='Ra giá ngay'
                   type='button'
                   data-tooltip='RA GIÁ NGAY'
+                  onClick={onClickBid}
                 >
                   <IconGavel />
                 </button>
