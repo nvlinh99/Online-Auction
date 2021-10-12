@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
   imageUrls: [String, ],
   status: { type: Number, required: true, default: 0, },
   startPrice: { type: Number, required: true, },
-  // currentPrice: { type: Number, default: null, },
+  currentPrice: { type: Number, default: null, },
   stepPrice: { type: Number, required: true, },
   purchasePrice: { type: Number, required: true, },
   publishedDate: { type: Date, default: Date.now(), },
