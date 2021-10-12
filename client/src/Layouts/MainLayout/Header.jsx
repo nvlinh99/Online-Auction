@@ -16,6 +16,7 @@ import { getCategoriesFromAPI } from 'store/category/action'
 import './header.css'
 import { USER_ROLE } from 'constants/userConstants'
 import { openModal, closeModal } from 'store/postProdModal/action'
+import useQuery from 'hooks/useQuery'
 
 const Logo = () => {
   return (
@@ -35,12 +36,13 @@ const Logo = () => {
   )
 }
 const Header = () => {
+  const { query, onChange } = useQuery()
   const location = useLocation()
   const navigate = useNavigate()
   const currentUser = useSelector(selectCurrentUser)
   const isCurrentUserLoading = useSelector(selectCurrentUserLoading)
   const [searchInputData, setSearchInputData] = useState({
-    categoryId: '-1',
+    categoryId: 'all',
     text: '',
   })
   const allCategories = useSelector(categorySelector.selectCategories)
@@ -48,7 +50,7 @@ const Header = () => {
   const selectedCateIdOnChange = useCallback((e) => {
     setSearchInputData((searchInputData) => ({
       ...searchInputData,
-      categoryId: +e?.target?.value,
+      categoryId: e?.target?.value,
     }))
   }, [])
   const onChangeSearchText = useCallback((e) => {
@@ -65,8 +67,7 @@ const Header = () => {
       } else {
         searchParams.delete('text')
       }
-      console.log(searchInputData.categoryId !== '-1')
-      if (searchInputData.categoryId !== '-1') {
+      if (searchInputData.categoryId !== 'all') {
         searchParams.set('categoryId', searchInputData.categoryId)
       } else {
         searchParams.delete('categoryId')
@@ -78,26 +79,18 @@ const Header = () => {
     },
     [location.search, searchInputData]
   )
-  const renderSelectedCate = useCallback(
-    (selectedCateId) => {
-      const df = <em>Danh mục</em>
-      if (selectedCateId !== '-1') {
-        for (let pCate of allCategories) {
-          if (pCate?.id === selectedCateId) return pCate.title || df
-          if (pCate?.childs) {
-            for (let chCate of pCate.childs)
-              if (chCate?.id === selectedCateId) return chCate.title || df
-          }
-        }
-      }
-      return df
-    },
-    [allCategories]
-  )
 
   useEffect(() => {
     getCategoriesFromAPI()
   }, [])
+  useEffect(() => {
+    if (query.categoryId) {
+      setSearchInputData((searchInputData) => ({
+        ...searchInputData,
+        categoryId: query.categoryId,
+      }))
+    }
+  }, [query.categoryId])
   return (
     <header
       style={{
@@ -131,8 +124,9 @@ const Header = () => {
               className='category-select'
               onChange={selectedCateIdOnChange}
               value={searchInputData.categoryId}
-              renderValue={renderSelectedCate}
+              // renderValue={renderSelectedCate}
             >
+              <MenuItem value='all'>Tất cả danh mục</MenuItem>
               {allCategories?.map((cate) => [
                 <MenuItem key={cate.id} value={cate.id}>
                   {cate.title}
