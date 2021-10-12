@@ -6,8 +6,8 @@ const bidSchema = new mongoose.Schema({
   productId: { type: Number, required: true, },
   userId: { type: Number, required: true, },
   price: { type: Number, required: true, },
-  status: { type: Number, required: true, },
-  bidTime: { type: Date, default: Date.now(), },
+  status: { type: Number, required: true, default: 0, },
+  bidTime: { type: Date, default: () => new Date(), },
 }, {
   timestamps: true,
 })
