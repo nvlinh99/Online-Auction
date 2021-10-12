@@ -8,12 +8,15 @@ const UploadFile = () => {
   }, [])
 
   const onFilesUpload = async () => {
-    const formData = new FormData()
-
+    // const formData = new FormData()
+    const jobs = []
     for (let i = 0; i < selectedFiles.length; i++) {
-      formData.append(`${i}`, selectedFiles[i])
+      // formData.append(`${i}`, selectedFiles[i])
+      jobs.push(uploadApi.uploadIMGBB(selectedFiles[i]))
     }
-    const [succeeded, data] = await uploadApi.upload(formData)
+
+    const data = await Promise.all(jobs)
+    console.log(data)
   }
 
   const renderImgList = () => {

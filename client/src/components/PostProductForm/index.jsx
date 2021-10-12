@@ -134,17 +134,19 @@ const PostProductForm = () => {
     const err = validateInput({ ...payload, avatar, imgList })
     if (err) return postingFail(err)
 
-    const formData = new FormData()
-    formData.append('0', avatar)
+    const jobs = []
+    jobs.push(uploadApi.uploadIMGBB(avatar))
     for (let i = 0; i < imgList.length; i++) {
-      formData.append(`${i + 1}`, imgList[i])
+      jobs.push(uploadApi.uploadIMGBB(imgList[i]))
     }
-    let [succeeded, data] = await uploadApi.upload(formData)
-    if (!succeeded)
+    let [avatarRes, ...imgListRes] = await Promise.all(jobs)
+    if (!avatarRes.succeeded)
       return postingFail('Đăng sản phẩm thất bại. Vui lòng thử lại!')
-    const [avatarUrl, ...imageUrls] = data.uploaded
-    payload.avatarUrl = avatarUrl
-    payload.imageUrls = imageUrls
+    for (const res of imgListRes) {
+      if (!res.succeeded) return postingFail('Đăng sản phẩm thất bại. Vui lòng thử lại!')
+    }
+    payload.avatarUrl = avatarRes.data.url
+    payload.imageUrls = _.map(imgListRes, 'data.url')
     try {
       const { succeeded, data } = await prodcutApi.postProducts(payload)
       console.log(data)
