@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
   imageUrls: [String, ],
   status: { type: Number, required: true, default: 0, },
   startPrice: { type: Number, required: true, },
-  currentPrice: { type: Number, default: null, },
+  // currentPrice: { type: Number, default: null, },
   stepPrice: { type: Number, required: true, },
   purchasePrice: { type: Number, required: true, },
   publishedDate: { type: Date, default: Date.now(), },
@@ -28,6 +28,35 @@ const productSchema = new mongoose.Schema({
   bannedUser: [Number, ],
 }, {
   timestamps: true,
+  toJSON:{
+    virtuals:true,
+  },
+})
+productSchema.virtual('bids',{
+  ref: 'Bid',
+  localField: 'id',
+  foreignField: 'productId',
+})
+
+productSchema.virtual('totalBids',{
+  ref: 'Bid',
+  localField: 'id',
+  foreignField: 'productId',
+  count:true,
+  
+})
+productSchema.virtual('currentBid',{
+  ref: 'Bid',
+  localField: 'id',
+  foreignField: 'productId',
+  justOne:true,
+})
+
+productSchema.virtual('watchList',{
+  ref: 'WatchList',
+  localField: 'id',
+  foreignField: 'productId',
+  
 })
 
 productSchema.index({ name: 'text', }, { weights: { name: 5, }, })
