@@ -8,15 +8,15 @@ const productSchema = new mongoose.Schema({
   categoryId: { type: Number, required: true, },
   avatarUrl: { type: String, },
   imageUrls: [String, ],
-  status: { type: Number, required: true, },
+  status: { type: Number, required: true, default: 0, },
   startPrice: { type: Number, required: true, },
   currentPrice: { type: Number, default: null, },
   stepPrice: { type: Number, required: true, },
   purchasePrice: { type: Number, required: true, },
   publishedDate: { type: Date, default: Date.now(), },
   totalBid: { type: Number, default: 0, },
-  sellerId: mongoose.Schema.Types.ObjectId,
-  winnerId: mongoose.Schema.Types.ObjectId,
+  sellerId: { type: Number, required: true, },
+  winnerId: { type: Number, default: null, },
   expiredDate: {
     type: Date,
     default: () => {

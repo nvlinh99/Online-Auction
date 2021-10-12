@@ -20,6 +20,7 @@
     "express-fileupload": "^1.2.1",
     "filehound": "^1.17.4",
     "helmet": "^4.6.0",
+    "imgbb": "^1.0.48",
     "joi": "^17.4.2",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
@@ -32,7 +33,8 @@
     "nanoid": "^3.1.25",
     "nanoid-dictionary": "^4.3.0",
     "nodemailer": "^6.6.3",
-    "shortid": "^2.2.16"
+    "shortid": "^2.2.16",
+    "tough-cookie": "^4.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",

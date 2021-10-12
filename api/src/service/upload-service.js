@@ -3,6 +3,11 @@ const _ = require('lodash')
 const { promisify, } = require('util')
 const shortid = require('shortid')
 const fs = require('fs')
+const ImgBB = require('imgbb').default
+
+const imgbbAPI = new ImgBB({
+  token: process.env.IMGBB_API_KEY,
+})
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -24,4 +29,13 @@ exports.upload = async (file) => {
   })
   fs.unlink(imgFilePath, () => {})
   return result
+}
+
+exports.uploadIMGBB = async (file) => {
+  const imgFileName = `${shortid.generate()}.${_.last(_.split(file.name, '.'))}`
+  // eslint-disable-next-line no-undef
+  return imgbbAPI.upload({
+    name: imgFileName,
+    image: file.data,
+  })
 }
