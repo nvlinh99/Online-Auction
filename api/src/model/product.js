@@ -12,7 +12,7 @@ const productSchema = new mongoose.Schema({
   startPrice: { type: Number, required: true, },
   currentPrice: { type: Number, default: null, },
   stepPrice: { type: Number, required: true, },
-  purchasePrice: { type: Number, required: true, },
+  purchasePrice: { type: Number, default: null, },
   publishedDate: { type: Date, default: Date.now(), },
   totalBid: { type: Number, default: 0, },
   sellerId: { type: Number, required: true, },
