@@ -1,4 +1,5 @@
 import { Avatar, Button, Fade, ClickAwayListener } from '@mui/material'
+import _ from 'lodash'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import React, { useMemo } from 'react'
 import Menu from '@mui/material/Menu'
@@ -9,6 +10,8 @@ import LogoutIcon from '@mui/icons-material/Logout'
 import { useNavigate } from 'react-router-dom'
 import { logout } from 'store/user/action'
 import { LOGIN_PATH } from 'constants/routeConstants'
+import { USER_ROLE } from 'constants/userConstants'
+
 const HeaderUserInfo = ({ currentUser }) => {
   const navigate = useNavigate()
   const firstLetter = useMemo(

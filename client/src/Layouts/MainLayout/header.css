@@ -7,6 +7,11 @@
   width: 50%;
   min-width: 400px;
   max-width: 600px;
+  position: absolute;
+  left: 50%;
+  top: 80px;
+  transform: translateX(-50%);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 10px;
 }
 
 #logo:focus,
@@ -106,4 +111,16 @@
 
 .btn-search svg {
   transform: translate(-1px, -1px);
+}
+
+.btn-post-prod {
+  font-weight: bold;
+  padding: 3px 10px;
+  border: 2px solid #fff;
+  border-radius: 5px;
+}
+
+.btn-post-prod:hover {
+  background-color: #fff;
+  color: rgb(38, 149, 255);
 }

@@ -3,6 +3,7 @@ import _ from 'lodash'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import IconLogin from '@mui/icons-material/Login'
 import { Container, Select, MenuItem, cardHeaderClasses } from '@mui/material'
+import IconAdd from '@mui/icons-material/AddCircle'
 import { useSelector } from 'react-redux'
 import IconSearch from '@mui/icons-material/SearchSharp'
 import {
@@ -13,6 +14,8 @@ import HeaderUserInfo from './HeaderUserInfo'
 import { categorySelector } from 'store/category'
 import { getCategoriesFromAPI } from 'store/category/action'
 import './header.css'
+import { USER_ROLE } from 'constants/userConstants'
+import { openModal, closeModal } from 'store/postProdModal/action'
 
 const Logo = () => {
   return (
@@ -158,12 +161,23 @@ const Header = () => {
               </div>
             </button>
           </div>
+
           <div
             style={{
               flex: 1.5,
             }}
             className='flex justify-end items-center'
           >
+            {_.get(currentUser, 'role', null) === USER_ROLE.SELLER && (
+              <button
+                type='button'
+                className='btn-post-prod mr-4 flex items-center'
+                onClick={openModal}
+              >
+                <IconAdd fontSize='large' className='mr-2' />
+                <span>Đăng sản phẩm</span>
+              </button>
+            )}
             {currentUser ? (
               <HeaderUserInfo currentUser={currentUser} />
             ) : isCurrentUserLoading ? (
