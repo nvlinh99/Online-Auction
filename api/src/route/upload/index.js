@@ -55,7 +55,7 @@ productRouter.post('/img',  require('../../middleware/auth').authorize, async (r
     if (!img) break
     tasks.push(uploadService.uploadIMGBB(img))
   }
-  const uploadResponse = await Promise.all(tasks)
+  const uploadResponse = await Promise.all(tasks).catch(console.log)
   const uploaded = _.map(uploadResponse, 'data.url')
   
   return res.json({
