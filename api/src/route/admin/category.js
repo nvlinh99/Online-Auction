@@ -9,13 +9,13 @@ const getPagination = (page, limit) => {
   return { size, offset, }
 }
 
-const validateCreate = genRequestValidation({
+exports.validateCreate = genRequestValidation({
   body: joi.object({
     title: joi.string().trim().required().invalid('', null),
   }).unknown(false),
 })
 
-const validateUpdate = genRequestValidation({
+exports.validateUpdate = genRequestValidation({
   body: joi.object({
     title: joi.string().trim().required().invalid('', null),
     parentId: joi.number().integer().min(0),
@@ -147,8 +147,3 @@ exports.deleteCategory = async (req, res) => {
     message: 'Xoá danh mục thành công',
   })
 }
-
-module.exports = [
-  validateCreate,
-  validateUpdate,
-]
