@@ -11,3 +11,7 @@ export const postProducts = (body) => {
 export const postProductById = (productId) => {
   return api.get('/products/' + productId)
 }
+
+export const bidProduct = (body) => {
+  return api.post('/bids', body)
+}

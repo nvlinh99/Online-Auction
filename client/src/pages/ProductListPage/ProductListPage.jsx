@@ -13,7 +13,6 @@ import { parseSortType } from 'utils/helpers/jsHelper'
 import { selectCurrentUser } from 'store/user/selector'
 import { watchListApi } from 'services'
 import { toast } from 'react-toastify'
-import { action } from 'store/product/reducer'
 import { productAction } from 'store/product'
 import LdsLoading from 'components/Loading/LdsLoading'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -30,7 +29,7 @@ const ProductListPage = () => {
   const [sortType, setSortType] = useState('default')
   useEffect(() => {
     const sort = parseSortType(sortType)
-    getProductsFromAPI({ ...query, sort })
+    query && getProductsFromAPI({ ...query, sort })
   }, [query, sortType])
   const onChangeSortType = (e) => {
     setSortType(e.target.value)
@@ -95,7 +94,7 @@ const ProductListPage = () => {
         })}
       </div>
       <Pagination
-        page={query.page}
+        page={query?.page || 1}
         pageCount={products.totalPages}
         onChange={onChange}
         containerClassName='mb-[35px]'

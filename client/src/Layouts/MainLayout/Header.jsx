@@ -84,19 +84,20 @@ const Header = () => {
     getCategoriesFromAPI()
   }, [])
   useEffect(() => {
-    if (query.categoryId) {
+    if (location.pathname === '/product') {
       setSearchInputData((searchInputData) => ({
         ...searchInputData,
-        categoryId: query.categoryId,
+        ...query,
       }))
     }
-  }, [query.categoryId])
+  }, [query])
   return (
     <header
       style={{
         color: 'white',
         background: '#2695ff',
       }}
+      className='mb-12'
     >
       <Container>
         <div className='flex justify-between items-center'>
