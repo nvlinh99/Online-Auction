@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom'
 import { FavoriteBorder, Favorite } from '@mui/icons-material'
 import classNames from 'classnames'
 import moment from 'moment'
-
+import hotIcon from 'assets/hot.png'
+const time = moment().add(10 * 60 + 10, 'seconds')
 const ProducListItem = ({
   product = {},
   currentUser = {},
@@ -20,7 +21,9 @@ const ProducListItem = ({
     return product.watchList.includes(currentUser.id)
   }, [product.watchList, currentUser])
 
-  const { countdownTime } = useCountdown({ time: product.expiredDate })
+  const { countdownTime, duration } = useCountdown({
+    time: time,
+  })
   const currentPrice =
     product.currentBid?.price || product.currentPrice || product.startPrice
   const biderName = useMemo(() => {
@@ -30,6 +33,14 @@ const ProducListItem = ({
     }
     return bidder.firstName + ' ' + bidder.lastName
   }, [])
+  const isHot = useMemo(() => {
+    const m = duration.asMinutes?.()
+
+    if (m > 0 && m < 10) {
+      return true
+    }
+    return false
+  }, [duration])
   return (
     <div className='pt-2.5 pb-8 px-2.5 shadow-product bg-white rounded-[10px]'>
       <div className='relative rounded-[10px] overflow-hidden bg-[#f6f6ff] justify-center items-center flex '>
@@ -47,7 +58,7 @@ const ProducListItem = ({
           disabled={isTogglingWatchList === product.id}
           onClick={() => onToggleWatchList(product)}
           className={classNames(
-            'flex-center text-white bg-gradient-to-tl from-[#f22876] to-[#942dd9] absolute top-5 right-5 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu',
+            'flex-center text-white bg-gradient-to-tl from-[#f22876] to-[#942dd9] absolute top-4 right-4 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu',
             isTogglingWatchList === product.id && 'spin-animation'
           )}
         >
@@ -56,7 +67,10 @@ const ProducListItem = ({
       </div>
       <div className='mt-4'>
         <h6 className=' leading-7 text-xl font-medium text-[#171d1c]'>
-          <Link to={`/products/${product.id}`}> {product.name}</Link>
+          <Link to={`/products/${product.id}`} className=' flex items-center'>
+            {isHot && <img src={hotIcon} alt='' className='mr-1 w-5 h-5' />}
+            {product.name}
+          </Link>
         </h6>
         <p className=' text-xs mt-1'>
           Ngày đăng:{' '}
