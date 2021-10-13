@@ -21,6 +21,7 @@
     "@mui/material": "^5.0.0",
     "@mui/styles": "^5.0.0",
     "@reduxjs/toolkit": "^1.6.1",
+    "@tailwindcss/aspect-ratio": "^0.3.0",
     "assert": "^2.0.0",
     "axios": "^0.21.4",
     "cross-env": "^7.0.3",

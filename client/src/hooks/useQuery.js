@@ -5,7 +5,7 @@ const useQuery = () => {
   const navigate = useNavigate()
 
   const location = useLocation()
-  const [query, setQuery] = useState({ page: 1 })
+  const [query, setQuery] = useState(null)
   const searchParams = useMemo(() => {
     return new URLSearchParams(location.search)
   }, [location.search])

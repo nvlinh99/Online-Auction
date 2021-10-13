@@ -5,6 +5,7 @@ import { getImageURL } from 'utils/helpers/urlHelper'
 import { Link } from 'react-router-dom'
 import { FavoriteBorder, Favorite } from '@mui/icons-material'
 import classNames from 'classnames'
+import moment from 'moment'
 
 const ProducListItem = ({
   product = {},
@@ -20,14 +21,27 @@ const ProducListItem = ({
   }, [product.watchList, currentUser])
 
   const { countdownTime } = useCountdown({ time: product.expiredDate })
+  const currentPrice =
+    product.currentBid?.price || product.currentPrice || product.startPrice
+  const biderName = useMemo(() => {
+    const bidder = product.currentBid?.bidder
+    if (!bidder) {
+      return 'Chưa có'
+    }
+    return bidder.firstName + ' ' + bidder.lastName
+  }, [])
   return (
     <div className='pt-2.5 pb-8 px-2.5 shadow-product bg-white rounded-[10px]'>
-      <div className='relative rounded-[10px] overflow-hidden bg-[#f6f6ff] justify-center items-center flex'>
+      <div className='relative rounded-[10px] overflow-hidden bg-[#f6f6ff] justify-center items-center flex '>
         <Link
           to={`/products/${product.id}`}
-          className='inline-block bg-transparent'
+          className='block bg-transparent aspect-w-1 aspect-h-1 w-full'
         >
-          <img src={getImageURL(product.avatarUrl)} alt={product.name} />
+          <img
+            src={getImageURL(product.avatarUrl)}
+            alt={product.name}
+            className=''
+          />
         </Link>
         <button
           disabled={isTogglingWatchList === product.id}
@@ -40,11 +54,20 @@ const ProducListItem = ({
           {isWatched ? <Favorite /> : <FavoriteBorder />}
         </button>
       </div>
-      <div className=''>
-        <h6 className=' leading-7 text-xl py-4 font-medium text-[#171d1c]'>
+      <div className='mt-4'>
+        <h6 className=' leading-7 text-xl font-medium text-[#171d1c]'>
           <Link to={`/products/${product.id}`}> {product.name}</Link>
         </h6>
-        <div className='flex flex-wrap'>
+        <p className=' text-xs mt-1'>
+          Ngày đăng:{' '}
+          <b className='font-medium'>
+            {moment(product.createdAt).format('HH:mm DD-MM-YYYY')}
+          </b>
+        </p>
+        <p className=' text-xs mt-1'>
+          Người ra giá: <b className='font-medium'>{biderName}</b>
+        </p>
+        <div className='flex flex-wrap mt-4'>
           <div className='py-3 px-2.5 flex items-center border-t-2 border-b-2 border-dotted border-[#deddf5] w-1/2 justify-center relative before:block before:absolute before:w-[1px] before:right-0 before:bottom-[15px] before:top-[15px] before:bg-[#bfbee8]'>
             <div className=' max-w-[36px] leading-none'>
               <RiAuctionFill color='#43b055' size='36px' />
@@ -54,7 +77,7 @@ const ProducListItem = ({
                 Giá hiện tại
               </div>
               <div className='leading-5 text-lg text-[#171d1c]'>
-                {product.startPrice.toCurrency?.()}
+                {currentPrice?.toCurrency?.()}
               </div>
             </div>
           </div>

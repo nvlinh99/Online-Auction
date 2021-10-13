@@ -84,10 +84,12 @@ const Header = () => {
     getCategoriesFromAPI()
   }, [])
   useEffect(() => {
-    setSearchInputData((searchInputData) => ({
-      ...searchInputData,
-      ...query,
-    }))
+    if (location.pathname === '/product') {
+      setSearchInputData((searchInputData) => ({
+        ...searchInputData,
+        ...query,
+      }))
+    }
   }, [query])
   return (
     <header
