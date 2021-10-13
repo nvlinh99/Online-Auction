@@ -25,7 +25,10 @@ const productSchema = new mongoose.Schema({
     },
   },
   autoRenew: Boolean,
-  bannedUser: [Number, ],
+  bannedUser: {
+    type: [Number, ],
+    default: [],
+  },
 }, {
   timestamps: true,
   toJSON:{

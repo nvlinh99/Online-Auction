@@ -27,7 +27,7 @@ exports.start = async function () {
   app.use(require('express-fileupload')())
   // eslint-disable-next-line no-undef
   app.use('/static', express.static(__staticPath))
-
+  app.use(require('./middleware/response'))
   // load routes
   const routeDir = path.resolve(__dirname, './route')
   const routeFilePaths = await filehound.create()

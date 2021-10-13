@@ -19,5 +19,10 @@ bidSchema.virtual('bidder',{
   localField: 'userId',
   foreignField: 'id',
 })
-
+bidSchema.virtual('product',{
+  ref: 'Product',
+  localField: 'productId',
+  foreignField: 'id',
+  justOne: true,
+})
 module.exports = mongoose.model('Bid', bidSchema)
