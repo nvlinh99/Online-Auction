@@ -7,3 +7,7 @@ export const getProducts = (body) => {
 export const postProducts = (body) => {
   return api.post('/products', body)
 }
+
+export const postProductById = (productId) => {
+  return api.get('/products/' + productId)
+}

@@ -12,6 +12,7 @@ import IconFavorit from '@mui/icons-material/FavoriteBorder'
 import SellerBiderInfo from './SellerBiderInfo'
 import ImgListModal from './ImgListModal'
 import ImageGallery from 'react-image-gallery'
+import * as productApi from 'services/prodcutApi'
 
 const ProductDetailPage = () => {
   const params = useParams()
@@ -24,10 +25,16 @@ const ProductDetailPage = () => {
 
   useEffect(
     // eslint-disable-next-line consistent-return
-    () => {
-      const product = _.find(productList, (pr) => pr.id === +params.productId)
-      if (!product) return setIsNotFound(true)
-      setProduct(product)
+    async () => {
+      try {
+        const { succeeded, data } = await productApi.postProductById(params.productId)
+        console.log(!succeeded || !data || !data.product)
+        if (!succeeded || !data || !data.product || data.product.status !== 0 ) return setIsNotFound(true)
+        return setProduct(data.product)
+      } catch (err) {
+        return setIsNotFound(true)
+      }
+      
     },
     [params.productId]
   )
@@ -104,16 +111,16 @@ const ProductDetailPage = () => {
                   <p>Giá khởi điểm:</p>
                   <p>Giá hiện tại:</p>
                 </div>
-                <div className='mr-8'>
+                <div className='mr-4'>
                   <p>{formatedStartPrice || '#'}</p>
-                  <p>{formatedCurrentPrice || 'Chưa có lượt đấu giá nào'}</p>
+                  <p>{formatedCurrentPrice || '#'}</p>
                 </div>
                 <div className='mr-8'>
                   <p>VND</p>
                   <p>VND</p>
                 </div>
                 {formatedPurchasePrice && (
-                  <div>
+                  <div className='p-4'>
                     <button className='btn-buy-now' type='button'>
                       MUA NGAY VỚI GIÁ {formatedPurchasePrice} VND
                     </button>
