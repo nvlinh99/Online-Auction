@@ -10,6 +10,14 @@ const bidSchema = new mongoose.Schema({
   bidTime: { type: Date, default: () => new Date(), },
 }, {
   timestamps: true,
+  toJSON:{
+    virtuals:true,
+  },
+})
+bidSchema.virtual('bidder',{
+  ref: 'User',
+  localField: 'userId',
+  foreignField: 'id',
 })
 
 module.exports = mongoose.model('Bid', bidSchema)

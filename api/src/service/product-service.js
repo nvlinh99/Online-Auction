@@ -67,6 +67,7 @@ exports.getProductsWithPaging = async function ({ categoryId, textSearch, page =
     .populate("totalBids")
     .populate({
       path:"currentBid",
+      populate: "bidder",
       options:{
         sort:{
           price:-1,
