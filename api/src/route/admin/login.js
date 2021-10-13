@@ -8,7 +8,7 @@ const passwordValidator = require('../../util/passwordValidator')
 const envPath = path.join(__dirname, '../../.env')
 require('dotenv').config({ path: envPath, })
 
-const requestValidationHandler = genRequestValidation({
+const validateLogin = genRequestValidation({
   body: joi.object({
     email: joi.string().trim().required().invalid('', null).email(),
     password: joi.string().trim().required().invalid('', null),
@@ -66,6 +66,6 @@ const loginHandler = async (req, res) => {
 }
 
 module.exports = [
-  requestValidationHandler,
+  validateLogin,
   loginHandler,
 ]

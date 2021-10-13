@@ -16,12 +16,12 @@ adminRouter.use(authHandler.authorize, authHandler.restrictToAdmin())
 adminRouter
   .route('/category')
   .get(categoryController.getAllCategories)
-  .post(categoryController.createCategory)
+  .post(categoryController.validateCreate ,categoryController.createCategory)
 
 adminRouter
   .route('/category/:id')
   .get(categoryController.getCategory)
-  .put(categoryController.updateCategory)
+  .put(categoryController.validateUpdate, categoryController.updateCategory)
   .delete(categoryController.deleteCategory)
 
 adminRouter
@@ -31,12 +31,12 @@ adminRouter
 adminRouter
   .route('/user')
   .get(userController.getAllUsers)
-  .post(userController.createUser)
+  .post(userController.validateUpdate ,userController.createUser)
 
 adminRouter
   .route('/user/:id')
   .get(userController.getUser)
-  .put(userController.updateUser)
+  .put(userController.validateUpdate, userController.updateUser)
   .delete(userController.deleteUser)
 
 adminRouter

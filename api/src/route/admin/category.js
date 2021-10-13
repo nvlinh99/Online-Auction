@@ -9,6 +9,19 @@ const getPagination = (page, limit) => {
   return { size, offset, }
 }
 
+const validateCreate = genRequestValidation({
+  body: joi.object({
+    title: joi.string().trim().required().invalid('', null),
+  }).unknown(false),
+})
+
+const validateUpdate = genRequestValidation({
+  body: joi.object({
+    title: joi.string().trim().required().invalid('', null),
+    parentId: joi.number().integer().min(0),
+  })
+    .unknown(false), })
+
 exports.getAllCategories = async (req, res, next) => {
   const { page, limit, } = req.query
   const { size, offset, } = getPagination(page, limit)
@@ -49,13 +62,7 @@ exports.getCategory = async (req, res, next) => {
 }
 
 exports.createCategory = async (req, res) => {
-  genRequestValidation({
-    body: joi.object({
-      title: joi.string().trim().required().invalid('', null),
-    }).unknown(false),
-  })
   const data = req.body
-
   const existsCategory = await Category.findOne({ title: data.title, })
   if (existsCategory) {
     return res.json({
@@ -89,13 +96,6 @@ exports.createCategory = async (req, res) => {
 }
 
 exports.updateCategory = async (req, res) => {
-  genRequestValidation({
-    body: joi.object({
-      title: joi.string().trim().required().invalid('', null),
-      parentId: joi.number().integer().min(0),
-    })
-      .unknown(false), })
-
   const { id, } = req.params
   const data = req.body
 
@@ -147,3 +147,8 @@ exports.deleteCategory = async (req, res) => {
     message: 'Xoá danh mục thành công',
   })
 }
+
+module.exports = [
+  validateCreate,
+  validateUpdate,
+]
