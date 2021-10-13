@@ -83,6 +83,7 @@ const postProductHandler = async (req, res) => {
       },
     })
   }
+  data.currentPrice = data.startPrice
   data.expiredDate = expiredDateMoment.toDate()
   data.sellerId = req.user.id
 

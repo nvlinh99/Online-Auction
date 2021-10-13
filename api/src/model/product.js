@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const nanoid = require('../util/nanoid')
 
 const productSchema = new mongoose.Schema({
-  id: { type: Number, required: true,default: nanoid.getGenFunction(), },
+  id: { type: Number, required: true, unique: true, default: nanoid.getGenFunction(), },
   name: { type: String, required: true, },
   description: { type: String, },
   categoryId: { type: Number, required: true, },
@@ -10,9 +10,9 @@ const productSchema = new mongoose.Schema({
   imageUrls: [String, ],
   status: { type: Number, required: true, default: 0, },
   startPrice: { type: Number, required: true, },
-  // currentPrice: { type: Number, default: null, },
+  currentPrice: { type: Number, default: null, },
   stepPrice: { type: Number, required: true, },
-  purchasePrice: { type: Number, required: true, },
+  purchasePrice: { type: Number, default: null, },
   publishedDate: { type: Date, default: Date.now(), },
   totalBid: { type: Number, default: 0, },
   sellerId: { type: Number, required: true, },
@@ -25,7 +25,10 @@ const productSchema = new mongoose.Schema({
     },
   },
   autoRenew: Boolean,
-  bannedUser: [Number, ],
+  bannedUser: {
+    type: [Number, ],
+    default: [],
+  },
 }, {
   timestamps: true,
   toJSON:{
