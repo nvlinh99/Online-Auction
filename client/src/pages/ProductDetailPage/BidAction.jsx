@@ -1,4 +1,10 @@
-import { forwardRef, useCallback, useImperativeHandle, useState } from 'react'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react'
 import numeral from 'numeral'
 import _ from 'lodash'
 import './index.css'
@@ -11,27 +17,33 @@ const BidAction = forwardRef(({ initBidPrice, stepPrice, product }, ref) => {
   const formatedInitPrice = numeral(initBidPrice).format('0,0')
   const [price, setPrice] = useState(formatedInitPrice)
   const [isSmallerPrice, setIsSmallerPrice] = useState(false)
-  const onBid = useCallback(async (cb) => {
-    if (price < initBidPrice) {
-      return toast.error('Giá không hợp lệ')
-    }
-    try {
-      if (product.id) {
+  const onBid = useCallback(
+    async (cb) => {
+      const priceNum = _.toNumber(price || ''.split(',').join(''))
+      if (priceNum < initBidPrice) {
+        return toast.error('Giá không hợp lệ')
+      }
+      try {
+        if (!product.id) {
+          return toast.error('Sản phẩm không tồn tại')
+        }
         const { succeeded, data } = await productAPI.bidProduct({
           productId: product.id,
-          price,
+          price: priceNum,
         })
         if (!succeeded) {
           return toast.error(data.message)
         }
+        toast.success(data.message)
+        cb?.(succeeded)
+      } catch (error) {
+        toast.error(error)
+        cb?.(false)
       }
-    } catch (error) {
-      toast.error(error)
-    } finally {
-      cb?.()
-    }
-    return false
-  }, [])
+      return false
+    },
+    [price]
+  )
   useImperativeHandle(ref, () => ({
     onBid,
   }))
@@ -58,6 +70,9 @@ const BidAction = forwardRef(({ initBidPrice, stepPrice, product }, ref) => {
     },
     [checkValidValue]
   )
+  useEffect(() => {
+    setPrice(initBidPrice)
+  }, [initBidPrice])
   return (
     <>
       <div className='bid-action-container'>

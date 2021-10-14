@@ -18,6 +18,7 @@ import LdsLoading from 'components/Loading/LdsLoading'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { LOGIN_PATH } from 'constants/routeConstants'
 import { pick } from 'lodash'
+import { getLoginUrl } from 'utils/helpers/urlHelper'
 
 const ProductListPage = () => {
   const location = useLocation()
@@ -41,9 +42,7 @@ const ProductListPage = () => {
   const onToggleWatchList = async (product) => {
     const { id: productId } = product || {}
     if (!currentUser?.id) {
-      const loginPath = `${LOGIN_PATH}?retRef=${
-        location.pathname + location.search
-      }`
+      const loginPath = getLoginUrl(location)
       return navigate(loginPath)
     }
     setIsTogglingWatchList(productId)

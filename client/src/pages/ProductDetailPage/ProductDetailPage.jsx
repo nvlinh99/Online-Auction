@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import numeral from 'numeral'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { productList } from 'pages/HomePage/dummy-data'
 import { Container, Modal, Box } from '@mui/material'
 import { formatProductItem } from 'utils/product-util'
@@ -13,34 +13,55 @@ import SellerBiderInfo from './SellerBiderInfo'
 import ImgListModal from './ImgListModal'
 import ImageGallery from 'react-image-gallery'
 import * as productApi from 'services/prodcutApi'
+import { useSelector } from 'react-redux'
+import { selectCurrentUser } from 'store/user/selector'
+import { getLoginUrl } from 'utils/helpers/urlHelper'
+import LdsLoading from 'components/Loading/LdsLoading'
 
 const ProductDetailPage = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const currentUser = useSelector(selectCurrentUser)
   const bidAction = useRef({})
   const params = useParams()
   const [isNotFound, setIsNotFound] = useState(false)
   const [product, setProduct] = useState(null)
   const imgListModal = useRef({})
+  const [isLoading, setIsLoading] = useState(false)
   const openModal = () => {
     return imgListModal.current.openModal && imgListModal.current.openModal()
   }
   const onClickBid = useCallback(() => {
-    bidAction.current?.onBid()
-  }, [])
-  useEffect(
-    // eslint-disable-next-line consistent-return
-    async () => {
-      try {
-        const { succeeded, data } = await productApi.postProductById(params.productId)
-        console.log(!succeeded || !data || !data.product)
-        if (!succeeded || !data || !data.product || data.product.status !== 0 ) return setIsNotFound(true)
-        return setProduct(data.product)
-      } catch (err) {
-        return setIsNotFound(true)
+    if (!currentUser?.id) {
+      return navigate(getLoginUrl(location))
+    }
+    setIsLoading(true)
+    return bidAction.current?.onBid((succeeded) => {
+      if (!succeeded) {
+        setIsLoading(false)
+
+        return
       }
-      
-    },
-    [params.productId]
-  )
+      loadProductData()
+    })
+  }, [navigate, location, currentUser])
+  const loadProductData = useCallback(async () => {
+    try {
+      const { succeeded, data } = await productApi.postProductById(
+        params.productId
+      )
+      if (!succeeded || !data || !data.product || data.product.status !== 0)
+        return setIsNotFound(true)
+      return setProduct(data.product)
+    } catch (err) {
+      return setIsNotFound(true)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [params.productId])
+  useEffect(() => {
+    loadProductData()
+  }, [loadProductData])
 
   if (isNotFound)
     return (
@@ -94,6 +115,8 @@ const ProductDetailPage = () => {
     })
     return (
       <>
+        <LdsLoading isFullscreen isLoading={isLoading} />
+
         <Container className='mt-14'>
           <div className='product-detail-head-info'>
             <p className='product-detail-head-title'>{title}</p>
