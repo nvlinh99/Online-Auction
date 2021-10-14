@@ -18,6 +18,7 @@ bidSchema.virtual('bidder',{
   ref: 'User',
   localField: 'userId',
   foreignField: 'id',
+  justOne: true,
 })
 bidSchema.virtual('product',{
   ref: 'Product',

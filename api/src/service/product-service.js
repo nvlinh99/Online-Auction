@@ -45,7 +45,7 @@ exports.getTopProducts = async function (limit = TOP_COUNT) {
   return [topExpireProducts, topBidedProducts, topPriceProducts,]
 }
 
-exports.getProductsWithPaging = async function ({ categoryId, textSearch, page = 1 }, sort = {}) {
+exports.getProductsWithPaging = async function ({ categoryId, textSearch, page = 1, }, sort = {}) {
   const [skip, limit,] = pageToSkipAndLimit(page)
   const filter = {}
   const args = []
@@ -64,18 +64,19 @@ exports.getProductsWithPaging = async function ({ categoryId, textSearch, page =
   }
   
   const products = await ProductModel.find(filter, ...args)
-    .populate("totalBids")
+    .populate('totalBids')
     .populate({
-      path:"currentBid",
-      populate: "bidder",
+      path:'currentBid',
+      populate: 'bidder',
       options:{
         sort:{
           price:-1,
+          status: 0,
         },
       },
     })
     .populate({
-      path:"watchList",
+      path:'watchList',
    
       transform:(doc) => doc && doc.userId,
     })
@@ -84,7 +85,7 @@ exports.getProductsWithPaging = async function ({ categoryId, textSearch, page =
     .limit(limit)
     .lean()
   const totalItems = await ProductModel.countDocuments(filter, ...args)
-const totalPages = Math.ceil(totalItems / limit)
+  const totalPages = Math.ceil(totalItems / limit)
 
   const newTime = moment().subtract(N_MIN_MARK_NEW, 'minutes').toDate()
   _.forEach(products, (product) => {
