@@ -7,7 +7,7 @@ import { FavoriteBorder, Favorite } from '@mui/icons-material'
 import classNames from 'classnames'
 import moment from 'moment'
 import hotIcon from 'assets/hot.png'
-const time = moment().add(10 * 60 + 10, 'seconds')
+// const time = moment().add(10 * 60 - 10 * 60 + 10, 'seconds')
 const ProducListItem = ({
   product = {},
   currentUser = {},
@@ -22,7 +22,7 @@ const ProducListItem = ({
   }, [product.watchList, currentUser])
 
   const { countdownTime, duration } = useCountdown({
-    time: time,
+    time: product.expiredDate,
   })
   const currentPrice =
     product.currentBid?.price || product.currentPrice || product.startPrice
@@ -31,7 +31,7 @@ const ProducListItem = ({
     if (!bidder) {
       return 'Chưa có'
     }
-    return bidder.firstName + ' ' + bidder.lastName
+    return [bidder.firstName, bidder.lastName].filter(Boolean).join(' ')
   }, [])
   const isHot = useMemo(() => {
     const m = duration.asMinutes?.()

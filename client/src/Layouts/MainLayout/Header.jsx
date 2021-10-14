@@ -17,6 +17,7 @@ import './header.css'
 import { USER_ROLE } from 'constants/userConstants'
 import { openModal, closeModal } from 'store/postProdModal/action'
 import useQuery from 'hooks/useQuery'
+import { getProductsFromAPI } from 'store/product/action'
 
 const Logo = () => {
   return (
@@ -62,6 +63,14 @@ const Header = () => {
   const onClickSearch = useCallback(
     (e) => {
       const searchParams = new URLSearchParams(location.search)
+      const isNotChange =
+        searchInputData.categoryId ===
+          (searchParams.get('categoryId') || 'all') &&
+        searchInputData.text === (searchParams.get('text') || '')
+
+      if (location.pathname === '/products' && isNotChange) {
+        return getProductsFromAPI()
+      }
       if (searchInputData.text) {
         searchParams.set('text', searchInputData.text)
       } else {
@@ -72,7 +81,8 @@ const Header = () => {
       } else {
         searchParams.delete('categoryId')
       }
-      navigate({
+
+      return navigate({
         pathname: '/products',
         search: searchParams.toString(),
       })
@@ -84,7 +94,7 @@ const Header = () => {
     getCategoriesFromAPI()
   }, [])
   useEffect(() => {
-    if (location.pathname === '/product') {
+    if (location.pathname === '/products') {
       setSearchInputData((searchInputData) => ({
         ...searchInputData,
         ...query,

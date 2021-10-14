@@ -17,6 +17,7 @@ import { productAction } from 'store/product'
 import LdsLoading from 'components/Loading/LdsLoading'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { LOGIN_PATH } from 'constants/routeConstants'
+import { pick } from 'lodash'
 
 const ProductListPage = () => {
   const location = useLocation()
@@ -26,13 +27,16 @@ const ProductListPage = () => {
   const isGetProductsLoading = useSelector(selectGetProductsLoading)
   const { query, onChange } = useQuery()
   const products = useSelector(selectProducts)
-  const [sortType, setSortType] = useState('default')
   useEffect(() => {
-    const sort = parseSortType(sortType)
-    query && getProductsFromAPI({ ...query, sort })
-  }, [query, sortType])
+    const sort = parseSortType(query?.sortType || 'default')
+    query &&
+      getProductsFromAPI({
+        ...pick(query, ['text', 'categoryId', 'page']),
+        sort,
+      })
+  }, [query])
   const onChangeSortType = (e) => {
-    setSortType(e.target.value)
+    onChange('sortType', e.target.value || 'default')
   }
   const onToggleWatchList = async (product) => {
     const { id: productId } = product || {}
@@ -77,7 +81,10 @@ const ProductListPage = () => {
         </h1>
         <div className='flex-center text-[#171d1c] text-base'>
           <span className='mr-3'>Sắp xếp theo:</span>
-          <SortSelect value={sortType} onChange={onChangeSortType} />
+          <SortSelect
+            value={query?.sortType || 'default'}
+            onChange={onChangeSortType}
+          />
         </div>
       </div>
       <div className='grid xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4 mb-[35px] '>

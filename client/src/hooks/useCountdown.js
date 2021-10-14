@@ -21,7 +21,11 @@ const useCountdown = ({ time }) => {
       )
 
       duration = duration.clone().subtract(1, 'seconds')
-      if (duration.asSeconds === 0) clearInterval(interval)
+      if ((duration.asSeconds?.() || -1) < 0) {
+        setCountdownTime('Hết hạn')
+        setDuration({})
+        clearInterval(interval)
+      }
     }, 1000)
     return () => {
       clearInterval(interval)
