@@ -1,4 +1,5 @@
 const joi = require('joi')
+const _ = require('lodash')
 const md5 = require('md5')
 const ProductModel = require('../../model/product')
 const CategoryModel = require('../../model/category')
@@ -6,7 +7,9 @@ const UserModel = require('../../model/user')
 const BidModel = require('../../model/bid')
 const ProductService = require('../../service/product-service')
 const configuration = require('../../configuration')
+const authMdw = require('../../middleware/auth')
 const genRequestValidation = require('../../middleware/gen-request-validation')
+const { USER_ROLE, } = require('../../constant/user')
 
 const requestValidationHandler = genRequestValidation({
   params: joi
@@ -17,7 +20,7 @@ const requestValidationHandler = genRequestValidation({
 })
 
 const handler = async (req, res) => {
-  const { params: { productId, }, } = req
+  const { params: { productId, }, user, } = req
   const product = await ProductModel.findOne({ id: productId, }).lean()
   if (!product) {
     return res.json({
@@ -33,10 +36,19 @@ const handler = async (req, res) => {
     UserModel.findOne({ id: product.sellerId, }).lean(),
     BidModel.findOne({ productId: product.id, status: 0, }).sort({ price: -1, }),
   ]
+  
+  if (user && user.id) {
+    const filter = { productId, }
+    if (user.id !== product.sellerId) filter.status = 0
+    jobs.push(
+      BidModel.find(filter).sort({ price: -1, createdAt: -1, }).populate('bidder').lean()
+    ) 
+  }
   const [
     categoryInfo,
     sellerInfo,
     bidInfo,
+    bidHistory,
   ] = await Promise.all(jobs)
   product.categoryInfo = categoryInfo
   product.sellerInfo = sellerInfo
@@ -45,6 +57,20 @@ const handler = async (req, res) => {
     product.biderInfo = biderInfo
   }
 
+  const isNotSeller = _.get(user, 'id', null) !== product.sellerId
+  _.forEach(bidHistory, (his) => {
+    _.set(
+      his, 
+      'displayBiderName', 
+      isNotSeller 
+        ? `****${_.get(his, 'bidder.firstName', '')}` 
+        : `${_.get(his, 'bidder.lastName', '')} ${_.get(his, 'bidder.firstName', '')}`
+    )
+    delete his.bidder
+  })
+  
+  product.bidHistory = bidHistory
+
   return res.json({
     code: 1000,
     data: { product, },
@@ -52,6 +78,7 @@ const handler = async (req, res) => {
 }
 
 module.exports = [
+  authMdw.authorizeOptional,
   requestValidationHandler,
   handler,
 ]

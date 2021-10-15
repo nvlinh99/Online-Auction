@@ -10,14 +10,38 @@ const N_MIN_MARK_NEW = 15
 exports.getTopExpireProducts = async function (limit) {
   return ProductModel
     .find({ expiredDate: { $gte: new Date(), }, })
+    .populate('categoryInfo')
+    .populate({
+      path:'currentBid',
+      populate: 'bidder',
+      match: { status: 0, },
+      options:{
+        sort:{
+          price:-1,
+          
+        },
+      },
+    })
     .limit(limit)
-    .sort({ expiredDate: -1, })
+    .sort({ expiredDate: 1, })
     .lean()
 }
 
 exports.getTopBidedProducts = async function (limit) {
   return ProductModel
     .find({ expiredDate: { $gte: new Date(), }, })
+    .populate('categoryInfo')
+    .populate({
+      path:'currentBid',
+      populate: 'bidder',
+      match: { status: 0, },
+      options:{
+        sort:{
+          price:-1,
+          
+        },
+      },
+    })
     .limit(limit)
     .sort({ totalBid: -1, })
     .lean()
@@ -26,11 +50,26 @@ exports.getTopBidedProducts = async function (limit) {
 exports.getTopPriceProducts = async function (limit) {
   return ProductModel
     .find({ expiredDate: { $gte: new Date(), }, })
+    .populate('categoryInfo')
+    .populate({
+      path:'currentBid',
+      populate: 'bidder',
+      match: { status: 0, },
+      options:{
+        sort:{
+          price:-1,
+          
+        },
+      },
+    })
     .limit(limit)
     .sort({ currentPrice: -1, })
     .lean()
 }
 
+function transformBiderInfo(prod) {
+  prod.biderInfo = _.get(prod, 'currentBid.bidder', null)
+}
 exports.getTopProducts = async function (limit = TOP_COUNT) {
   const [
     topExpireProducts, 
@@ -41,7 +80,10 @@ exports.getTopProducts = async function (limit = TOP_COUNT) {
     exports.getTopBidedProducts(limit), 
     exports.getTopPriceProducts(limit),
   ])
-
+  
+  _.forEach(topExpireProducts, transformBiderInfo)
+  _.forEach(topBidedProducts, transformBiderInfo)
+  _.forEach(topPriceProducts, transformBiderInfo)
   return [topExpireProducts, topBidedProducts, topPriceProducts,]
 }
 

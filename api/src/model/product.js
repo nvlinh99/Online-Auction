@@ -54,6 +54,12 @@ productSchema.virtual('currentBid',{
   foreignField: 'productId',
   justOne:true,
 })
+productSchema.virtual('categoryInfo',{
+  ref: 'Category',
+  localField: 'categoryId',
+  foreignField: 'id',
+  justOne:true,
+})
 
 productSchema.virtual('watchList',{
   ref: 'WatchList',

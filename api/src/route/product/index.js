@@ -9,9 +9,9 @@ exports.path = '/products'
 
 const productRouter = Router()
 productRouter.post('/', postProductController)
+productRouter.get('/top', getTopProductsController)
 productRouter.get('/:productId', getOneProductController)
 productRouter.put('/:productId/append-description', appendDescController)
 productRouter.post('/get-with-filter', getProductsWithFilterController)
-productRouter.get('/top', getTopProductsController)
 
 exports.router = productRouter

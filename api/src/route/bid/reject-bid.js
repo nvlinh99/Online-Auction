@@ -11,7 +11,6 @@ const authMdw = require('../../middleware/auth')
 const policyMdw = require('../../middleware/require-role')
 const { USER_ROLE, } = require('../../constant/user')
 
-ProductModel.findOne({ id:8656268102, }).then(console.log)
 const requestValidationHandler = genRequestValidation({
   params: joi
     .object({
