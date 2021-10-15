@@ -145,7 +145,9 @@ const ProductDetailPage = () => {
             setIsOpenConfirmationModal(false)
             onBid()
           }}
-          message='Bạn có chắc muốn đấu giá sản phẩm này'
+          message={`Bạn có thật sự muốn ra giá ${
+            bidAction.current?.getPrice?.() || ''
+          }?`}
           title='Xác nhận đấu giá'
         />
 

@@ -17,6 +17,7 @@ const BidAction = forwardRef(({ initBidPrice, stepPrice, product }, ref) => {
   const formatedInitPrice = numeral(initBidPrice).format('0,0')
   const [price, setPrice] = useState(formatedInitPrice)
   const [isSmallerPrice, setIsSmallerPrice] = useState(false)
+  const getPrice = useCallback(() => price, [price])
   const onBid = useCallback(
     async (cb) => {
       const priceNum = _.toNumber(price || ''.split(',').join(''))
@@ -46,6 +47,7 @@ const BidAction = forwardRef(({ initBidPrice, stepPrice, product }, ref) => {
   )
   useImperativeHandle(ref, () => ({
     onBid,
+    getPrice,
   }))
   const checkValidValue = useCallback(
     (v) => {
