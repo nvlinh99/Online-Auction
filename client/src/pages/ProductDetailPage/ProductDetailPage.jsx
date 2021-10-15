@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import numeral from 'numeral'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { productList } from 'pages/HomePage/dummy-data'
 import { Container, Modal, Box } from '@mui/material'
@@ -9,21 +9,27 @@ import TimeLeft from 'components/TimeLeftDetail'
 import BidAction from './BidAction'
 import IconGavel from '@mui/icons-material/Gavel'
 import IconFavorit from '@mui/icons-material/FavoriteBorder'
+import FavoriteIcon from '@mui/icons-material/Favorite'
 import SellerBiderInfo from './SellerBiderInfo'
 import ImgListModal from './ImgListModal'
 import ImageGallery from 'react-image-gallery'
 import * as productApi from 'services/prodcutApi'
 import { useSelector } from 'react-redux'
-import { selectCurrentUser } from 'store/user/selector'
+import {
+  selectCurrentUser,
+  selectIsTogglingWatchList,
+} from 'store/user/selector'
 import { getLoginUrl } from 'utils/helpers/urlHelper'
 import LdsLoading from 'components/Loading/LdsLoading'
 import ConfirmationModal from 'components/Modal/ConfirmationModal'
+import useLogin from 'hooks/useLogin'
+import { toggleWatchListFromApi } from 'store/user/action'
+import classNames from 'classnames'
 
 const ProductDetailPage = () => {
+  const isTogglingWatchList = useSelector(selectIsTogglingWatchList)
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false)
-
-  const navigate = useNavigate()
-  const location = useLocation()
+  const { isLoggedInUser } = useLogin()
   const currentUser = useSelector(selectCurrentUser)
   const bidAction = useRef({})
   const params = useParams()
@@ -44,13 +50,13 @@ const ProductDetailPage = () => {
       }
       loadProductData()
     })
-  }, [navigate, location])
+  }, [loadProductData])
   const onClickBid = useCallback(() => {
-    if (!currentUser?.id) {
-      return navigate(getLoginUrl(location))
+    if (!isLoggedInUser()) {
+      return
     }
     setIsOpenConfirmationModal(true)
-  }, [currentUser])
+  }, [isLoggedInUser])
   const loadProductData = useCallback(async () => {
     try {
       const { succeeded, data } = await productApi.postProductById(
@@ -65,10 +71,19 @@ const ProductDetailPage = () => {
       setIsLoading(false)
     }
   }, [params.productId])
+  const onToggleWatchList = useCallback(async () => {
+    const { id: productId } = product || {}
+    if (!isLoggedInUser() || !productId) {
+      return
+    }
+    toggleWatchListFromApi({ productId })
+  }, [isLoggedInUser, product])
   useEffect(() => {
     loadProductData()
   }, [loadProductData])
-
+  const isWatched = useMemo(() => {
+    return currentUser?.watchList?.map((i) => i.productId).includes(product?.id)
+  }, [currentUser, product])
   if (isNotFound)
     return (
       <Container className='mt-14'>
@@ -119,6 +134,7 @@ const ProductDetailPage = () => {
         loading: 'lazy',
       }
     })
+    const isTogglingWatchListProduct = isTogglingWatchList === id
     return (
       <>
         <LdsLoading isFullscreen isLoading={isLoading} />
@@ -208,10 +224,25 @@ const ProductDetailPage = () => {
                 <button
                   type='button'
                   // title='Thêm vào danh sách yêu thích'
-                  className='bid-action-add-watch-list-btn ml-3 alt'
+                  className={classNames(
+                    'bid-action-add-watch-list-btn ml-3 alt ',
+                    isWatched && 'border-red-400 text-red-400'
+                  )}
                   data-tooltip='THÊM YÊU THÍCH'
+                  onClick={onToggleWatchList}
+                  disabled={isTogglingWatchList === product?.id}
                 >
-                  <IconFavorit fontSize='small' />
+                  {isWatched ? (
+                    <FavoriteIcon
+                      fontSize='small'
+                      className={isTogglingWatchListProduct && 'spin-animation'}
+                    />
+                  ) : (
+                    <IconFavorit
+                      fontSize='small'
+                      className={isTogglingWatchListProduct && 'spin-animation'}
+                    />
+                  )}
                 </button>
               </div>
 

@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   currentUser: null,
   isCurrentUserLoading: false,
+  isTogglingWatchList: '',
 }
 
 const slice = createSlice({
@@ -19,6 +20,10 @@ const slice = createSlice({
     setCurrentUserLoading: (state, action) => {
       const { isLoading } = action.payload || {}
       return { ...state, isCurrentUserLoading: isLoading }
+    },
+    setIsTogglingWatchList: (state, action) => {
+      const { productId } = action.payload || {}
+      return { ...state, isTogglingWatchList: productId }
     },
   },
 })

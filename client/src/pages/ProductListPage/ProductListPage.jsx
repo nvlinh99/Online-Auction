@@ -18,11 +18,11 @@ import LdsLoading from 'components/Loading/LdsLoading'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { pick } from 'lodash'
 import { getLoginUrl } from 'utils/helpers/urlHelper'
+import useLogin from 'hooks/useLogin'
 
 const ProductListPage = () => {
-  const location = useLocation()
-  const navigate = useNavigate()
   const currentUser = useSelector(selectCurrentUser)
+  const { isLoggedInUser } = useLogin()
   const [isTogglingWatchList, setIsTogglingWatchList] = useState(-1)
   const isGetProductsLoading = useSelector(selectGetProductsLoading)
   const { query, onChange } = useQuery()
@@ -40,9 +40,8 @@ const ProductListPage = () => {
   }
   const onToggleWatchList = async (product) => {
     const { id: productId } = product || {}
-    if (!currentUser?.id) {
-      const loginPath = getLoginUrl(location)
-      return navigate(loginPath)
+    if (!isLoggedInUser()) {
+      return false
     }
     setIsTogglingWatchList(productId)
     try {
