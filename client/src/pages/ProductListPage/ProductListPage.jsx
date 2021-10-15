@@ -16,7 +16,6 @@ import { toast } from 'react-toastify'
 import { productAction } from 'store/product'
 import LdsLoading from 'components/Loading/LdsLoading'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { LOGIN_PATH } from 'constants/routeConstants'
 import { pick } from 'lodash'
 import { getLoginUrl } from 'utils/helpers/urlHelper'
 
@@ -62,7 +61,7 @@ const ProductListPage = () => {
           (id) => id !== currentUser.id
         )
       }
-      productAction.updateProduct({ product: newProduct })
+      productAction.updateProduct({ pproductdetaroduct: newProduct })
       toast.success(data.message)
     } catch (error) {
       toast.error(error.message)

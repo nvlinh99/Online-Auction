@@ -17,8 +17,11 @@ import { useSelector } from 'react-redux'
 import { selectCurrentUser } from 'store/user/selector'
 import { getLoginUrl } from 'utils/helpers/urlHelper'
 import LdsLoading from 'components/Loading/LdsLoading'
+import ConfirmationModal from 'components/Modal/ConfirmationModal'
 
 const ProductDetailPage = () => {
+  const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false)
+
   const navigate = useNavigate()
   const location = useLocation()
   const currentUser = useSelector(selectCurrentUser)
@@ -31,10 +34,7 @@ const ProductDetailPage = () => {
   const openModal = () => {
     return imgListModal.current.openModal && imgListModal.current.openModal()
   }
-  const onClickBid = useCallback(() => {
-    if (!currentUser?.id) {
-      return navigate(getLoginUrl(location))
-    }
+  const onBid = useCallback(() => {
     setIsLoading(true)
     return bidAction.current?.onBid((succeeded) => {
       if (!succeeded) {
@@ -44,7 +44,13 @@ const ProductDetailPage = () => {
       }
       loadProductData()
     })
-  }, [navigate, location, currentUser])
+  }, [navigate, location])
+  const onClickBid = useCallback(() => {
+    if (!currentUser?.id) {
+      return navigate(getLoginUrl(location))
+    }
+    setIsOpenConfirmationModal(true)
+  }, [currentUser])
   const loadProductData = useCallback(async () => {
     try {
       const { succeeded, data } = await productApi.postProductById(
@@ -116,6 +122,16 @@ const ProductDetailPage = () => {
     return (
       <>
         <LdsLoading isFullscreen isLoading={isLoading} />
+        <ConfirmationModal
+          open={isOpenConfirmationModal}
+          onCancel={() => setIsOpenConfirmationModal(false)}
+          onOK={() => {
+            setIsOpenConfirmationModal(false)
+            onBid()
+          }}
+          message='Bạn có chắc muốn đấu giá sản phẩm này'
+          title='Xác nhận đấu giá'
+        />
 
         <Container className='mt-14'>
           <div className='product-detail-head-info'>
