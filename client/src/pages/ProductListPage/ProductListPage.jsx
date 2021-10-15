@@ -10,7 +10,10 @@ import {
   selectProducts,
 } from 'store/product/selector'
 import { parseSortType } from 'utils/helpers/jsHelper'
-import { selectCurrentUser } from 'store/user/selector'
+import {
+  selectCurrentUser,
+  selectIsTogglingWatchList,
+} from 'store/user/selector'
 import { watchListApi } from 'services'
 import { toast } from 'react-toastify'
 import { productAction } from 'store/product'
@@ -19,11 +22,13 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { pick } from 'lodash'
 import { getLoginUrl } from 'utils/helpers/urlHelper'
 import useLogin from 'hooks/useLogin'
+import { toggleWatchListFromApi } from 'store/user/action'
 
 const ProductListPage = () => {
+  const isTogglingWatchList = useSelector(selectIsTogglingWatchList)
+
   const currentUser = useSelector(selectCurrentUser)
   const { isLoggedInUser } = useLogin()
-  const [isTogglingWatchList, setIsTogglingWatchList] = useState(-1)
   const isGetProductsLoading = useSelector(selectGetProductsLoading)
   const { query, onChange } = useQuery()
   const products = useSelector(selectProducts)
@@ -41,33 +46,9 @@ const ProductListPage = () => {
   const onToggleWatchList = async (product) => {
     const { id: productId } = product || {}
     if (!isLoggedInUser()) {
-      return false
+      return
     }
-    setIsTogglingWatchList(productId)
-    try {
-      const { succeeded, data } = await watchListApi.toggleWatchList({
-        productId,
-      })
-      if (!succeeded) {
-        return toast.error(data.message)
-      }
-      const newProduct = { ...product }
-      newProduct.watchList = [...(newProduct.watchList || [])]
-      if (data.added) {
-        newProduct.watchList.push(currentUser.id)
-      } else {
-        newProduct.watchList = newProduct.watchList.filter(
-          (id) => id !== currentUser.id
-        )
-      }
-      productAction.updateProduct({ pproductdetaroduct: newProduct })
-      toast.success(data.message)
-    } catch (error) {
-      toast.error(error.message)
-    } finally {
-      setIsTogglingWatchList(-1)
-    }
-    return true
+    toggleWatchListFromApi({ productId })
   }
   return (
     <div className='container mx-auto mt-[40px]'>

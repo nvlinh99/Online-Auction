@@ -15,12 +15,8 @@ const ProducListItem = ({
   isTogglingWatchList,
 }) => {
   const isWatched = useMemo(() => {
-    if (!product.watchList?.length || !currentUser?.id) {
-      return false
-    }
-    return product.watchList.includes(currentUser.id)
-  }, [product.watchList, currentUser])
-
+    return currentUser?.watchList?.map((i) => i.productId).includes(product?.id)
+  }, [currentUser, product])
   const { countdownTime, duration } = useCountdown({
     time: product.expiredDate,
   })
