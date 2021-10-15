@@ -22,26 +22,28 @@ const BidAction = forwardRef(({ initBidPrice, stepPrice, product }, ref) => {
     async (cb) => {
       const priceNum = _.toNumber(price || ''.split(',').join(''))
       if (priceNum < initBidPrice) {
-        return toast.error('Giá không hợp lệ')
+        toast.error('Giá không hợp lệ')
+        return cb && cb(false)
       }
       try {
         if (!product.id) {
-          return toast.error('Sản phẩm không tồn tại')
+          toast.error('Sản phẩm không tồn tại')
+          return cb && cb(false)
         }
         const { succeeded, data } = await productAPI.bidProduct({
           productId: product.id,
           price: priceNum,
         })
         if (!succeeded) {
-          return toast.error(data.message)
+          toast.error(data.message)
+          return cb && cb(false)
         }
         toast.success(data.message)
-        cb?.(succeeded)
+        return cb && cb(succeeded)
       } catch (error) {
         toast.error(error)
-        cb?.(false)
+        return cb && cb(false)
       }
-      return false
     },
     [price]
   )

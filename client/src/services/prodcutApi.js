@@ -1,5 +1,9 @@
 import { api } from './api'
 
+export const getTopProducts = () => {
+  return api.get('/products/top')
+}
+
 export const getProducts = (body) => {
   return api.post('/products/get-with-filter', body)
 }
@@ -14,4 +18,8 @@ export const postProductById = (productId) => {
 
 export const bidProduct = (body) => {
   return api.post('/bids', body)
+}
+
+export const rejectBid = (bidId) => {
+  return api.post(`/bids/${bidId}/reject`)
 }

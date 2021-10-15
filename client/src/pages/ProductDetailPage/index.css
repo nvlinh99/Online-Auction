@@ -1,6 +1,6 @@
 .product-detail-head-info {
   border-bottom: 1px solid #dddddd;
-  padding-bottom: 20px;
+  padding-bottom: 5px;
 }
 
 .product-detail-head-title {
@@ -234,4 +234,24 @@
   overflow: hidden;
   width: 100%;
   aspect-ratio: 1 / 1;
+}
+
+#bidHistTable,
+#bidHistTable td,
+#bidHistTable th {
+  border: 1px solid #ddd;
+}
+#bidHistTable p {
+  border: none;
+  font-style: italic;
+}
+#bidHistTable tbody tr:nth-child(odd) {
+  background-color: #f8f8f8;
+}
+
+.bid-hist-cell {
+  padding: 0.7rem;
+  text-align: left;
+  min-width: 8rem;
+  word-break: keep-all;
 }

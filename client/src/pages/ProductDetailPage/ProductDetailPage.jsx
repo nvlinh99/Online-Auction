@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 import numeral from 'numeral'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
@@ -10,6 +11,7 @@ import BidAction from './BidAction'
 import IconGavel from '@mui/icons-material/Gavel'
 import IconFavorit from '@mui/icons-material/FavoriteBorder'
 import FavoriteIcon from '@mui/icons-material/Favorite'
+import IconClear from '@mui/icons-material/Clear'
 import SellerBiderInfo from './SellerBiderInfo'
 import ImgListModal from './ImgListModal'
 import ImageGallery from 'react-image-gallery'
@@ -25,6 +27,7 @@ import ConfirmationModal from 'components/Modal/ConfirmationModal'
 import useLogin from 'hooks/useLogin'
 import { toggleWatchListFromApi } from 'store/user/action'
 import classNames from 'classnames'
+import { toast } from 'react-toastify'
 
 const ProductDetailPage = () => {
   const isTogglingWatchList = useSelector(selectIsTogglingWatchList)
@@ -37,9 +40,35 @@ const ProductDetailPage = () => {
   const [product, setProduct] = useState(null)
   const imgListModal = useRef({})
   const [isLoading, setIsLoading] = useState(false)
+  const [isOpenRejectModal, setIsOpenRejectModal] = useState(false)
+  const [rejectBidId, setRejectBidId] = useState(-1)
   const openModal = () => {
     return imgListModal.current.openModal && imgListModal.current.openModal()
   }
+  const onRejectBid = useCallback((e) => {
+    const bidId = +e.target.getAttribute('bid-id')
+    setRejectBidId(bidId)
+    setIsOpenRejectModal(true)
+
+  })
+  const onReject = useCallback(async () => {
+    setIsLoading(true)
+    try {
+      const { succeeded, data } = await productApi.rejectBid(rejectBidId)
+      setIsLoading(false)
+      if (succeeded) {
+        toast.success('Từ chối lượt ra giá thành công.')
+        loadProductData()
+      } else {
+        toast.error(data && data.message ? data.message : 'Từ chối lượt ra giá thất bại!!')
+      }
+    } catch (err) {
+      setIsLoading(false)
+      toast.error('Từ chối lượt ra giá thất bại!!')
+    } finally {
+      setRejectBidId(-1)
+    }
+  })
   const onBid = useCallback(() => {
     setIsLoading(true)
     return bidAction.current?.onBid((succeeded) => {
@@ -48,6 +77,7 @@ const ProductDetailPage = () => {
 
         return
       }
+      setIsLoading(false)
       loadProductData()
     })
   }, [loadProductData])
@@ -58,15 +88,16 @@ const ProductDetailPage = () => {
     setIsOpenConfirmationModal(true)
   }, [isLoggedInUser])
   const loadProductData = useCallback(async () => {
+    setIsLoading(true)
     try {
       const { succeeded, data } = await productApi.postProductById(
         params.productId
       )
       if (!succeeded || !data || !data.product || data.product.status !== 0)
-        return setIsNotFound(true)
-      return setProduct(data.product)
+        setIsNotFound(true)
+      else setProduct(data.product)
     } catch (err) {
-      return setIsNotFound(true)
+      setIsNotFound(true)
     } finally {
       setIsLoading(false)
     }
@@ -100,6 +131,8 @@ const ProductDetailPage = () => {
       id,
       categoryId,
       categoryTitle,
+      description,
+      bidHistory,
       title,
       avatarUrl,
       imageUrls,
@@ -150,7 +183,19 @@ const ProductDetailPage = () => {
           }?`}
           title='Xác nhận đấu giá'
         />
-
+        <ConfirmationModal
+          open={isOpenRejectModal}
+          onCancel={() => {
+            setRejectBidId(-1)
+            setIsOpenRejectModal(false)
+          }}
+          onOK={() => {
+            setIsOpenRejectModal(false)
+            onReject()
+          }}
+          message='Bạn có thật sự muốn từ chối lượt đấu giá này?'
+          title='Xác nhận từ chối lượt ra giá!'
+        />
         <Container className='mt-14'>
           <div className='product-detail-head-info'>
             <p className='product-detail-head-title'>{title}</p>
@@ -230,7 +275,7 @@ const ProductDetailPage = () => {
                     'bid-action-add-watch-list-btn ml-3 alt ',
                     isWatched && 'border-red-400 text-red-400'
                   )}
-                  data-tooltip='THÊM YÊU THÍCH'
+                  data-tooltip={ isWatched ? 'BỎ YÊU THÍCH' : 'THÊM YÊU THÍCH'}
                   onClick={onToggleWatchList}
                   disabled={isTogglingWatchList === product?.id}
                 >
@@ -267,8 +312,67 @@ const ProductDetailPage = () => {
               )}
             </div>
           </div>
-          <div style={{ height: '300px' }}>
-            <p>Phần dưới ....</p>
+          <div style={{ marginTop: '20px', }} className='flex'>
+            <div style={{ flex: 2, }}>
+              <p style={{ 
+                fontWeight: 'bold', 
+                fontSize: '22px', 
+                textAlign: 'center', 
+                borderTop: '1px solid #ddd',
+                borderBottom: '1px solid #ddd'
+              }}>Mô tả sản phẩm</p>
+              <div style={{borderRight: '1px solid #ddd', height: '100%'}} dangerouslySetInnerHTML={{__html: description}}></div>
+            </div>
+            <div style={{ flex: 3 }}>
+              <p style={{ 
+                fontWeight: 'bold', 
+                fontSize: '22px', 
+                textAlign: 'center', 
+                borderTop: '1px solid #ddd',
+                borderBottom: '1px solid #ddd'
+              }}>Lịch sử đấu giá</p>
+              <div style={{ display: 'flex', justifyContent: 'center'}}>
+                  {!!bidHistory && !!bidHistory.length ? 
+                    <table id='bidHistTable' style={{ margin: '20px auto'}} >
+                      <thead >
+                        <tr>
+                          <th className='bid-hist-cell'>Thời gian</th>
+                          <th className='bid-hist-cell'>Người ra giá</th>
+                          <th className='bid-hist-cell'>Số tiền</th>
+                          {currentUser && currentUser.role === 1 && <th className='bid-hist-cell'></th>}
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {bidHistory.map(his => (
+                        <tr key={his.id}>
+                          <td style={getCellStyle(his)} className='bid-hist-cell'>{moment(his.createdAt).format('DD/MM/YYYY hh:mm:ss')}</td>
+                          <td style={getCellStyle(his)} className='bid-hist-cell'>{his.displayBiderName}</td>
+                          <td style={getCellStyle(his)} className='bid-hist-cell'>{numeral(his.price).format('0,0')}</td>
+                          {currentUser && currentUser.role === 1 && (
+                            his.status === 1 
+                              ? <td style={{
+                                ...getCellStyle(his), 
+                                textDecoration: 'none'
+                              }} className='bid-hist-cell'>Đã từ chối</td>
+                              : <td className='bid-hist-cell'><button onClick={onRejectBid} bid-id={his.id} style={{
+                                color: '#fff',
+                                padding: '5px',
+                                borderRadius: '5px',
+                                background: '#ff5252'
+                              }} type='button'><IconClear />Từ chối</button></td>
+                            
+                          )}
+                          
+                        </tr>
+                      ))}
+                      </tbody>
+                    </table>
+                    : currentUser && currentUser.id ? 
+                      <p style={{ marginTop: '1rem', fontStyle: 'italic' }}>Chưa có lượt ra giá nào!</p> : 
+                      <p style={{ marginTop: '1rem', fontStyle: 'italic' }}>Vui lòng đăng nhập để xem lịch sử đấu giá!</p>
+                  }
+              </div>
+            </div>
           </div>
           <ImgListModal
             pRef={imgListModal}
@@ -280,6 +384,14 @@ const ProductDetailPage = () => {
   }
 
   return <Container className='mt-14'></Container>
+}
+
+function getCellStyle(his) {
+  return his.status === 1 ? {
+    fontStyle: 'italic',
+    textDecoration:'line-through',
+    color: '#ff5252'
+  } : {}
 }
 
 export default ProductDetailPage

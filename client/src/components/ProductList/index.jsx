@@ -141,7 +141,7 @@ const ProductItem = ({ product, formated }) => {
       <div className='product-item-info-line mb-4'>
         <p>Tổng lượt ra giá:</p>
         <p>
-          <strong>{!!totalBid && totalBid}</strong> lượt
+          <strong>{totalBid || 0}</strong> lượt
         </p>
       </div>
       <div className='product-item-bidder-line'>
