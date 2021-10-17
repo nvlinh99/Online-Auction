@@ -8,6 +8,7 @@ const path = require('path')
 const configuration = require('./configuration')
 const model = require('./model')
 const logger = require('./logger').getLogger('Server')
+const socketService = require('./service/socket-service')
 
 // eslint-disable-next-line no-underscore-dangle
 global.__staticPath = path.join(__dirname, '..', 'static')
@@ -18,6 +19,8 @@ exports.start = async function () {
 
   // create express app - apply glocal middleware
   const app = express()
+  const server = require('http').Server(app)
+  socketService.init(server)
   app.use(require('helmet')())
   if (configuration.compression.enable) app.use(compression(configuration.compression.opts))
   if (configuration.cors.enable) app.use(cors(configuration.cors.opts))
@@ -60,7 +63,7 @@ exports.start = async function () {
 
   // start server
   await new Promise((res) => {
-    app.listen(configuration.server.port, () => {
+    server.listen(configuration.server.port, () => {
       logger.info(`Server is running @ PORT: ${configuration.server.port}`)
       res()
     })

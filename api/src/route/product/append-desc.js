@@ -9,6 +9,7 @@ const genRequestValidation = require('../../middleware/gen-request-validation')
 const authMdw = require('../../middleware/auth')
 const policyMdw = require('../../middleware/require-role')
 const { USER_ROLE, } = require('../../constant/user')
+const socketEmitter = require('../../service/socket-service').emitter
 
 const requestValidationHandler = genRequestValidation({
   params: joi
@@ -48,8 +49,15 @@ const handler = async (req, res) => {
     new: true,
   })
   if (!updated) return res.reqF('Thêm mô tả sản phẩm thất bại.')
-  return res.reqS({
+  
+  res.reqS({
     description: updated.description,
+  })
+
+  socketEmitter.emit(`product-change-${productId}`, {
+    product: {
+      description: updated.description,
+    },
   })
 }
 
