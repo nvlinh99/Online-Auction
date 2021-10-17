@@ -28,6 +28,7 @@ import useLogin from 'hooks/useLogin'
 import { toggleWatchListFromApi } from 'store/user/action'
 import classNames from 'classnames'
 import { toast } from 'react-toastify'
+import * as socketService from 'services/socket-service'
 
 const ProductDetailPage = () => {
   const isTogglingWatchList = useSelector(selectIsTogglingWatchList)
@@ -112,6 +113,19 @@ const ProductDetailPage = () => {
   useEffect(() => {
     loadProductData()
   }, [loadProductData])
+  useEffect(() => {
+    const socket = socketService.subProductChange({
+      productId: params.productId,
+      cb: (data) => {
+        setProduct((old) => ({
+          ...old,
+          ...data.product
+        }))
+      }
+    })
+
+    return socket.disconnect
+  }, [params.productId]) 
   const isWatched = useMemo(() => {
     return currentUser?.watchList?.map((i) => i.productId).includes(product?.id)
   }, [currentUser, product])
@@ -126,6 +140,7 @@ const ProductDetailPage = () => {
         </pproduct>
       </Container>
     )
+
   if (product) {
     const {
       id,
