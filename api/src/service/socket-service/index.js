@@ -13,6 +13,7 @@ exports.init = function (server) {
       methods: ['GET', 'POST',],
     },
   })
+  // product-change event
   const productChangeNsp = io.of('/product-change')
   productChangeNsp.use(authMdw.authorizeOptional)
   productChangeNsp.on('connection', (socket) => {
@@ -24,5 +25,15 @@ exports.init = function (server) {
     })
   })
 
+  // const productChangeNsp = io.of('/product-change')
+  // productChangeNsp.use(authMdw.authorizeOptional)
+  // productChangeNsp.on('connection', (socket) => {
+  //   const productId = _.get(socket, 'handshake.query.productId', null)
+  //   if (!productId) return
+  //   const eventName = `product-change-${productId}`
+  //   emitter.on(eventName, (data) => {
+  //     socket.emit(eventName, data)
+  //   })
+  // })
   return io
 }

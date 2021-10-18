@@ -2,9 +2,14 @@ const joi = require('joi')
 const md5 = require('md5')
 const moment  = require('moment')
 const _ = require('lodash')
-const { Product:ProductModel,Bid:BidModel, } = require('../../model')
+const { 
+  Product: ProductModel, 
+  Bid:BidModel, 
+  User: UserModel, 
+} = require('../../model')
 const configuration = require('../../configuration')
 const genRequestValidation = require('../../middleware/gen-request-validation')
+const socketEmitter = require('../../service/socket-service').emitter
 
 const requestValidationHandler = genRequestValidation({
   body: joi
@@ -82,6 +87,24 @@ const handler = async (req, res) => {
     code: 1000,
     data: {
       message: 'Đấu giá thành công',
+    },
+  })
+
+  const bidderInfo = await UserModel.findOne({ id: userId, }).lean()
+  const productInfo = await ProductModel.findOne({ id: productId, }).lean()
+  let winner
+  socketEmitter.emit(`product-change-${productId}`, {
+    product: {
+      currentPrice: productInfo.currentPrice,
+      expiredDate: productInfo.currentPrice,
+      biderInfo: {
+        id: bidderInfo.id,
+        firstName: bidderInfo.firstName,
+        lastName: bidderInfo.lastName,
+        rateTotal: bidderInfo.rateTotal,
+        rateIncrease: bidderInfo.rateIncrease,
+        rateDecrease: bidderInfo.rateDecrease,
+      },
     },
   })
 }
