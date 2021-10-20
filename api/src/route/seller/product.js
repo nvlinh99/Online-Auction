@@ -18,3 +18,19 @@ exports.getAllProduct = async (req, res) => {
     }
   })
 }
+
+exports.getProductSold = async (req, res) => {
+  const { user, } = req
+
+  const listWinner = await ProductModel.find({ sellerId: user.id, status: 1, winnerId:  { $ne: null, }, })
+  if (!listWinner) {
+    res.json({
+      code: -1000,
+      message: 'Không tìm thấy danh sách sản phẩm có người chiến thắng!',
+    })
+  }
+  res.json({
+    code: 1000,
+    data: listWinner,
+  })
+}

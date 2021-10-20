@@ -13,4 +13,8 @@ sellerRouter
   .route('/product')
   .get(productHandler.getAllProduct)
 
+sellerRouter
+  .route('/winner')
+  .get(productHandler.getProductSold)
+
 exports.router = sellerRouter
