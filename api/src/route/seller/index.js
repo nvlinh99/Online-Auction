@@ -26,4 +26,8 @@ sellerRouter
   .route('/winner/down/:bidderId')
   .put(ratingHandler.ratingDown)
 
+sellerRouter
+  .route('/winner/cancel/:bidderId')
+  .put(ratingHandler.cancelTransaction)
+
 exports.router = sellerRouter
