@@ -19,6 +19,7 @@ watchListSchema.virtual("product", {
   ref: "Product",
   localField: "productId",
   foreignField: "id",
+  justOne: true,
 })
 watchListSchema.plugin(mongoosePaginate)
 module.exports = mongoose.model("WatchList", watchListSchema)
