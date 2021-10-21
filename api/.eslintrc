@@ -13,9 +13,7 @@
     "node": true
   },
   "globals": {},
-  "extends": [
-    "airbnb-base"
-  ],
+  "extends": ["airbnb-base"],
   "rules": {
     "no-use-before-define": "off",
     "prefer-arrow-callback": "off",
@@ -23,25 +21,16 @@
     "no-underscore-dangle": [
       2,
       {
-        "allow": [
-          "__",
-          "_id"
-        ]
+        "allow": ["__", "_id"]
       }
     ],
-    "comma-dangle": [
-      "error",
-      "always"
-    ],
+    "comma-dangle": 0,
     "comma-spacing": "off",
     "key-spacing": "off",
     "consistent-return": "off",
     "array-bracket-spacing": "off",
     "func-names": "off",
-    "semi": [
-      "error",
-      "never"
-    ],
+    "semi": ["error", "never"],
     "global-require": 0,
     "arrow-body-style": 0,
     "no-trailing-spaces": 0,
@@ -52,16 +41,9 @@
         "SwitchCase": 1
       }
     ],
-    "no-var": [
-      "warn"
-    ],
-    "no-unused-vars": [
-      "warn"
-    ],
-    "quotes": [
-      "warn",
-      "single"
-    ],
+    "no-var": ["warn"],
+    "no-unused-vars": ["warn"],
+    "quotes": ["warn", "single"],
     "linebreak-style": 0,
     "no-multi-spaces": "off",
     "no-multiple-empty-lines": [
@@ -70,10 +52,7 @@
         "max": 1
       }
     ],
-    "max-len": [
-      "warn",
-      300
-    ],
+    "max-len": ["warn", 300],
     "no-mixed-operators": "off",
     "no-param-reassign": "off",
     "class-methods-use-this": "off",
