@@ -1,6 +1,7 @@
 import axios from 'axios'
 import qs from 'qs'
 import { logout } from 'store/user/action'
+import { getLoginUrl } from 'utils/helpers/urlHelper'
 import { userToken } from '../constants/GlobalConstants'
 
 export function authHeader() {
@@ -44,6 +45,8 @@ api.interceptors.response.use(
     // Do something with response error
     if (error.response?.status === 401) {
       logout()
+      location.href = getLoginUrl(location)
+      return {}
     }
     return Promise.reject(error)
   }
