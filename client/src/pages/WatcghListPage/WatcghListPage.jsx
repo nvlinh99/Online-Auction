@@ -27,12 +27,14 @@ import { toggleWatchListFromApi } from 'store/user/action'
 const WatcghListPage = () => {
   const isTogglingWatchList = useSelector(selectIsTogglingWatchList)
 
-  const currentUser = useSelector(selectCurrentUser)
   const [products, setProducts] = useState({})
   const [isLoading, setIsLoading] = useState(false)
-  const { isLoggedInUser } = useLogin()
+  const { isLoggedInUser, isLoggingUser, currentUser } = useLogin()
   const { query, onChange } = useQuery()
   const loaddData = useCallback(async () => {
+    if (!query) {
+      return
+    }
     try {
       setIsLoading(true)
       const { succeeded, data } = await watchListApi.getWatchList({
