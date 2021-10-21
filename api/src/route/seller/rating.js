@@ -4,7 +4,7 @@ const ProductModel = require('../../model/product')
 const RatingModel = require('../../model/rating')
 const UserModel = require('../../model/user')
 
-const requestValidationHandler = genRequestValidation({
+exports.requestValidationHandler = genRequestValidation({
   body: joi
     .object({
       comment: joi.string().trim().required().invalid('', null),
@@ -106,6 +106,9 @@ exports.cancelTransaction = async (req, res) => {
   })
 }
 
-module.exports = [
-  requestValidationHandler,
-]
+// module.exports = [
+//   requestValidationHandler,
+//   ratingUp,
+//   ratingDown,
+//   cancelTransaction,
+// ]
