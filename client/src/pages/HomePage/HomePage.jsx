@@ -22,6 +22,14 @@ import ProductListSlider from 'components/ProductListSlider'
 import { productList as dummyProductList } from './dummy-data'
 import './home-page.css'
 import { default as BidLine } from 'assets/svgs/bid-line.svg'
+import { productAPI } from 'services'
+import LdsLoading from 'components/Loading/LdsLoading'
+import useLogin from 'hooks/useLogin'
+import { toggleWatchListFromApi } from 'store/user/action'
+import {
+  selectCurrentUser,
+  selectIsTogglingWatchList,
+} from 'store/user/selector'
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -111,6 +119,20 @@ const Spinner = ({ style }) => {
 }
 
 const HomePage = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const { isLoggedInUser } = useLogin()
+  const currentUser = useSelector(selectCurrentUser)
+  const isTogglingWatchList = useSelector(selectIsTogglingWatchList)
+
+  const onToggleWatchList = useCallback(
+    async (productId) => {
+      if (!isLoggedInUser() || !productId) {
+        return
+      }
+      toggleWatchListFromApi({ productId })
+    },
+    [isLoggedInUser]
+  )
   useEffect(() => {
     document
       .querySelector('#bidLineRed svg path:nth-child(2)')
@@ -123,6 +145,25 @@ const HomePage = () => {
       .setAttribute('fill', '#3a59f5')
   }, [])
 
+  const [topExpiredProductList, setTopExpiredProductList] = useState([])
+  const [topBidProductList, setTopBidProductList] = useState([])
+  const [topPriceProductList, setTopPriceProductList] = useState([])
+  useEffect(async () => {
+    try {
+      setIsLoading(true)
+      const { succeeded, data = {} } = await productAPI.getTopProducts()
+      if (succeeded) {
+        const { topExpireProducts, topBidedProducts, topPriceProducts } = data
+        setTopExpiredProductList(topExpireProducts || [])
+        setTopBidProductList(topBidedProducts || [])
+        setTopPriceProductList(topPriceProducts || [])
+      }
+    } catch (err) {
+      // console.log(err)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [])
   return (
     <div
       style={{
@@ -137,13 +178,20 @@ const HomePage = () => {
           paddingTop: '5rem',
         }}
       >
+        <LdsLoading isFullscreen isLoading={isLoading} />
+
         <div className='cnt-top-product mb-20'>
           <h3 className='text-center'>sản phẩm gần kết thúc</h3>
           <div className='flex justify-center  mb-2' id='bidLineRed'>
             <BidLine />
           </div>
           <div id='topExpiredProducts'>
-            <ProductListSlider productList={dummyProductList} />
+            <ProductListSlider
+              productList={topExpiredProductList}
+              watchList={currentUser?.watchList}
+              onToggleWatchList={onToggleWatchList}
+              isTogglingWatchList={isTogglingWatchList}
+            />
           </div>
         </div>
 
@@ -153,7 +201,12 @@ const HomePage = () => {
             <BidLine />
           </div>
           <div id='topBidedProducts'>
-            <ProductListSlider productList={dummyProductList} />
+            <ProductListSlider
+              productList={topBidProductList}
+              watchList={currentUser?.watchList}
+              onToggleWatchList={onToggleWatchList}
+              isTogglingWatchList={isTogglingWatchList}
+            />
           </div>
         </div>
 
@@ -163,7 +216,12 @@ const HomePage = () => {
             <BidLine />
           </div>
           <div id='topPriceProducts'>
-            <ProductListSlider productList={dummyProductList} />
+            <ProductListSlider
+              productList={topPriceProductList}
+              watchList={currentUser?.watchList}
+              onToggleWatchList={onToggleWatchList}
+              isTogglingWatchList={isTogglingWatchList}
+            />
           </div>
         </div>
       </Container>

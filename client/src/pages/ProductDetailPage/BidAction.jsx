@@ -1,15 +1,56 @@
-import { useCallback, useState } from 'react'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react'
 import numeral from 'numeral'
 import _ from 'lodash'
 import './index.css'
+import { toast } from 'react-toastify'
+import { productAPI } from 'services'
 
 const REG_ONLY_NUMER = /^[0-9,]+$/i
 
-const BidAction = ({ initBidPrice, stepPrice }) => {
+const BidAction = forwardRef(({ initBidPrice, stepPrice, product }, ref) => {
   const formatedInitPrice = numeral(initBidPrice).format('0,0')
   const [price, setPrice] = useState(formatedInitPrice)
   const [isSmallerPrice, setIsSmallerPrice] = useState(false)
-
+  const getPrice = useCallback(() => price, [price])
+  const onBid = useCallback(
+    async (cb) => {
+      const priceNum = _.toNumber(price || ''.split(',').join(''))
+      if (priceNum < initBidPrice) {
+        toast.error('Giá không hợp lệ')
+        return cb && cb(false)
+      }
+      try {
+        if (!product.id) {
+          toast.error('Sản phẩm không tồn tại')
+          return cb && cb(false)
+        }
+        const { succeeded, data } = await productAPI.bidProduct({
+          productId: product.id,
+          price: priceNum,
+        })
+        if (!succeeded) {
+          toast.error(data.message)
+          return cb && cb(false)
+        }
+        toast.success(data.message)
+        return cb && cb(succeeded)
+      } catch (error) {
+        toast.error(error)
+        return cb && cb(false)
+      }
+    },
+    [price]
+  )
+  useImperativeHandle(ref, () => ({
+    onBid,
+    getPrice,
+  }))
   const checkValidValue = useCallback(
     (v) => {
       const passReg = REG_ONLY_NUMER.test(v)
@@ -26,7 +67,6 @@ const BidAction = ({ initBidPrice, stepPrice }) => {
   const onPriceChange = useCallback(
     (e) => {
       const [code, value] = checkValidValue(e.target.value)
-      console.log(code, value, e.target.value)
       if (code === 1) return
       if (code === 2) setIsSmallerPrice(true)
       if (code === 3) setIsSmallerPrice(false)
@@ -34,6 +74,9 @@ const BidAction = ({ initBidPrice, stepPrice }) => {
     },
     [checkValidValue]
   )
+  useEffect(() => {
+    setPrice(initBidPrice)
+  }, [initBidPrice])
   return (
     <>
       <div className='bid-action-container'>
@@ -52,6 +95,6 @@ const BidAction = ({ initBidPrice, stepPrice }) => {
       )}
     </>
   )
-}
-
+})
+BidAction.displayName = 'BidAction'
 export default BidAction

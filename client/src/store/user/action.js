@@ -1,5 +1,6 @@
 import { userToken } from 'constants/GlobalConstants'
-import { userAPI } from 'services'
+import { toast } from 'react-toastify'
+import { userAPI, watchListApi } from 'services'
 import { dispatch } from 'store/store'
 import { action } from './reducer'
 
@@ -17,6 +18,25 @@ export const getCurrentUserFromAPI = async () => {
   } finally {
     dispatch(action.setCurrentUserLoading({ isLoading: false }))
   }
+}
+export const toggleWatchListFromApi = async ({ productId }, cb) => {
+  dispatch(action.setIsTogglingWatchList({ productId }))
+  try {
+    const { succeeded, data } = await watchListApi.toggleWatchList({
+      productId,
+    })
+    if (!succeeded) {
+      return toast.error(data.message)
+    }
+    await getCurrentUserFromAPI()
+    cb?.()
+    toast.success(data.message)
+  } catch (error) {
+    toast.error(error.message)
+  } finally {
+    dispatch(action.setIsTogglingWatchList({ productId: '' }))
+  }
+  return true
 }
 export const logout = async () => {
   userToken('')

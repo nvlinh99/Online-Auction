@@ -30,10 +30,13 @@ export function formatProductItem(product) {
 
   // basic info
   result.id = _.get(product, 'id', null)
-  result.title = _.get(product, 'title')
+  result.title = _.get(product, 'name')
+  result.name = _.get(product, 'name')
+  result.description = _.get(product, 'description')
   result.avatarUrl = _.get(product, 'avatarUrl', null)
   result.imageUrls = _.get(product, 'imageUrls', null)
   result.totalBid = _.get(product, 'totalBid', null)
+  result.bidHistory = _.get(product, 'bidHistory') || []
 
   // cate info
   result.categoryId = _.get(product, 'categoryInfo.id', null)
