@@ -22,15 +22,7 @@ const routeConfig = [
         element: <HomePage />,
         outlet: 'HomePage',
       },
-      {
-        path: '/user',
-        children: [
-          {
-            path: 'watchlist',
-            element: <WatcghListPage />,
-          },
-        ],
-      },
+
       {
         path: 'products',
 
