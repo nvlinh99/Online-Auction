@@ -15,12 +15,25 @@ const sliderSettings = {
   // autoplay: true,
 }
 
-export default function ProductListSlider({ productList, formated }) {
+export default function ProductListSlider({
+  productList,
+  formated,
+  watchList,
+  onToggleWatchList,
+  isTogglingWatchList,
+}) {
   productList = formated ? productList : formatProductList(productList)
   return (
     <Slider {...sliderSettings}>
       {productList?.map((prod) => (
-        <ProductItem key={prod.id} product={prod} formated={true} />
+        <ProductItem
+          key={prod.id}
+          product={prod}
+          formated={true}
+          watchList={watchList}
+          onToggleWatchList={onToggleWatchList}
+          isTogglingWatchList={isTogglingWatchList}
+        />
       ))}
     </Slider>
   )

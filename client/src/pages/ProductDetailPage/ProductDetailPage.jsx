@@ -50,7 +50,6 @@ const ProductDetailPage = () => {
     const bidId = +e.target.getAttribute('bid-id')
     setRejectBidId(bidId)
     setIsOpenRejectModal(true)
-
   })
   const onReject = useCallback(async () => {
     setIsLoading(true)
@@ -61,7 +60,9 @@ const ProductDetailPage = () => {
         toast.success('Từ chối lượt ra giá thành công.')
         loadProductData()
       } else {
-        toast.error(data && data.message ? data.message : 'Từ chối lượt ra giá thất bại!!')
+        toast.error(
+          data && data.message ? data.message : 'Từ chối lượt ra giá thất bại!!'
+        )
       }
     } catch (err) {
       setIsLoading(false)
@@ -119,13 +120,13 @@ const ProductDetailPage = () => {
       cb: (data) => {
         setProduct((old) => ({
           ...old,
-          ...data.product
+          ...data.product,
         }))
-      }
+      },
     })
 
     return socket.disconnect
-  }, [params.productId]) 
+  }, [params.productId])
   const isWatched = useMemo(() => {
     return currentUser?.watchList?.map((i) => i.productId).includes(product?.id)
   }, [currentUser, product])
@@ -290,7 +291,7 @@ const ProductDetailPage = () => {
                     'bid-action-add-watch-list-btn ml-3 alt ',
                     isWatched && 'border-red-400 text-red-400'
                   )}
-                  data-tooltip={ isWatched ? 'BỎ YÊU THÍCH' : 'THÊM YÊU THÍCH'}
+                  data-tooltip={isWatched ? 'BỎ YÊU THÍCH' : 'THÊM YÊU THÍCH'}
                   onClick={onToggleWatchList}
                   disabled={isTogglingWatchList === product?.id}
                 >
@@ -327,65 +328,115 @@ const ProductDetailPage = () => {
               )}
             </div>
           </div>
-          <div style={{ marginTop: '20px', }} className='flex'>
-            <div style={{ flex: 2, }}>
-              <p style={{ 
-                fontWeight: 'bold', 
-                fontSize: '22px', 
-                textAlign: 'center', 
-                borderTop: '1px solid #ddd',
-                borderBottom: '1px solid #ddd'
-              }}>Mô tả sản phẩm</p>
-              <div style={{borderRight: '1px solid #ddd', height: '100%'}} dangerouslySetInnerHTML={{__html: description}}></div>
+          <div style={{ marginTop: '20px' }} className='flex'>
+            <div style={{ flex: 2 }}>
+              <p
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: '22px',
+                  textAlign: 'center',
+                  borderTop: '1px solid #ddd',
+                  borderBottom: '1px solid #ddd',
+                }}
+              >
+                Mô tả sản phẩm
+              </p>
+              <div
+                style={{ borderRight: '1px solid #ddd', height: '100%' }}
+                dangerouslySetInnerHTML={{ __html: description }}
+              ></div>
             </div>
             <div style={{ flex: 3 }}>
-              <p style={{ 
-                fontWeight: 'bold', 
-                fontSize: '22px', 
-                textAlign: 'center', 
-                borderTop: '1px solid #ddd',
-                borderBottom: '1px solid #ddd'
-              }}>Lịch sử đấu giá</p>
-              <div style={{ display: 'flex', justifyContent: 'center'}}>
-                  {!!bidHistory && !!bidHistory.length ? 
-                    <table id='bidHistTable' style={{ margin: '20px auto'}} >
-                      <thead >
-                        <tr>
-                          <th className='bid-hist-cell'>Thời gian</th>
-                          <th className='bid-hist-cell'>Người ra giá</th>
-                          <th className='bid-hist-cell'>Số tiền</th>
-                          {currentUser && currentUser.role === 1 && <th className='bid-hist-cell'></th>}
-                        </tr>
-                      </thead>
-                      <tbody>
-                      {bidHistory.map(his => (
+              <p
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: '22px',
+                  textAlign: 'center',
+                  borderTop: '1px solid #ddd',
+                  borderBottom: '1px solid #ddd',
+                }}
+              >
+                Lịch sử đấu giá
+              </p>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                {!!bidHistory && !!bidHistory.length ? (
+                  <table id='bidHistTable' style={{ margin: '20px auto' }}>
+                    <thead>
+                      <tr>
+                        <th className='bid-hist-cell'>Thời gian</th>
+                        <th className='bid-hist-cell'>Người ra giá</th>
+                        <th className='bid-hist-cell'>Số tiền</th>
+                        {currentUser && currentUser.role === 1 && (
+                          <th className='bid-hist-cell'></th>
+                        )}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {bidHistory.map((his) => (
                         <tr key={his.id}>
-                          <td style={getCellStyle(his)} className='bid-hist-cell'>{moment(his.createdAt).format('DD/MM/YYYY hh:mm:ss')}</td>
-                          <td style={getCellStyle(his)} className='bid-hist-cell'>{his.displayBiderName}</td>
-                          <td style={getCellStyle(his)} className='bid-hist-cell'>{numeral(his.price).format('0,0')}</td>
-                          {currentUser && currentUser.role === 1 && (
-                            his.status === 1 
-                              ? <td style={{
-                                ...getCellStyle(his), 
-                                textDecoration: 'none'
-                              }} className='bid-hist-cell'>Đã từ chối</td>
-                              : <td className='bid-hist-cell'><button onClick={onRejectBid} bid-id={his.id} style={{
-                                color: '#fff',
-                                padding: '5px',
-                                borderRadius: '5px',
-                                background: '#ff5252'
-                              }} type='button'><IconClear />Từ chối</button></td>
-                            
-                          )}
-                          
+                          <td
+                            style={getCellStyle(his)}
+                            className='bid-hist-cell'
+                          >
+                            {moment(his.createdAt).format(
+                              'DD/MM/YYYY hh:mm:ss'
+                            )}
+                          </td>
+                          <td
+                            style={getCellStyle(his)}
+                            className='bid-hist-cell'
+                          >
+                            {his.displayBiderName}
+                          </td>
+                          <td
+                            style={getCellStyle(his)}
+                            className='bid-hist-cell'
+                          >
+                            {numeral(his.price).format('0,0')}
+                          </td>
+                          {currentUser &&
+                            currentUser.role === 1 &&
+                            (his.status === 1 ? (
+                              <td
+                                style={{
+                                  ...getCellStyle(his),
+                                  textDecoration: 'none',
+                                }}
+                                className='bid-hist-cell'
+                              >
+                                Đã từ chối
+                              </td>
+                            ) : (
+                              <td className='bid-hist-cell'>
+                                <button
+                                  onClick={onRejectBid}
+                                  bid-id={his.id}
+                                  style={{
+                                    color: '#fff',
+                                    padding: '5px',
+                                    borderRadius: '5px',
+                                    background: '#ff5252',
+                                  }}
+                                  type='button'
+                                >
+                                  <IconClear />
+                                  Từ chối
+                                </button>
+                              </td>
+                            ))}
                         </tr>
                       ))}
-                      </tbody>
-                    </table>
-                    : currentUser && currentUser.id ? 
-                      <p style={{ marginTop: '1rem', fontStyle: 'italic' }}>Chưa có lượt ra giá nào!</p> : 
-                      <p style={{ marginTop: '1rem', fontStyle: 'italic' }}>Vui lòng đăng nhập để xem lịch sử đấu giá!</p>
-                  }
+                    </tbody>
+                  </table>
+                ) : currentUser && currentUser.id ? (
+                  <p style={{ marginTop: '1rem', fontStyle: 'italic' }}>
+                    Chưa có lượt ra giá nào!
+                  </p>
+                ) : (
+                  <p style={{ marginTop: '1rem', fontStyle: 'italic' }}>
+                    Vui lòng đăng nhập để xem lịch sử đấu giá!
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -402,11 +453,13 @@ const ProductDetailPage = () => {
 }
 
 function getCellStyle(his) {
-  return his.status === 1 ? {
-    fontStyle: 'italic',
-    textDecoration:'line-through',
-    color: '#ff5252'
-  } : {}
+  return his.status === 1
+    ? {
+        fontStyle: 'italic',
+        textDecoration: 'line-through',
+        color: '#ff5252',
+      }
+    : {}
 }
 
 export default ProductDetailPage
