@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom'
 import { logout } from 'store/user/action'
 import { LOGIN_PATH } from 'constants/routeConstants'
 import { USER_ROLE } from 'constants/userConstants'
+import { FavoriteBorder, Favorite } from '@mui/icons-material'
 
 const HeaderUserInfo = ({ currentUser }) => {
   const navigate = useNavigate()
@@ -60,7 +61,7 @@ const HeaderUserInfo = ({ currentUser }) => {
               overflow: 'visible',
               filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
               mt: 1.5,
-              width: '150px',
+              // width: '150px',
               '&:before': {
                 content: '""',
                 display: 'block',
@@ -79,6 +80,16 @@ const HeaderUserInfo = ({ currentUser }) => {
           <MenuItem onClick={handleClose}>
             <PersonIcon />
             Thông tin
+          </MenuItem>
+          <Divider />
+          <MenuItem
+            onClick={() => {
+              handleClose()
+              navigate('/user/watchlist')
+            }}
+          >
+            <Favorite />
+            Danh sách yêu thích
           </MenuItem>
           <Divider />
           <MenuItem onClick={onLogout}>

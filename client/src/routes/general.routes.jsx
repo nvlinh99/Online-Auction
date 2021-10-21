@@ -9,6 +9,7 @@ import RegisterConfirmationPage from 'pages/RegisterPage/RegisterConfirmationPag
 import LoginPage from 'pages/LoginPage'
 import UpdatePasswordPage from 'pages/UpdatePasswordPage'
 import UploadFile from 'components/UploadFile'
+import WatcghListPage from 'pages/WatcghListPage'
 
 const routeConfig = [
   {
@@ -20,6 +21,15 @@ const routeConfig = [
         path: '',
         element: <HomePage />,
         outlet: 'HomePage',
+      },
+      {
+        path: '/user',
+        children: [
+          {
+            path: 'watchlist',
+            element: <WatcghListPage />,
+          },
+        ],
       },
       {
         path: 'products',

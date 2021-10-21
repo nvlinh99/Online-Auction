@@ -19,7 +19,7 @@ export const getCurrentUserFromAPI = async () => {
     dispatch(action.setCurrentUserLoading({ isLoading: false }))
   }
 }
-export const toggleWatchListFromApi = async ({ productId }) => {
+export const toggleWatchListFromApi = async ({ productId }, cb) => {
   dispatch(action.setIsTogglingWatchList({ productId }))
   try {
     const { succeeded, data } = await watchListApi.toggleWatchList({
@@ -29,6 +29,7 @@ export const toggleWatchListFromApi = async ({ productId }) => {
       return toast.error(data.message)
     }
     await getCurrentUserFromAPI()
+    cb?.()
     toast.success(data.message)
   } catch (error) {
     toast.error(error.message)
