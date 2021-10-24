@@ -18,6 +18,7 @@ import { USER_ROLE } from 'constants/userConstants'
 import { openModal, closeModal } from 'store/postProdModal/action'
 import useQuery from 'hooks/useQuery'
 import { getProductsFromAPI } from 'store/product/action'
+import NotiArea from 'components/NotiArea'
 
 const Logo = () => {
   return (
@@ -183,6 +184,7 @@ const Header = () => {
                 <span>Đăng sản phẩm</span>
               </button>
             )}
+            {!!currentUser && <NotiArea></NotiArea>}
             {currentUser ? (
               <HeaderUserInfo currentUser={currentUser} />
             ) : isCurrentUserLoading ? (
