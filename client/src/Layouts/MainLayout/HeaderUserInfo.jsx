@@ -12,7 +12,8 @@ import { logout } from 'store/user/action'
 import { LOGIN_PATH } from 'constants/routeConstants'
 import { USER_ROLE } from 'constants/userConstants'
 import { FavoriteBorder, Favorite } from '@mui/icons-material'
-import { RiUserStarFill } from 'react-icons/ri'
+import { RiUserStarFill, RiAuctionFill } from 'react-icons/ri'
+import { GiPodiumWinner } from 'react-icons/gi'
 import ConfirmationModal from 'components/Modal/ConfirmationModal'
 import { bidderApi } from 'services'
 import { toast } from 'react-toastify'
@@ -118,6 +119,15 @@ const HeaderUserInfo = ({ currentUser }) => {
           <Divider />
           <MenuItem
             onClick={() => {
+              setIsOpenConfirmationModal(true)
+            }}
+          >
+            <RiUserStarFill className='!w-5 !h-5 mr-1' />
+            Trở thành người bán
+          </MenuItem>
+          <Divider />
+          <MenuItem
+            onClick={() => {
               handleClose()
               navigate('/user/watchlist')
             }}
@@ -127,13 +137,24 @@ const HeaderUserInfo = ({ currentUser }) => {
           </MenuItem>
           <MenuItem
             onClick={() => {
-              setIsOpenConfirmationModal(true)
+              handleClose()
+              navigate('/user/bidding-products')
             }}
           >
-            <RiUserStarFill className='!w-5 !h-5 mr-1' />
-            Trở thành người bán
+            <RiAuctionFill className='!w-5 !h-5 mr-1' />
+            Danh sách đang đấu giá
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleClose()
+              navigate('/user/won-products')
+            }}
+          >
+            <GiPodiumWinner className='!w-5 !h-5 mr-1' />
+            Danh sách đã chiến thắng
           </MenuItem>
           <Divider />
+
           <MenuItem onClick={onLogout}>
             <LogoutIcon className='!w-5 !h-5 mr-1' />
             Đăng xuất
