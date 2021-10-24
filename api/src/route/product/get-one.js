@@ -41,7 +41,7 @@ const handler = async (req, res) => {
     const filter = { productId, }
     if (user.id !== product.sellerId) filter.status = 0
     jobs.push(
-      BidModel.find(filter).sort({ price: -1, createdAt: -1, }).populate('bidder').lean()
+      BidModel.find(filter).sort({ createdAt: -1, price: -1, }).populate('bidder').lean()
     ) 
   }
   const [

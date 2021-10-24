@@ -37,9 +37,11 @@ exports.newBid = async function (product, bid) {
     )
     .populate('bidder').lean()
 
-  _.forEach(ortherBidList, (ortherBid) => {
+  const userIdList = _.keys(_.groupBy(ortherBidList, 'userId'))
+  
+  _.forEach(userIdList, (userId) => {
     exports.insertAndPushNoti({
-      userId: ortherBid.userId,
+      userId,
       type: NOTI_TYPE.BIDER_NEW_BID,
       title: 'Sản phẩm bạn đấu giá đã có lượt đấu giá mới!',
       data: { 

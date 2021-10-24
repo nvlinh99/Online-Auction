@@ -94,7 +94,8 @@ const handler = async (req, res) => {
   })
 
   const newestProduct = await ProductModel.findOne({ id: productId, })
-  const bidder = await UserModel.findOne({ id: userId, })
+  const bidder = await UserModel.findOne({ id: userId, }).lean()
+  bid.bidder = bidder
   NotiService.newBid(newestProduct, bid)
   socketEmitter.emit(`product-change-${productId}`, {
     product: {

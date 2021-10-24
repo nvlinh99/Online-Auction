@@ -24,7 +24,7 @@ exports.init = function (server) {
   const productChangeNsp = io.of('/product-change')
   productChangeNsp.use(authMdw.authorizeOptional)
   productChangeNsp.on('connection', (socket) => {
-    const productId = _.get(socket, 'user.id', null)
+    const productId = _.get(socket, 'handshake.query.productId', null)
     if (!productId) return
     const eventName = `product-change-${productId}`
     if (!eventSocketMapping[eventName]) {
@@ -42,7 +42,7 @@ exports.init = function (server) {
   const newNotiNsp = io.of('/new-noti')
   newNotiNsp.use(authMdw.authorize)
   newNotiNsp.on('connection', (socket) => {
-    const userId = _.get(socket, 'handshake.query.productId', null)
+    const userId = _.get(socket, 'user.id', null)
     if (!userId) return
     const eventName = `new-noti-${userId}`
     if (!eventSocketMapping[eventName]) {

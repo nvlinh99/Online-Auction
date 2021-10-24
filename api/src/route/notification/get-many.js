@@ -15,7 +15,7 @@ const requestValidationHandler = genRequestValidation({
     .unknown(false),
 })
 
-const N_NOTI_PER_PAGE = 10
+const N_NOTI_PER_PAGE = 4
 const getManyHandler = async (req, res) => {
   const { query, user } = req
   
