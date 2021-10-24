@@ -1,7 +1,7 @@
 import { Avatar, Button, Fade, ClickAwayListener } from '@mui/material'
 import _ from 'lodash'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Divider from '@mui/material/Divider'
@@ -12,8 +12,14 @@ import { logout } from 'store/user/action'
 import { LOGIN_PATH } from 'constants/routeConstants'
 import { USER_ROLE } from 'constants/userConstants'
 import { FavoriteBorder, Favorite } from '@mui/icons-material'
-
+import { RiUserStarFill } from 'react-icons/ri'
+import ConfirmationModal from 'components/Modal/ConfirmationModal'
+import { bidderApi } from 'services'
+import { toast } from 'react-toastify'
+import LdsLoading from 'components/Loading/LdsLoading'
 const HeaderUserInfo = ({ currentUser }) => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false)
   const navigate = useNavigate()
   const firstLetter = useMemo(
     () => currentUser?.firstName?.[0]?.toUpperCase(),
@@ -36,9 +42,37 @@ const HeaderUserInfo = ({ currentUser }) => {
     logout()
     navigate(LOGIN_PATH)
   }
+  const onUpgradeToSeller = async () => {
+    setIsLoading(true)
+    try {
+      const { succeeded, data } = await bidderApi.upgradeToSeller()
+
+      if (!succeeded) {
+        toast.error(data.message)
+        return
+      }
+      toast.success(data.message)
+    } catch (error) {
+      toast.error(error.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
   return (
     <ClickAwayListener onClickAway={handleClose}>
       <div className='flex items-center'>
+        <LdsLoading isFullscreen isLoading={isLoading} />
+
+        <ConfirmationModal
+          open={isOpenConfirmationModal}
+          onCancel={() => setIsOpenConfirmationModal(false)}
+          onOK={() => {
+            setIsOpenConfirmationModal(false)
+            onUpgradeToSeller()
+          }}
+          message={`Bạn có thật sự muốn trở thành người bán hàng?`}
+          title='Trở thành nhà bán hàng'
+        />
         <div
           className='flex items-center hover:cursor-pointer'
           onClick={handleClick}
@@ -78,7 +112,7 @@ const HeaderUserInfo = ({ currentUser }) => {
           }}
         >
           <MenuItem onClick={handleClose}>
-            <PersonIcon />
+            <PersonIcon className='!w-5 !h-5 mr-1' />
             Thông tin
           </MenuItem>
           <Divider />
@@ -88,12 +122,20 @@ const HeaderUserInfo = ({ currentUser }) => {
               navigate('/user/watchlist')
             }}
           >
-            <Favorite />
+            <Favorite className='!w-5 !h-5 mr-1' />
             Danh sách yêu thích
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              setIsOpenConfirmationModal(true)
+            }}
+          >
+            <RiUserStarFill className='!w-5 !h-5 mr-1' />
+            Trở thành người bán
           </MenuItem>
           <Divider />
           <MenuItem onClick={onLogout}>
-            <LogoutIcon />
+            <LogoutIcon className='!w-5 !h-5 mr-1' />
             Đăng xuất
           </MenuItem>
         </Menu>

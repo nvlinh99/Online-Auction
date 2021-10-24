@@ -87,7 +87,7 @@ const Header = () => {
         search: searchParams.toString(),
       })
     },
-    [location.search, searchInputData]
+    [location.search, location.pathname, navigate, searchInputData]
   )
 
   useEffect(() => {
@@ -100,7 +100,7 @@ const Header = () => {
         ...query,
       }))
     }
-  }, [query])
+  }, [query, location.pathname])
   return (
     <header
       style={{
