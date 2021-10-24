@@ -6,6 +6,7 @@ const { Product:ProductModel,Bid:BidModel, User: UserModel, } = require('../../m
 const configuration = require('../../configuration')
 const genRequestValidation = require('../../middleware/gen-request-validation')
 const socketEmitter = require('../../service/socket-service').emitter
+const NotiService = require('../../service/noti-service')
 
 const requestValidationHandler = genRequestValidation({
   body: joi
@@ -76,7 +77,13 @@ const handler = async (req, res) => {
   if (!_.isEmpty(updateData)) {
     pm.push(ProductModel.updateOne({
       id:productId,
-    }, { $set: updateData, $inc: { totalBid: 1, }, }))
+    }, { 
+      $set: updateData, 
+      $inc: { totalBid: 1, },
+      $push: {
+        biderIdList: userId
+      }
+    }, { upsert: true }))
   }
   const [bid, ] = await Promise.all(pm)
   res.json({
@@ -88,7 +95,7 @@ const handler = async (req, res) => {
 
   const newestProduct = await ProductModel.findOne({ id: productId, })
   const bidder = await UserModel.findOne({ id: userId, })
-  
+  NotiService.newBid(newestProduct, bid)
   socketEmitter.emit(`product-change-${productId}`, {
     product: {
       currentPrice: newestProduct.currentPrice,

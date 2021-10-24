@@ -29,6 +29,10 @@ const productSchema = new mongoose.Schema({
     type: [Number, ],
     default: [],
   },
+  biderIdList: {
+    type: [Number, ],
+    default: [],
+  },
 }, {
   timestamps: true,
   toJSON:{
