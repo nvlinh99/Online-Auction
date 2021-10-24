@@ -22,10 +22,14 @@ const getManyHandler = async (req, res) => {
   const page = query.page >= 1 || 1
   const skip = (page - 1) * N_NOTI_PER_PAGE
   const limit = N_NOTI_PER_PAGE
-  const notiList = await NotificationModel.find({ userId: user.id }).sort({ createdAt: -1 }).skip(skip).limit(limit)
+  const [notiList, newCount] = await Promise.all([
+    NotificationModel.find({ userId: user.id }).sort({ createdAt: -1 }).skip(skip).limit(limit),
+    NotificationModel.countDocuments({ userId: user.id, read: false })
+  ])
 
   return res.reqS({
-    notiList: notiList || []
+    notiList: notiList || [],
+    newCount: newCount || 0
   })
 }
 

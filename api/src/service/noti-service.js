@@ -53,3 +53,17 @@ exports.newBid = async function (product, bid) {
     })
   })
 }
+
+exports.rejectBid = async function (product, user) {
+  const sellerInfo = await UserModel.findOne({ id: product.sellerId })
+  exports.insertAndPushNoti({
+    userId: user.id,
+    type: NOTI_TYPE.BID_REJECT,
+    title: 'Lượt đấu giá của bạn đã bị từ chối!',
+    data: { 
+      sellerName: `${_.get(sellerInfo, 'lastName', '')} ${_.get(sellerInfo, 'firstName', '')}`,
+      productName: product.name,
+      productId: product.id
+    }
+  })
+}

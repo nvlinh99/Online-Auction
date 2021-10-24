@@ -12,6 +12,7 @@ const authMdw = require('../../middleware/auth')
 const policyMdw = require('../../middleware/require-role')
 const { USER_ROLE, } = require('../../constant/user')
 const socketEmitter = require('../../service/socket-service').emitter
+const NotiService = require('../../service/noti-service')
 
 const requestValidationHandler = genRequestValidation({
   params: joi
@@ -24,7 +25,7 @@ const requestValidationHandler = genRequestValidation({
 const handler = async (req, res) => {
   const { params: { bidId, }, user, } = req
   
-  const bid = await BidModel.findOne({ id: bidId, status: 0, }).populate('product').lean()
+  const bid = await BidModel.findOne({ id: bidId, status: 0, }).populate('product bidder').lean()
   if (!bid || _.get(bid,'product.sellerId', null) !== user.id) return res.reqF('Không tìm thấy lượt đấu giá.')
   if (moment(_.get(bid,'product.expiredDate', null)).isBefore(moment())) return res.reqF('Sản phẩm đã hết thời hạn đấu giá')
   if (_.get(bid,'product.winnerId', null)) return res.reqF('Sản phẩm đã kết thúc đấu giá')
@@ -73,6 +74,7 @@ const handler = async (req, res) => {
     )
     delete his.bidder
   })
+  NotiService.rejectBid(product, bid.bidder)
   socketEmitter.emit(`product-change-${bid.productId}`, {
     product: {
       currentPrice: product.currentPrice,
