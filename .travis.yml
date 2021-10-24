@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- node
+- 16
 warnings_are_errors: false
 script:
 - echo '*** Starting build ***'

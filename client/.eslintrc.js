@@ -28,15 +28,15 @@ module.exports = {
     'react/no-typos': 'error',
     'react/no-unused-state': 'error',
     'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
-    'react-hooks/exhaustive-deps': 'warn', // Checks effect dependencies
+    'react-hooks/exhaustive-deps': 'error', // Checks effect dependencies
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off',
     'array-callback-return': 'error',
     'consistent-return': 'error',
     'babel/no-invalid-this': 'error',
     'no-unused-vars': ['off', { argsIgnorePattern: '^_' }],
-    "react/prop-types": "off",
-    "@typescript-eslint/no-explicit-any": "off"
+    'react/prop-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
   },
   settings: {
     react: {

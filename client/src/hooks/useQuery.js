@@ -15,7 +15,7 @@ const useQuery = () => {
       newQuery[pair[0]] = pair[1]
     }
     setQuery(newQuery)
-  }, [location.search])
+  }, [location.search, searchParams])
   const onChange = (name, value) => {
     searchParams.set(name, value)
     navigate(
