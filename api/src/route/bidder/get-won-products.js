@@ -16,31 +16,25 @@ const requestValidationHandler = genRequestValidation({
 
 const handler = async (req, res) => {
   const { page = 1, limit = 25 } = req.query
-  const { id: userId } = req.user
-  const data = await WatchlistModel.paginate(
-    { userId },
+  const { id: winnerId } = req.user
+  const data = await ProductModel.paginate(
+    { winnerId },
     {
       page,
       limit,
-      populate: {
-        path: "product",
-        populate: [
-          "totalBids",
-          {
-            path: "currentBid",
-            populate: "bidder",
-            match: { status: 0 },
-            options: {
-              sort: {
-                price: -1,
-              },
+      populate: [
+        "totalBids",
+        {
+          path: "currentBid",
+          populate: "bidder",
+          match: { status: 0 },
+          options: {
+            sort: {
+              price: -1,
             },
           },
-        ],
-      },
-      sort: {
-        createdAt: -1,
-      },
+        },
+      ],
     },
   )
   if (!data) {
