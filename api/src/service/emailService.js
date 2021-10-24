@@ -58,6 +58,34 @@ class EmailService {
     `
     await this.send(template, '[Online Auction] - Quên mật khẩu')
   }
+
+  async reject(seller, product) {
+    const template = `
+      <p>Bạn vừa bị <strong>${seller}</strong> từ chối ra giá sản phẩm <strong>${product}</strong> trên hệ thống Online Auction.</p>
+    `
+    await this.send(template, '[Online Auction] - Từ chối ra giá!')
+  }
+
+  async noWinner(product) {
+    const template = `
+      <p>Đã kết thúc đấu giá! Sản phẩm <strong>${product}</strong> của bạn trên hệ thống Online Auction vẫn chưa có người đấu giá.</p>`
+    await this.send(template, '[Online Auction] - Không có người mua!')
+  }
+
+  async winner(product, winner) {
+    const template = `<p>Chúc mừng <strong>${winner}</strong> là người chiến thắng trong phiên đấu giá sản phẩm <strong>${product}</strong>.</p>`
+    await this.send(template, '[Online Auction] - Đấu giá kết thúc!')
+  }
+
+  async bid(bidder, product) {
+    const template = `<p><strong>${bidder}</strong> vừa ra giá thành công sản phẩm <strong>${product}</strong> trên hệ thống Online Auction.</p>`
+    await this.send(template, '[Online Auction] - Ra giá thành công!')
+  }
+
+  async update(product) {
+    const template = `<p>Giá của sản phẩm <strong>${product}<strong> vừa cập nhật thành công.</p>`
+    await this.send(template, '[Online Auction] - Cập nhật giá sản phẩm!')
+  }
 }
 
 module.exports = EmailService
