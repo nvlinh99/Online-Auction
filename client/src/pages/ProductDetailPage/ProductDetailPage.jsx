@@ -118,10 +118,28 @@ const ProductDetailPage = () => {
     const socket = socketService.subProductChange({
       productId: params.productId,
       cb: (data) => {
-        setProduct((old) => ({
-          ...old,
-          ...data.product,
-        }))
+        setProduct((old) => {
+          const newData = {
+            ...old,
+            ...data.product,
+          }
+          const newBid = data.product.newBid
+          if (newBid) {
+            if (currentUser?.id && product?.sellerId === currentUser?.id) {
+              newBid.displayBiderName = `${data.product?.biderInfo?.lastName} ${data.product?.biderInfo?.firstName}`
+            } else {
+              newBid.displayBiderName = `****${data.product?.biderInfo?.firstName}`
+            }
+            const bidHistory = [newBid, ...old.bidHistory]
+            newData.bidHistory = bidHistory
+          }
+          if (data.product.bidHistory) {
+            if (!currentUser?.id || product?.sellerId !== currentUser?.id) {
+              newData.bidHistory = data.product.bidHistory
+            }
+          }
+          return newData
+        })
       },
     })
 
@@ -366,9 +384,10 @@ const ProductDetailPage = () => {
                         <th className='bid-hist-cell'>Thời gian</th>
                         <th className='bid-hist-cell'>Người ra giá</th>
                         <th className='bid-hist-cell'>Số tiền</th>
-                        {currentUser && currentUser.role === 1 && (
-                          <th className='bid-hist-cell'></th>
-                        )}
+                        {currentUser?.role === 1 &&
+                          currentUser?.id === sellerId && (
+                            <th className='bid-hist-cell'></th>
+                          )}
                       </tr>
                     </thead>
                     <tbody>
@@ -394,8 +413,8 @@ const ProductDetailPage = () => {
                           >
                             {numeral(his.price).format('0,0')}
                           </td>
-                          {currentUser &&
-                            currentUser.role === 1 &&
+                          {currentUser?.role === 1 &&
+                            currentUser?.id === sellerId &&
                             (his.status === 1 ? (
                               <td
                                 style={{

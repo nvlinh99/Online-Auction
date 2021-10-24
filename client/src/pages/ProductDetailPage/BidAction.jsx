@@ -41,7 +41,7 @@ const BidAction = forwardRef(({ initBidPrice, stepPrice, product }, ref) => {
         toast.success(data.message)
         return cb && cb(succeeded)
       } catch (error) {
-        toast.error(error)
+        toast.error('Đã có lỗi xảy ra. Vui lòng thử lại sau!')
         return cb && cb(false)
       }
     },

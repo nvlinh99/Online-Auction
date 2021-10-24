@@ -1,8 +1,11 @@
 import { useCallback, useState } from 'react'
 import _ from 'lodash'
+import moment from 'moment'
 import { Select, MenuItem, Checkbox, CircularProgress } from '@mui/material'
 import IconCancel from '@mui/icons-material/Clear'
 import ReactQuill from 'react-quill'
+import TextField from '@mui/material/TextField'
+import DateTimePicker from '@mui/lab/DateTimePicker'
 import { categorySelector } from 'store/category'
 import { getCategoriesFromAPI } from 'store/category/action'
 import { useSelector } from 'react-redux'
@@ -45,6 +48,7 @@ const validateInput = ({
 }
 
 const PostProductForm = () => {
+  const now = moment()
   const [name, setName] = useState('')
   const [startPrice, setStartPrice] = useState('')
   const [stepPrice, setStepPrice] = useState('')
@@ -52,11 +56,15 @@ const PostProductForm = () => {
   const [description, setDescription] = useState('')
   const [cateId, setCateId] = useState(-1)
   const [autoRenew, setAutoRenew] = useState(false)
+  const [expiredDate, setExpiredDate] = useState(now.clone().add(7, 'days'))
   const [avatar, setAvatar] = useState('')
   const [imgList, setImgList] = useState([])
   const [isPosting, setIsPosting] = useState(false)
   const allCategories = useSelector(categorySelector.selectCategories)
 
+  const onExpiredDateChange = useCallback((v) => {
+    setExpiredDate(v)
+  }, [])
   const onCateIdChange = useCallback((e) => {
     setCateId(+e?.target?.value)
   }, [])
@@ -128,8 +136,8 @@ const PostProductForm = () => {
       description,
       startPrice,
       stepPrice,
-      purchasePrice,
-      expiredDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      purchasePrice: purchasePrice || undefined,
+      expiredDate: expiredDate.toISOString(),
     }
     const err = validateInput({ ...payload, avatar, imgList })
     if (err) return postingFail(err)
@@ -143,7 +151,8 @@ const PostProductForm = () => {
     if (!avatarRes.succeeded)
       return postingFail('Đăng sản phẩm thất bại. Vui lòng thử lại!')
     for (const res of imgListRes) {
-      if (!res.succeeded) return postingFail('Đăng sản phẩm thất bại. Vui lòng thử lại!')
+      if (!res.succeeded)
+        return postingFail('Đăng sản phẩm thất bại. Vui lòng thử lại!')
     }
     payload.avatarUrl = avatarRes.data.url
     payload.imageUrls = _.map(imgListRes, 'data.url')
@@ -224,6 +233,13 @@ const PostProductForm = () => {
         type='number'
         onWheel={(e) => e.target.blur()}
         required
+      />
+      <DateTimePicker
+        label='Thời gian hết hạn'
+        value={expiredDate}
+        minDateTime={now.clone().add(10, 'minutes')}
+        onChange={onExpiredDateChange}
+        renderInput={(params) => <TextField {...params} />}
       />
       <lable>
         <Checkbox onChange={onAutoRenewChange} checked={autoRenew} /> Tự động

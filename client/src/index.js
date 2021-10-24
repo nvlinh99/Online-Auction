@@ -10,14 +10,20 @@ import 'utils/prototypes'
 import { ThemeProvider } from '@mui/material/styles'
 import store from 'store/store'
 import App from './App'
+import DateAdapter from '@mui/lab/AdapterMoment'
+import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import muiTheme from 'styles/muiTheme'
+
 const WrappedApp = () => {
   return (
     <BrowserRouter>
       <ReduxProvider store={store}>
         <StylesProvider>
           <ThemeProvider theme={muiTheme}>
-            <App />
+            <LocalizationProvider dateAdapter={DateAdapter}>
+              <App />
+            </LocalizationProvider>
+
             <ToastContainer />
           </ThemeProvider>
         </StylesProvider>
