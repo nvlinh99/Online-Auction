@@ -8,7 +8,7 @@ export const readNoti = async (id, all) => {
   const data = {}
 
   if (all) {
-    data.all = true
+    data.readAll = true
   } else if (id) {
     data.notiId = id
   } else {

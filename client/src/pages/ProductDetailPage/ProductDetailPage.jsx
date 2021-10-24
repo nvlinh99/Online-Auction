@@ -50,7 +50,7 @@ const ProductDetailPage = () => {
     const bidId = +e.target.getAttribute('bid-id')
     setRejectBidId(bidId)
     setIsOpenRejectModal(true)
-  })
+  }, [])
   const onReject = useCallback(async () => {
     setIsLoading(true)
     try {
@@ -70,7 +70,7 @@ const ProductDetailPage = () => {
     } finally {
       setRejectBidId(-1)
     }
-  })
+  }, [loadProductData, rejectBidId])
   const onBid = useCallback(() => {
     setIsLoading(true)
     return bidAction.current?.onBid((succeeded) => {
@@ -144,7 +144,7 @@ const ProductDetailPage = () => {
     })
 
     return socket.disconnect
-  }, [params.productId])
+  }, [currentUser?.id, params.productId, product?.sellerId])
   const isWatched = useMemo(() => {
     return currentUser?.watchList?.map((i) => i.productId).includes(product?.id)
   }, [currentUser, product])
@@ -175,6 +175,7 @@ const ProductDetailPage = () => {
       formatedPurchasePrice,
       currentPrice,
       stepPrice,
+      purchasePrice,
       formatedExpiredDate,
       formatedPublishedDate,
       totalBid,
@@ -290,6 +291,7 @@ const ProductDetailPage = () => {
                 <BidAction
                   initBidPrice={currentPrice + stepPrice}
                   stepPrice={stepPrice}
+                  purchasePrice={purchasePrice}
                   ref={bidAction}
                   product={product}
                 />
