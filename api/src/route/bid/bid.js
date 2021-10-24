@@ -2,9 +2,10 @@ const joi = require('joi')
 const md5 = require('md5')
 const moment  = require('moment')
 const _ = require('lodash')
-const { Product:ProductModel,Bid:BidModel, } = require('../../model')
+const { Product:ProductModel,Bid:BidModel, User: UserModel, } = require('../../model')
 const configuration = require('../../configuration')
 const genRequestValidation = require('../../middleware/gen-request-validation')
+const socketEmitter = require('../../service/socket-service').emitter
 
 const requestValidationHandler = genRequestValidation({
   body: joi
@@ -77,11 +78,38 @@ const handler = async (req, res) => {
       id:productId,
     }, { $set: updateData, $inc: { totalBid: 1, }, }))
   }
-  await Promise.all(pm)
+  const [bid, ] = await Promise.all(pm)
   res.json({
     code: 1000,
     data: {
       message: 'Đấu giá thành công',
+    },
+  })
+
+  const newestProduct = await ProductModel.findOne({ id: productId, })
+  const bidder = await UserModel.findOne({ id: userId, })
+  
+  socketEmitter.emit(`product-change-${productId}`, {
+    product: {
+      currentPrice: newestProduct.currentPrice,
+      expiredDate: newestProduct.currentPrice,
+      totalBid: newestProduct.totalBid,
+      biderInfo: {
+        id: bidder.id,
+        firstName: bidder.firstName,
+        lastName: bidder.lastName,
+        rateTotal: bidder.rateTotal,
+        rateIncrease: bidder.rateIncrease,
+        rateDecrease: bidder.rateDecrease,
+      },
+      newBid: {
+        id: bid.id,
+        createdAt: bid.createdAt,
+        firstName: bidder.firstName,
+        lastName: bidder.lastName,
+        price: bid.price,
+        status: bid.status,
+      },
     },
   })
 }
