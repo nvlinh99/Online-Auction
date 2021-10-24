@@ -175,6 +175,7 @@ const ProductDetailPage = () => {
       formatedPurchasePrice,
       currentPrice,
       stepPrice,
+      purchasePrice,
       formatedExpiredDate,
       formatedPublishedDate,
       totalBid,
@@ -290,6 +291,7 @@ const ProductDetailPage = () => {
                 <BidAction
                   initBidPrice={currentPrice + stepPrice}
                   stepPrice={stepPrice}
+                  purchasePrice={purchasePrice}
                   ref={bidAction}
                   product={product}
                 />
