@@ -45,7 +45,7 @@ const handler = async (req, res) => {
 
   return res.reqS({
     totalItems: data.totalDocs,
-    items: data.docs.map((i) => i.product),
+    items: data.docs,
     totalPages: data.totalPages,
     currentPage: data.page - 1,
   })
