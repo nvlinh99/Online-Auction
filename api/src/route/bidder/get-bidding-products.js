@@ -4,9 +4,10 @@ const genRequestValidation = require("../../middleware/gen-request-validation")
 const UserModel = require("../../model/user")
 const ProductModel = require("../../model/product")
 const WatchlistModel = require("../../model/watchlist")
+const BidModel = require("../../model/bid")
 
 const requestValidationHandler = genRequestValidation({
-  post: joi
+  body: joi
     .object({
       page: joi.number().integer().positive().invalid(null),
       limit: joi.number().integer().positive().invalid(null),
@@ -16,10 +17,25 @@ const requestValidationHandler = genRequestValidation({
 })
 
 const handler = async (req, res) => {
-  const { page = 1, limit = 25, filterType } = req.query
+  const { page = 1, limit = 25, filterType } = req.body
   const { id: userId } = req.user
-  const queryObj = { winnerId: userId }
-
+  const queryObj = { biderIdList: userId }
+  if (filterType === "not-end") {
+    queryObj.expiredDate = {
+      $gte: new Date(),
+    }
+    queryObj.winnerId = null
+  }
+  if (filterType === "expired") {
+    queryObj.expiredDate = {
+      $lt: new Date(),
+    }
+  }
+  if (filterType === "has-won") {
+    queryObj.winnerId = {
+      $ne: null,
+    }
+  }
   const data = await ProductModel.paginate(queryObj, {
     page,
     limit,
@@ -36,6 +52,10 @@ const handler = async (req, res) => {
         },
       },
     ],
+    sort: {
+      expiredDate: -1,
+      currentPrice: -1,
+    },
   })
   if (!data) {
     return res.reqF({
@@ -45,7 +65,7 @@ const handler = async (req, res) => {
 
   return res.reqS({
     totalItems: data.totalDocs,
-    items: data.docs.map((i) => i.product),
+    items: data.docs,
     totalPages: data.totalPages,
     currentPage: data.page - 1,
   })
