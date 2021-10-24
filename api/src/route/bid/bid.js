@@ -26,7 +26,7 @@ const handler = async (req, res) => {
     expiredDate: {
       $gt: new Date(),
     },
-    winner:null,
+    winner: null,
   })
   if (!product) {
     return res.json({
@@ -60,7 +60,7 @@ const handler = async (req, res) => {
       .toDate()
   }
 
-  if (price < product.currentPrice + product.stepPrice) {
+  if (!updateData.winnerId && price < product.currentPrice + product.stepPrice) {
     return res.json({
       code: -1000,
       data: {
