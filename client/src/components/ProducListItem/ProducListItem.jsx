@@ -7,12 +7,15 @@ import { FavoriteBorder, Favorite } from '@mui/icons-material'
 import classNames from 'classnames'
 import moment from 'moment'
 import hotIcon from 'assets/hot.png'
+import { AiFillLike, AiFillDislike } from 'react-icons/ai'
+import { RATING_TYPE } from 'constants/enumConstants'
 // const time = moment().add(10 * 60 - 10 * 60 + 10, 'seconds')
 const ProducListItem = ({
   product = {},
   currentUser = {},
   onToggleWatchList,
   isTogglingWatchList,
+  onClickRating,
 }) => {
   const isWatched = useMemo(() => {
     return currentUser?.watchList?.map((i) => i.productId).includes(product?.id)
@@ -28,7 +31,7 @@ const ProducListItem = ({
       return 'Chưa có'
     }
     return [bidder.firstName, bidder.lastName].filter(Boolean).join(' ')
-  }, [])
+  }, [product.currentBid?.bidder])
   const isHot = useMemo(() => {
     const m = duration.asMinutes?.()
 
@@ -60,6 +63,28 @@ const ProducListItem = ({
         >
           {isWatched ? <Favorite /> : <FavoriteBorder />}
         </button>
+        {onClickRating && (
+          <>
+            <button
+              onClick={() => onClickRating(product.sellerId, RATING_TYPE.LIKE)}
+              className={classNames(
+                'flex-center bg-white bg-opacity-50 hover:bg-opacity-100   absolute top-14 right-4 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu'
+              )}
+            >
+              <AiFillLike fill='#E4A834' size='20px' />
+            </button>
+            <button
+              onClick={() =>
+                onClickRating(product.sellerId, RATING_TYPE.DISLIKE)
+              }
+              className={classNames(
+                'flex-center bg-white bg-opacity-50 hover:bg-opacity-100  absolute top-24 right-4 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu'
+              )}
+            >
+              <AiFillDislike fill='#B13A1A' size='20px' />
+            </button>
+          </>
+        )}
       </div>
       <div className='mt-4'>
         <h6 className=' leading-7 text-xl font-medium text-[#171d1c]'>

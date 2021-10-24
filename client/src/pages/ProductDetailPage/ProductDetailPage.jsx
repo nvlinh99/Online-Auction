@@ -32,7 +32,6 @@ import * as socketService from 'services/socket-service'
 
 const ProductDetailPage = () => {
   const isTogglingWatchList = useSelector(selectIsTogglingWatchList)
-  const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false)
   const { isLoggedInUser } = useLogin()
   const currentUser = useSelector(selectCurrentUser)
   const bidAction = useRef({})
@@ -40,6 +39,7 @@ const ProductDetailPage = () => {
   const [isNotFound, setIsNotFound] = useState(false)
   const [product, setProduct] = useState(null)
   const imgListModal = useRef({})
+  const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isOpenRejectModal, setIsOpenRejectModal] = useState(false)
   const [rejectBidId, setRejectBidId] = useState(-1)
@@ -50,7 +50,7 @@ const ProductDetailPage = () => {
     const bidId = +e.target.getAttribute('bid-id')
     setRejectBidId(bidId)
     setIsOpenRejectModal(true)
-  })
+  }, [])
   const onReject = useCallback(async () => {
     setIsLoading(true)
     try {
@@ -70,7 +70,7 @@ const ProductDetailPage = () => {
     } finally {
       setRejectBidId(-1)
     }
-  })
+  }, [loadProductData, rejectBidId])
   const onBid = useCallback(() => {
     setIsLoading(true)
     return bidAction.current?.onBid((succeeded) => {
@@ -144,7 +144,7 @@ const ProductDetailPage = () => {
     })
 
     return socket.disconnect
-  }, [params.productId])
+  }, [currentUser?.id, params.productId, product?.sellerId])
   const isWatched = useMemo(() => {
     return currentUser?.watchList?.map((i) => i.productId).includes(product?.id)
   }, [currentUser, product])

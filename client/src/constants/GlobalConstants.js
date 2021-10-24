@@ -1,7 +1,7 @@
-export const userToken = value => {
-  const key = 'USER_TOKEN';
+export const userToken = (value) => {
+  const key = 'USER_TOKEN'
   if (typeof value === 'undefined') {
-    return localStorage.getItem(key);
+    return localStorage.getItem(key)
   }
-  localStorage.setItem(key, value);
-};
+  localStorage.setItem(key, value)
+}

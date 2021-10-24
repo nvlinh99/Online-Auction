@@ -22,7 +22,7 @@ export const api = axios.create({
   paramsSerializer: (params) => {
     return qs.stringify(params, { arrayFormat: 'repeat' })
   },
-  timeout: 5000,
+  timeout: 10000,
 })
 
 api.interceptors.request.use((config) => {

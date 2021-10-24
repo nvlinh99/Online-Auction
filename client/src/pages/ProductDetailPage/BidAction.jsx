@@ -20,7 +20,10 @@ const BidAction = forwardRef(({ initBidPrice, stepPrice, product }, ref) => {
   const getPrice = useCallback(() => price, [price])
   const onBid = useCallback(
     async (cb) => {
-      const priceNum = _.toNumber(price || ''.split(',').join(''))
+      const priceNum =
+        typeof price === 'number'
+          ? price
+          : _.toNumber((price || '').split(',').join(''))
       if (priceNum < initBidPrice) {
         toast.error('Giá không hợp lệ')
         return cb && cb(false)
@@ -45,7 +48,7 @@ const BidAction = forwardRef(({ initBidPrice, stepPrice, product }, ref) => {
         return cb && cb(false)
       }
     },
-    [price]
+    [initBidPrice, price, product.id]
   )
   useImperativeHandle(ref, () => ({
     onBid,
