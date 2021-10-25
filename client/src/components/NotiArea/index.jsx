@@ -109,10 +109,10 @@ const NotiArea = ({}) => {
         <>
           <ul
             style={{
-              overflowY: 'scroll',
+              overflowY: 'auto',
               maxHeight: '680px',
               position: 'absolute',
-              top: '80px',
+              top: '60px',
               left: '20px',
               width: 'max-content',
               transform: 'translateX(-50%)',
@@ -214,14 +214,14 @@ const NotiArea = ({}) => {
                 </button>,
               ]
             ) : (
-              <p>Không có thông báo nào</p>
+              <p className='p-4 mt-4'>Không có thông báo nào</p>
             )}
           </ul>
           <div
             style={{
               position: 'absolute',
               zIndex: '99',
-              top: '80px',
+              top: '60px',
               transform: 'rotate(45deg) translateX(-20px)',
               left: '50%',
               width: '30px',
@@ -238,8 +238,7 @@ const NotiArea = ({}) => {
           style={{
             color: '#fff',
             background: 'red',
-            width: '25px',
-            height: '30px',
+            width: '20px',
             borderRadius: '50%',
             position: 'absolute',
             right: '0px',
