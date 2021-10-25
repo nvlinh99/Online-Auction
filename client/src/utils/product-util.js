@@ -84,6 +84,9 @@ export function formatProductItem(product) {
   // datetime info
   result.publishedDate = _.get(product, 'publishedDate', null)
   result.expiredDate = _.get(product, 'expiredDate', null)
+  result.isExpired =
+    result.expiredDate && moment(result.expiredDate).isSameOrBefore(moment())
+  result.hasWinner = !!_.get(product, 'winnerId', null)
 
   if (result.publishedDate)
     result.formatedPublishedDate = moment(result.publishedDate).format(
