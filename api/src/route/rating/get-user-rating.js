@@ -4,38 +4,29 @@ const genRequestValidation = require("../../middleware/gen-request-validation")
 const UserModel = require("../../model/user")
 const ProductModel = require("../../model/product")
 const RatingModel = require("../../model/rating")
+const { RATING_TYPE } = require("../../constant/rating")
 
 const requestValidationHandler = genRequestValidation({
-  post: joi
+  body: joi
     .object({
       page: joi.number().integer().positive().invalid(null),
       limit: joi.number().integer().positive().invalid(null),
-      type: joi.number().integer().positive().invalid(null),
+      type: joi.number().integer().invalid(null),
     })
     .unknown(false),
 })
 
 const handler = async (req, res) => {
-  const { page = 1, limit = 25, type } = req.query
+  const { page = 1, limit = 25, type } = req.body
   const { id: userId } = req.user
-  const queryObj = { userId, type }
-
+  const queryObj = { userId }
+  if (Object.values(RATING_TYPE).includes(type)) {
+    queryObj.type = type
+  }
   const data = await RatingModel.paginate(queryObj, {
     page,
     limit,
-    populate: [
-      "totalBids",
-      {
-        path: "currentBid",
-        populate: "bidder",
-        match: { status: 0 },
-        options: {
-          sort: {
-            price: -1,
-          },
-        },
-      },
-    ],
+    populate: "rateBy",
   })
   if (!data) {
     return res.reqF({
@@ -47,7 +38,7 @@ const handler = async (req, res) => {
     totalItems: data.totalDocs,
     items: data.docs,
     totalPages: data.totalPages,
-    currentPage: data.page - 1,
+    currentPage: data.page,
   })
 }
 

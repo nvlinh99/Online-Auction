@@ -6,7 +6,7 @@ const ProductModel = require("../../model/product")
 const WatchlistModel = require("../../model/watchlist")
 
 const requestValidationHandler = genRequestValidation({
-  post: joi
+  body: joi
     .object({
       page: joi.number().integer().positive().invalid(null),
       limit: joi.number().integer().positive().invalid(null),
@@ -16,7 +16,7 @@ const requestValidationHandler = genRequestValidation({
 })
 
 const handler = async (req, res) => {
-  const { page = 1, limit = 25, filterType } = req.query
+  const { page = 1, limit = 25, filterType } = req.body
   const { id: userId } = req.user
   const queryObj = { winnerId: userId }
 
@@ -47,7 +47,7 @@ const handler = async (req, res) => {
     totalItems: data.totalDocs,
     items: data.docs,
     totalPages: data.totalPages,
-    currentPage: data.page - 1,
+    currentPage: data.page,
   })
 }
 
