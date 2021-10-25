@@ -32,6 +32,7 @@ const productSchema = new mongoose.Schema(
         return expDate.setDate(expDate.getDate() + 7)
       },
     },
+    allowNewUser: Boolean,
     autoRenew: Boolean,
     bannedUser: {
       type: [Number],

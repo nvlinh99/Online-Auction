@@ -21,7 +21,7 @@ const requestValidationHandler = genRequestValidation({
 
 const handler = async (req, res) => {
   const { params: { productId, }, user, } = req
-  const product = await ProductModel.findOne({ id: productId, }).lean()
+  const product = await ProductModel.findOne({ id: productId, status: 0, }).lean()
   if (!product) {
     return res.json({
       code: -1000,

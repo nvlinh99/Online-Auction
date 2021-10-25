@@ -7,6 +7,7 @@ const configuration = require('../../configuration')
 const genRequestValidation = require('../../middleware/gen-request-validation')
 const socketEmitter = require('../../service/socket-service').emitter
 const NotiService = require('../../service/noti-service')
+const { USER_STATUS } = require('../../constant/user')
 
 const requestValidationHandler = genRequestValidation({
   body: joi
@@ -22,11 +23,7 @@ const handler = async (req, res) => {
   const { productId, price, } = req.body
   const product = await ProductModel.findOne({
     id: productId,
-    status: 0,
-    expiredDate: {
-      $gt: new Date(),
-    },
-    winner: null,
+    status: 0
   })
   if (!product) {
     return res.json({
@@ -36,6 +33,13 @@ const handler = async (req, res) => {
       },
     })
   }
+  if (product.winnerId) {
+    return res.reqF('Sản phẩm đã có người đấu giá thắng.')
+  }
+  if (moment(product.expiredDate).isSameOrBefore(moment())) {
+    return res.reqF('Sản phẩm đã hết thời gian đấu giá.')
+  }
+  
   if (product.bannedUser && product.bannedUser.includes(userId)) {
     return res.json({
       code: -1000,
@@ -44,6 +48,14 @@ const handler = async (req, res) => {
       },
     })
   }
+
+  const userInfo = await UserModel.findOne({ id: userId, status: USER_STATUS.ACTIVE }).lean()
+  if (userInfo.rateIncrease === 0 && userInfo.rateDecrease === 0) {
+    if (!product.allowNewUser) { return res.reqF('Bạn cần điểm đánh giá ít nhất là 80% để đâu giá sản phẩm này.') }
+  } else if ((userInfo.rateIncrease / (userInfo.rateIncrease + userInfo.rateDecrease)) < 0.8) {
+    return res.reqF('Bạn cần điểm đánh giá ít nhất là 80% để đâu giá sản phẩm này.')
+  }
+
   let updateData = {}
   if (product.purchasePrice && product.purchasePrice <= price) {
     updateData = {
@@ -100,7 +112,7 @@ const handler = async (req, res) => {
   socketEmitter.emit(`product-change-${productId}`, {
     product: {
       currentPrice: newestProduct.currentPrice,
-      expiredDate: newestProduct.currentPrice,
+      expiredDate: newestProduct.expiredDate,
       totalBid: newestProduct.totalBid,
       biderInfo: {
         id: bidder.id,

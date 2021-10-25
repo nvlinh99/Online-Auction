@@ -47,6 +47,7 @@ const requestValidationHandler = genRequestValidation({
       purchasePrice: joi.number().integer().positive().invalid(0, null),
       expiredDate: joi.date().greater('now').required().invalid(null, ''),
       autoRenew: joi.bool().invalid(null).default(false),
+      allowNewUser: joi.bool().invalid(null).default(true),
     })
     .unknown(false),
 })
