@@ -34,8 +34,17 @@ const handler = async (req, res) => {
       message: "Lấy danh sách  đánh giá thất bại",
     })
   }
-
+  const totalLike = await RatingModel.countDocuments({
+    userId,
+    type: RATING_TYPE.LIKE,
+  })
+  const totalDisLike = await RatingModel.countDocuments({
+    userId,
+    type: RATING_TYPE.DISLIKE,
+  })
   return res.reqS({
+    totalLike,
+    totalDisLike,
     totalItems: data.totalDocs,
     items: data.docs,
     totalPages: data.totalPages,
