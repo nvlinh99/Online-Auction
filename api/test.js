@@ -2,12 +2,16 @@ const async = require('async')
 const _ = require('lodash')
 const events = require('events')
 
-const emitter = require('./src/service/socket-service').emitter
 
-emitter.emit('product-change-123', { 
-  productId: '123',
-  title: 'Iphone 13',
-})
+const wait = (ms) => new Promise((res) => setTimeout(res, ms));
+
+(async () => {
+  while (true) {
+    console.log('TICK')
+    // eslint-disable-next-line no-await-in-loop
+    await wait(1000)
+  }
+})()
 // const entries = [
 //   {
 //     id:'<1>',

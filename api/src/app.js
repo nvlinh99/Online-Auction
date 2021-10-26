@@ -43,6 +43,17 @@ exports.start = async function () {
     app.use(route.path, route.router)
   })
 
+  // load task
+  const taskDir = path.resolve(__dirname, './task')
+  const taskFilePaths = await filehound.create()
+    .path(taskDir)
+    .ext('.js')
+    .glob('*.js')
+    .find()
+  _.forEach(taskFilePaths, (taskFilePath) => {
+    require(taskFilePath)
+  })
+
   // error handle
   app.use((req, res) => {
     res.status(404).json({

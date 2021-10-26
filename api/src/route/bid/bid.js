@@ -1,5 +1,6 @@
 const joi = require('joi')
 const md5 = require('md5')
+const numeral = require('numeral')
 const moment  = require('moment')
 const _ = require('lodash')
 const { Product:ProductModel,Bid:BidModel, User: UserModel, } = require('../../model')
@@ -8,6 +9,7 @@ const genRequestValidation = require('../../middleware/gen-request-validation')
 const socketEmitter = require('../../service/socket-service').emitter
 const NotiService = require('../../service/noti-service')
 const { USER_STATUS } = require('../../constant/user')
+const SendEmailService = require('../../service/emailService')
 
 const requestValidationHandler = genRequestValidation({
   body: joi
@@ -60,7 +62,7 @@ const handler = async (req, res) => {
   if (product.purchasePrice && product.purchasePrice <= price) {
     updateData = {
       winnerId: userId,
-      status: 1,
+      status: 2,
     }
   }
   if (
@@ -132,6 +134,73 @@ const handler = async (req, res) => {
       },
     },
   })
+
+  const seller = await UserModel.findOne({ id: newestProduct.sellerId }).lean()
+  if (newestProduct.winnerId === bidder.id) {
+    const winner = bidder
+    const sendEmailWinnerService = new SendEmailService({ 
+      name: `${winner.firstName} ${winner.lastName}`, 
+      email: winner.email, 
+    })
+    sendEmailWinnerService.winner(
+      newestProduct.name, 
+      `${winner.firstName} ${winner.lastName}`,
+      `${numeral(newestProduct.currentPrice).format('0,0')} VND`
+    )
+    
+    const sendEmailSellerService = new SendEmailService({
+      name: `${seller.firstName} ${seller.lastName}`, 
+      email: seller.email, 
+    })
+    sendEmailSellerService.sendToSellerHasWinner(
+      newestProduct.name, 
+      `${winner.firstName} ${winner.lastName}`, 
+      `${numeral(newestProduct.currentPrice).format('0,0')} VND`
+    )
+  } else {
+    const sendEmailBidderService = new SendEmailService({ 
+      name: `${bidder.firstName} ${bidder.lastName}`, 
+      email: bidder.email, 
+    })
+    sendEmailBidderService.newBid(
+      'Bạn', 
+      newestProduct.name,
+      `${numeral(bid.price).format('0,0')} VND`
+    )
+
+    const sendEmailSellerService = new SendEmailService({
+      name: `${seller.firstName} ${seller.lastName}`, 
+      email: seller.email, 
+    })
+    sendEmailSellerService.sendToSellerNewBid(
+      `${bidder.firstName} ${bidder.lastName}`, 
+      newestProduct.name, 
+      `${numeral(bid.price).format('0,0')} VND`
+    )
+
+    const lastBid = await BidModel.findOne({ 
+      id: { $ne: bid.id, }, 
+      userId: { $ne: bid.userId, },
+      productId: bid.productId, 
+      status: 0, 
+    }).sort({ price: -1, createdAt: -1, }).populate('bidder').lean()
+    const lastBidderEmail = _.get(lastBid, 'bidder.email', '')
+    if (lastBidderEmail) {
+      const lastBidderFirstName = _.get(lastBid, 'bidder.firstName', '')
+      const lastBidderLastName = _.get(lastBid, 'bidder.lastName', '')
+      const sendEmailLastBidderService = new SendEmailService({ 
+        name: `${lastBidderFirstName} ${lastBidderLastName}`, 
+        email: lastBidderEmail, 
+      })
+      sendEmailLastBidderService.newBid(
+        `${bidder.firstName} ${bidder.lastName}`, 
+        newestProduct.name,
+        `${numeral(bid.price).format('0,0')} VND`
+      )
+    } else {
+      console.log('NO LAST BIDDER')
+    }
+  }
 }
 
 module.exports = [
