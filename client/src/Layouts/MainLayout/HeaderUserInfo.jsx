@@ -12,7 +12,8 @@ import { logout } from 'store/user/action'
 import { LOGIN_PATH } from 'constants/routeConstants'
 import { USER_ROLE } from 'constants/userConstants'
 import { FavoriteBorder, Favorite } from '@mui/icons-material'
-import { RiUserStarFill, RiAuctionFill } from 'react-icons/ri'
+import { RiUserStarFill, RiAuctionFill, RiThumbUpFill } from 'react-icons/ri'
+import { AiFillLike } from 'react-icons/ai'
 import { GiPodiumWinner } from 'react-icons/gi'
 import ConfirmationModal from 'components/Modal/ConfirmationModal'
 import { bidderApi } from 'services'
@@ -152,6 +153,15 @@ const HeaderUserInfo = ({ currentUser }) => {
           >
             <GiPodiumWinner className='!w-5 !h-5 mr-1' />
             Danh sách đã chiến thắng
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleClose()
+              navigate('/user/rating-list')
+            }}
+          >
+            <AiFillLike className='!w-5 !h-5 mr-1' />
+            Danh sách đánh giá
           </MenuItem>
           <Divider />
 
