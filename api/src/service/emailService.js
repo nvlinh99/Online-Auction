@@ -72,14 +72,24 @@ class EmailService {
     await this.send(template, '[Online Auction] - Không có người mua!')
   }
 
-  async winner(product, winner) {
-    const template = `<p>Chúc mừng <strong>${winner}</strong> là người chiến thắng trong phiên đấu giá sản phẩm <strong>${product}</strong>.</p>`
+  async winner(product, winner, price) {
+    const template = `<p>Chúc mừng <strong>${winner}</strong> là người chiến thắng trong phiên đấu giá sản phẩm <strong>${product}</strong> với giá <strong>${price}</strong>.</p>`
     await this.send(template, '[Online Auction] - Đấu giá kết thúc!')
   }
 
-  async bid(bidder, product) {
-    const template = `<p><strong>${bidder}</strong> vừa ra giá thành công sản phẩm <strong>${product}</strong> trên hệ thống Online Auction.</p>`
-    await this.send(template, '[Online Auction] - Ra giá thành công!')
+  async sendToSellerHasWinner(productName, winnerName, price) {
+    const template = `<p>Sản phẩm <strong>${productName}</strong> của bạn đã đã được <strong>${winnerName}</strong> đấu giá chiến thắng với giá <strong>${price}<strong>.</p>`
+    await this.send(template, '[Online Auction] - Đấu giá kết thúc!')
+  }
+
+  async newBid(bidder, product, price) {
+    const template = `<p><strong>${bidder}</strong> vừa ra giá thành công sản phẩm <strong>${product}</strong> với giá <strong>${price}</strong> trên hệ thống Online Auction.</p>`
+    await this.send(template, '[Online Auction] - Lượt ra giá mới!')
+  }
+
+  async sendToSellerNewBid(bidder, product, price) {
+    const template = `<p>Sản phẩm của bạn - <strong>${product}</strong> vừa được <strong>${bidder}</strong> ra giá thành công  với giá <strong>${price}</strong> trên hệ thống Online Auction.</p>`
+    await this.send(template, '[Online Auction] - Lượt ra giá mới!')
   }
 
   async update(product) {

@@ -13,6 +13,7 @@ const policyMdw = require('../../middleware/require-role')
 const { USER_ROLE, } = require('../../constant/user')
 const socketEmitter = require('../../service/socket-service').emitter
 const NotiService = require('../../service/noti-service')
+const EmailService = require('../../service/emailService')
 
 const requestValidationHandler = genRequestValidation({
   params: joi
@@ -83,6 +84,21 @@ const handler = async (req, res) => {
       bidHistory,
     },
   })
+
+  const bidderEmail = _.get(bid, 'bidder.email', '')
+  if (bidderEmail) {
+    const bidderFirstName = _.get(bid, 'bidder.firstName', '')
+    const bidderLastName = _.get(bid, 'bidder.lastName', '')
+    const bidderEmailService = new EmailService({
+      name: `${bidderFirstName} ${bidderLastName}`, 
+      email: bidderEmail, 
+    })
+    UserModel.findOne({ id: product.sellerId }).lean().then((seller) => {
+      if (seller) {
+        bidderEmailService.reject(`${seller.firstName} ${seller.lastName}`, product.name)
+      }
+    })
+  }
 }
 
 module.exports = [

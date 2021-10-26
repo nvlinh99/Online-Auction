@@ -19,7 +19,7 @@ const N_NOTI_PER_PAGE = 4
 const getManyHandler = async (req, res) => {
   const { query, user } = req
   
-  const page = query.page >= 1 || 1
+  const page = query.page >= 1 ? query.page : 1
   const skip = (page - 1) * N_NOTI_PER_PAGE
   const limit = N_NOTI_PER_PAGE
   const [notiList, newCount] = await Promise.all([
