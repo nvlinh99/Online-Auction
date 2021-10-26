@@ -21,6 +21,7 @@ ratingSchema.virtual("rateBy", {
   ref: "User",
   localField: "rateById",
   foreignField: "id",
+  justOne: true,
 })
 ratingSchema.plugin(mongoosePaginate)
 
