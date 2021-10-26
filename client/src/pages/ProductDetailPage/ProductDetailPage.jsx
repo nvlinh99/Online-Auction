@@ -95,7 +95,7 @@ const ProductDetailPage = () => {
       const { succeeded, data } = await productApi.postProductById(
         params.productId
       )
-      if (!succeeded || !data || !data.product || data.product.status !== 0)
+      if (!succeeded || !data || !data.product || data.product.status == 1)
         setIsNotFound(true)
       else setProduct(data.product)
     } catch (err) {
