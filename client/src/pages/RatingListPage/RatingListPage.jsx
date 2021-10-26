@@ -69,7 +69,7 @@ const RatingListPage = () => {
             )}
             onClick={() => onChange('type', 0)}
           >
-            {currentUser.rateIncrease}
+            {ratings.totalLike}
             <AiFillLike className='ml-0.5' fill='#E4A834' size='20px' />
           </button>
           <button
@@ -79,7 +79,7 @@ const RatingListPage = () => {
             )}
             onClick={() => onChange('type', 1)}
           >
-            {currentUser.rateDecrease}
+            {ratings.totalDisLike}
             <AiFillDislike className='ml-0.5' fill='#B13A1A' size='20px' />
           </button>
           <button
@@ -89,7 +89,7 @@ const RatingListPage = () => {
             )}
             onClick={() => onChange('type', -1)}
           >
-            {currentUser.rateTotal}
+            {ratings.totalItems}
             <AiFillStar className='ml-0.5' size='24px' color='#942dd9' />
           </button>
         </div>
