@@ -14,7 +14,7 @@ import {
   selectCurrentUser,
   selectIsTogglingWatchList,
 } from 'store/user/selector'
-import { bidderApi, ratingApi, userAPI, watchListApi } from 'services'
+import { bidderApi, sellerApi, userAPI, watchListApi } from 'services'
 import { toast } from 'react-toastify'
 import { productAction } from 'store/product'
 import LdsLoading from 'components/Loading/LdsLoading'
@@ -25,20 +25,27 @@ import useLogin from 'hooks/useLogin'
 import { toggleWatchListFromApi } from 'store/user/action'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
-import ConfirmationModal from 'components/Modal/ConfirmationModal'
-import { TextField } from '@mui/material'
-import { RATING_TYPE } from 'constants/enumConstants'
-const ratingInputDefaultData = {
-  type: RATING_TYPE.LIKEe,
-  comment: '',
-  userId: '',
-}
-const WonProductsPage = () => {
-  const [ratingInputData, setRatingInputData] = useState({
-    ...ratingInputDefaultData,
-  })
+const FILTER_OPTIONS = [
+  {
+    label: 'Tất cả',
+    optionValue: 'all',
+  },
+  {
+    label: 'Sản phẩm đã kểt thúc',
+    optionValue: 'expired',
+  },
+  {
+    label: 'Sản phẩm có người chiến thắng',
+    optionValue: 'has-won',
+  },
+  {
+    label: 'Sản phẩm đang diễn ra',
+    optionValue: 'not-end',
+  },
+]
+const SellerBiddingListPage = () => {
   const isTogglingWatchList = useSelector(selectIsTogglingWatchList)
-  const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false)
+
   const [products, setProducts] = useState({})
   const [isLoading, setIsLoading] = useState(false)
   const { isLoggedInUser, isLoggingUser, currentUser } = useLogin()
@@ -49,7 +56,7 @@ const WonProductsPage = () => {
     }
     try {
       setIsLoading(true)
-      const { succeeded, data } = await bidderApi.getWonProducts({
+      const { succeeded, data } = await sellerApi.getBiddingProducts({
         ...pick(query, ['page', 'limit', 'filterType']),
       })
       if (!succeeded) {
@@ -74,65 +81,14 @@ const WonProductsPage = () => {
     }
     toggleWatchListFromApi({ productId }, () => loaddData())
   }
-  const onChangeRatingInputData = (key, value) => {
-    setRatingInputData((ratingInputData) => ({
-      ...ratingInputData,
-      [key]: value,
-    }))
-  }
-  const onClickRating = ({ sellerId: userId }, type) => {
-    setRatingInputData((old) => ({ ...old, type, userId }))
-    setIsOpenConfirmationModal(true)
-  }
-
-  const onRating = async () => {
-    setIsLoading(true)
-    try {
-      const { succeeded, data } = await ratingApi.rating(ratingInputData)
-      if (!succeeded) {
-        toast.error(data?.message)
-        return
-      }
-      toast.success(data?.message)
-    } catch (error) {
-      toast.error(error?.message)
-    } finally {
-      setIsLoading(false)
-      setIsOpenConfirmationModal(false)
-      setRatingInputData({ ...ratingInputDefaultData })
-    }
-  }
   return (
     <div className='container mx-auto mt-[40px]'>
-      <ConfirmationModal
-        open={isOpenConfirmationModal}
-        onCancel={() => {
-          onChangeRatingInputData('comment', '')
-          setIsOpenConfirmationModal(false)
-        }}
-        onOK={onRating}
-        message={
-          <div>
-            <TextField
-              label='Nhận xét'
-              multiline
-              rows={4}
-              fullWidth
-              onChange={(e) =>
-                onChangeRatingInputData('comment', e.target.value)
-              }
-              value={ratingInputData.comment}
-            />
-          </div>
-        }
-        title='Đánh giá người bán'
-      />
       <LdsLoading isFullscreen isLoading={isLoading} />
-      <div className='flex-col md:flex-row shadow-pane mb-10 border border-[rgba(13, 21, 75, 0.15)] rounded-[5px] flex-between py-[5px]  py-[30px] px-4'>
+      <div className='flex-col md:flex-row shadow-pane mb-10 border border-[rgba(13, 21, 75, 0.15)] rounded-[5px] flex-between py-[5px] px-4'>
         <h1 className='text-2xl leading-10 font-semibold text-[#171d1c]'>
-          Danh Sách sản phẩm đã thắng
+          Danh Sách sản phẩm đang đấu giá
         </h1>
-        {/* <div className='flex-center text-[#171d1c] text-base'>
+        <div className='flex-center text-[#171d1c] text-base'>
           <span className='mr-3'>Lọc theo:</span>
           <Select
             className='min-w-[230px] my-4'
@@ -147,7 +103,7 @@ const WonProductsPage = () => {
               )
             })}
           </Select>
-        </div> */}
+        </div>
       </div>
       <div className='grid xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4 mb-[35px] '>
         {products?.items?.map((product) => {
@@ -158,7 +114,6 @@ const WonProductsPage = () => {
               product={product}
               onToggleWatchList={onToggleWatchList}
               isTogglingWatchList={isTogglingWatchList}
-              onClickRating={onClickRating}
             />
           )
         })}
@@ -173,4 +128,4 @@ const WonProductsPage = () => {
   )
 }
 
-export default WonProductsPage
+export default SellerBiddingListPage

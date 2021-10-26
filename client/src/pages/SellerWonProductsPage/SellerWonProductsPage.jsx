@@ -14,7 +14,13 @@ import {
   selectCurrentUser,
   selectIsTogglingWatchList,
 } from 'store/user/selector'
-import { bidderApi, ratingApi, userAPI, watchListApi } from 'services'
+import {
+  bidderApi,
+  ratingApi,
+  sellerApi,
+  userAPI,
+  watchListApi,
+} from 'services'
 import { toast } from 'react-toastify'
 import { productAction } from 'store/product'
 import LdsLoading from 'components/Loading/LdsLoading'
@@ -33,7 +39,7 @@ const ratingInputDefaultData = {
   comment: '',
   userId: '',
 }
-const WonProductsPage = () => {
+const SellerWonProductsPage = () => {
   const [ratingInputData, setRatingInputData] = useState({
     ...ratingInputDefaultData,
   })
@@ -49,7 +55,7 @@ const WonProductsPage = () => {
     }
     try {
       setIsLoading(true)
-      const { succeeded, data } = await bidderApi.getWonProducts({
+      const { succeeded, data } = await sellerApi.getWonProducts({
         ...pick(query, ['page', 'limit', 'filterType']),
       })
       if (!succeeded) {
@@ -80,7 +86,7 @@ const WonProductsPage = () => {
       [key]: value,
     }))
   }
-  const onClickRating = ({ sellerId: userId }, type) => {
+  const onClickRating = ({ winnerId: userId }, type) => {
     setRatingInputData((old) => ({ ...old, type, userId }))
     setIsOpenConfirmationModal(true)
   }
@@ -173,4 +179,4 @@ const WonProductsPage = () => {
   )
 }
 
-export default WonProductsPage
+export default SellerWonProductsPage

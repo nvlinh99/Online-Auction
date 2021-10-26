@@ -66,7 +66,7 @@ const ProducListItem = ({
         {onClickRating && (
           <>
             <button
-              onClick={() => onClickRating(product.sellerId, RATING_TYPE.LIKE)}
+              onClick={() => onClickRating(product, RATING_TYPE.LIKE)}
               className={classNames(
                 'flex-center bg-white bg-opacity-50 hover:bg-opacity-100   absolute top-14 right-4 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu'
               )}
@@ -74,9 +74,7 @@ const ProducListItem = ({
               <AiFillLike fill='#E4A834' size='20px' />
             </button>
             <button
-              onClick={() =>
-                onClickRating(product.sellerId, RATING_TYPE.DISLIKE)
-              }
+              onClick={() => onClickRating(product, RATING_TYPE.DISLIKE)}
               className={classNames(
                 'flex-center bg-white bg-opacity-50 hover:bg-opacity-100  absolute top-24 right-4 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu'
               )}

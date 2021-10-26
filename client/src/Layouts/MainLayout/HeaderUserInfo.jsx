@@ -60,6 +60,107 @@ const HeaderUserInfo = ({ currentUser }) => {
       setIsLoading(false)
     }
   }
+  const bidderMenuList = useMemo(() => {
+    if (currentUser.role !== USER_ROLE.BIDDER) {
+      return null
+    }
+    return (
+      <>
+        <MenuItem
+          onClick={() => {
+            setIsOpenConfirmationModal(true)
+          }}
+        >
+          <RiUserStarFill className='!w-5 !h-5 mr-1' />
+          Trở thành người bán
+        </MenuItem>
+        <Divider />
+        <MenuItem
+          onClick={() => {
+            handleClose()
+            navigate('/user/watchlist')
+          }}
+        >
+          <Favorite className='!w-5 !h-5 mr-1' />
+          Danh sách yêu thích
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleClose()
+            navigate('/user/bidding-products')
+          }}
+        >
+          <RiAuctionFill className='!w-5 !h-5 mr-1' />
+          Danh sách đang đấu giá
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleClose()
+            navigate('/user/won-products')
+          }}
+        >
+          <GiPodiumWinner className='!w-5 !h-5 mr-1' />
+          Danh sách đã chiến thắng
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleClose()
+            navigate('/user/rating-list')
+          }}
+        >
+          <AiFillLike className='!w-5 !h-5 mr-1' />
+          Danh sách đánh giá
+        </MenuItem>
+        <Divider />
+      </>
+    )
+  }, [currentUser.role, navigate])
+  const sellerMenuList = useMemo(() => {
+    if (currentUser.role !== USER_ROLE.SELLER) {
+      return null
+    }
+    return (
+      <>
+        <MenuItem
+          onClick={() => {
+            handleClose()
+            navigate('/user/watchlist')
+          }}
+        >
+          <Favorite className='!w-5 !h-5 mr-1' />
+          Danh sách yêu thích
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleClose()
+            navigate('/seller/bidding-products')
+          }}
+        >
+          <RiAuctionFill className='!w-5 !h-5 mr-1' />
+          Danh sách đang đấu giá
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleClose()
+            navigate('/seller/won-products')
+          }}
+        >
+          <GiPodiumWinner className='!w-5 !h-5 mr-1' />
+          Danh sách đã chiến thắng
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleClose()
+            navigate('/user/rating-list')
+          }}
+        >
+          <AiFillLike className='!w-5 !h-5 mr-1' />
+          Danh sách đánh giá
+        </MenuItem>
+        <Divider />
+      </>
+    )
+  }, [currentUser.role, navigate])
   return (
     <ClickAwayListener onClickAway={handleClose}>
       <div className='flex items-center'>
@@ -118,53 +219,9 @@ const HeaderUserInfo = ({ currentUser }) => {
             Thông tin
           </MenuItem>
           <Divider />
-          <MenuItem
-            onClick={() => {
-              setIsOpenConfirmationModal(true)
-            }}
-          >
-            <RiUserStarFill className='!w-5 !h-5 mr-1' />
-            Trở thành người bán
-          </MenuItem>
-          <Divider />
-          <MenuItem
-            onClick={() => {
-              handleClose()
-              navigate('/user/watchlist')
-            }}
-          >
-            <Favorite className='!w-5 !h-5 mr-1' />
-            Danh sách yêu thích
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              handleClose()
-              navigate('/user/bidding-products')
-            }}
-          >
-            <RiAuctionFill className='!w-5 !h-5 mr-1' />
-            Danh sách đang đấu giá
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              handleClose()
-              navigate('/user/won-products')
-            }}
-          >
-            <GiPodiumWinner className='!w-5 !h-5 mr-1' />
-            Danh sách đã chiến thắng
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              handleClose()
-              navigate('/user/rating-list')
-            }}
-          >
-            <AiFillLike className='!w-5 !h-5 mr-1' />
-            Danh sách đánh giá
-          </MenuItem>
-          <Divider />
 
+          {bidderMenuList}
+          {sellerMenuList}
           <MenuItem onClick={onLogout}>
             <LogoutIcon className='!w-5 !h-5 mr-1' />
             Đăng xuất
