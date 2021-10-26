@@ -11,14 +11,21 @@ const useLogin = () => {
   const navigate = useNavigate()
   const currentUser = useSelector(selectCurrentUser)
   const isLoggingUser = useSelector(selectCurrentUserLoading)
-  const isLoggedInUser = useCallback(() => {
-    if (!isLoggingUser && !currentUser?.id) {
-      const loginPath = getLoginUrl(location)
-      navigate(loginPath)
-      return false
-    }
-    return true
-  }, [currentUser, navigate, location, isLoggingUser])
+  const isLoggedInUser = useCallback(
+    (role) => {
+      if (
+        (!isLoggingUser && !currentUser?.id) ||
+        (role && currentUser?.role !== role)
+      ) {
+        const loginPath = getLoginUrl(location)
+        navigate(loginPath)
+        return false
+      }
+
+      return true
+    },
+    [currentUser, navigate, location, isLoggingUser]
+  )
   return { isLoggedInUser, isLoggingUser, currentUser }
 }
 

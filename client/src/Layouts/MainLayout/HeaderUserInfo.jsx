@@ -12,7 +12,7 @@ import { logout } from 'store/user/action'
 import { LOGIN_PATH } from 'constants/routeConstants'
 import { USER_ROLE } from 'constants/userConstants'
 import { FavoriteBorder, Favorite } from '@mui/icons-material'
-import { RiUserStarFill, RiAuctionFill, RiThumbUpFill } from 'react-icons/ri'
+import { RiUserStarFill, RiAuctionFill, RiDashboardFill } from 'react-icons/ri'
 import { AiFillLike } from 'react-icons/ai'
 import { GiPodiumWinner } from 'react-icons/gi'
 import ConfirmationModal from 'components/Modal/ConfirmationModal'
@@ -161,6 +161,25 @@ const HeaderUserInfo = ({ currentUser }) => {
       </>
     )
   }, [currentUser.role, navigate])
+  const admiMenuList = useMemo(() => {
+    if (currentUser.role !== USER_ROLE.ADMIN) {
+      return null
+    }
+    return (
+      <>
+        <MenuItem
+          onClick={() => {
+            handleClose()
+            navigate('/admin')
+          }}
+        >
+          <RiDashboardFill className='!w-5 !h-5 mr-1' />
+          Trang quản trị viên
+        </MenuItem>
+        <Divider />
+      </>
+    )
+  }, [currentUser.role, navigate])
   return (
     <ClickAwayListener onClickAway={handleClose}>
       <div className='flex items-center'>
@@ -222,6 +241,7 @@ const HeaderUserInfo = ({ currentUser }) => {
 
           {bidderMenuList}
           {sellerMenuList}
+          {admiMenuList}
           <MenuItem onClick={onLogout}>
             <LogoutIcon className='!w-5 !h-5 mr-1' />
             Đăng xuất

@@ -5,6 +5,10 @@ export default [
   {
     path: ADMIN_PATH,
     element: <DashboardLayout />,
-    children: [],
+    children: [
+      {
+        path: 'category',
+      },
+    ],
   },
 ]
