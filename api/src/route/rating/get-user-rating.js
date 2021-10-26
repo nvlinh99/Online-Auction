@@ -23,6 +23,7 @@ const handler = async (req, res) => {
   if (Object.values(RATING_TYPE).includes(type)) {
     queryObj.type = type
   }
+
   const data = await RatingModel.paginate(queryObj, {
     page,
     limit,
