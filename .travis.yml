@@ -14,16 +14,3 @@ after_success:
 cache:
   directories:
   - node_modules
-  - 14
-script:
-  - echo '*** Starting build ***'
-  - echo 'install dependencies'
-  - cd api && npm install
-  - echo 'Running test'
-  - npm run test
-deploy:
-  provider: heroku
-  api_key: $heroku_key
-  app: $heroku_app_name
-  on:
-    branch: api_master
