@@ -1,18 +1,18 @@
-const _ = require("lodash")
-const moment = require("moment")
-const ProductModel = require("../model/product")
-const CategoryService = require("./category-service")
+const _ = require('lodash')
+const moment = require('moment')
+const ProductModel = require('../model/product')
+const CategoryService = require('./category-service')
 
 const TOP_COUNT = 5
 const N_ITEMS_PER_PAGE = 25
 const N_MIN_MARK_NEW = 15
 
 exports.getTopExpireProducts = async function (limit) {
-  return ProductModel.find({ expiredDate: { $gte: new Date() } })
-    .populate("categoryInfo")
+  return ProductModel.find({ status: 0, expiredDate: { $gte: new Date() } })
+    .populate('categoryInfo')
     .populate({
-      path: "currentBid",
-      populate: "bidder",
+      path: 'currentBid',
+      populate: 'bidder',
       match: { status: 0 },
       options: {
         sort: {
@@ -26,11 +26,11 @@ exports.getTopExpireProducts = async function (limit) {
 }
 
 exports.getTopBidedProducts = async function (limit) {
-  return ProductModel.find({ expiredDate: { $gte: new Date() } })
-    .populate("categoryInfo")
+  return ProductModel.find({ status: 0, expiredDate: { $gte: new Date() } })
+    .populate('categoryInfo')
     .populate({
-      path: "currentBid",
-      populate: "bidder",
+      path: 'currentBid',
+      populate: 'bidder',
       match: { status: 0 },
       options: {
         sort: {
@@ -44,11 +44,11 @@ exports.getTopBidedProducts = async function (limit) {
 }
 
 exports.getTopPriceProducts = async function (limit) {
-  return ProductModel.find({ expiredDate: { $gte: new Date() } })
-    .populate("categoryInfo")
+  return ProductModel.find({ status: 0, expiredDate: { $gte: new Date() } })
+    .populate('categoryInfo')
     .populate({
-      path: "currentBid",
-      populate: "bidder",
+      path: 'currentBid',
+      populate: 'bidder',
       match: { status: 0 },
       options: {
         sort: {
@@ -62,15 +62,14 @@ exports.getTopPriceProducts = async function (limit) {
 }
 
 function transformBiderInfo(prod) {
-  prod.biderInfo = _.get(prod, "currentBid.bidder", null)
+  prod.biderInfo = _.get(prod, 'currentBid.bidder', null)
 }
 exports.getTopProducts = async function (limit = TOP_COUNT) {
-  const [topExpireProducts, topBidedProducts, topPriceProducts] =
-    await Promise.all([
-      exports.getTopExpireProducts(limit),
-      exports.getTopBidedProducts(limit),
-      exports.getTopPriceProducts(limit),
-    ])
+  const [topExpireProducts, topBidedProducts, topPriceProducts] =    await Promise.all([
+    exports.getTopExpireProducts(limit),
+    exports.getTopBidedProducts(limit),
+    exports.getTopPriceProducts(limit),
+  ])
 
   _.forEach(topExpireProducts, transformBiderInfo)
   _.forEach(topBidedProducts, transformBiderInfo)
@@ -94,9 +93,9 @@ exports.getProductsWithPaging = async function (
     filter.$text = {
       $search: textSearch,
     }
-    args.push({ score: { $meta: "textScore" } })
+    args.push({ score: { $meta: 'textScore' } })
     sort = {
-      score: { $meta: "textScore" },
+      score: { $meta: 'textScore' },
       ...sort,
     }
   }
@@ -104,15 +103,15 @@ exports.getProductsWithPaging = async function (
     const categories = await CategoryService.getCategoriesExpandChilds(
       categoryId,
     )
-    const categoryIds = _.map(categories, "id") || []
+    const categoryIds = _.map(categories, 'id') || []
     filter.categoryId = { $in: categoryIds }
   }
 
   const products = await ProductModel.find(filter, ...args)
-    .populate("totalBids")
+    .populate('totalBids')
     .populate({
-      path: "currentBid",
-      populate: "bidder",
+      path: 'currentBid',
+      populate: 'bidder',
       match: { status: 0 },
       options: {
         sort: {
@@ -121,7 +120,7 @@ exports.getProductsWithPaging = async function (
       },
     })
     .populate({
-      path: "watchList",
+      path: 'watchList',
 
       transform: (doc) => doc && doc.userId,
     })
@@ -132,7 +131,7 @@ exports.getProductsWithPaging = async function (
   const totalItems = await ProductModel.countDocuments(filter, ...args)
   const totalPages = Math.ceil(totalItems / limit)
 
-  const newTime = moment().subtract(N_MIN_MARK_NEW, "minutes").toDate()
+  const newTime = moment().subtract(N_MIN_MARK_NEW, 'minutes').toDate()
   _.forEach(products, (product) => {
     delete product.score
     if (product.createdAt > newTime) product.isNew = true
