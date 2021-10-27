@@ -1,21 +1,35 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import moment from 'moment'
 import './index.css'
-const TimeLeft = ({ initHoursLeft, initMinutesLeft, initSecondsLeft }) => {
-  const [totalSeconds, setTotalSeconds] = useState(
-    initHoursLeft * 60 * 60 + initMinutesLeft * 60 + initSecondsLeft
-  )
+import useCountdown from 'hooks/useCountdown'
+const TimeLeft = ({
+  initHoursLeft,
+  initMinutesLeft,
+  initSecondsLeft,
+  date,
+}) => {
+  const [totalSeconds, setTotalSeconds] = useState(0)
+  // initHoursLeft * 60 * 60 + initMinutesLeft * 60 + initSecondsLeft
+  const cdHook = useCountdown({ time: date })
 
-  const duration = moment.duration(totalSeconds, 'seconds')
-  const monthsLeft = Math.floor(duration.asMonths())
-  const weeksLeft = duration.weeks()
-  const daysLeft = duration.days()
-  const hoursLeft = duration.hours()
-  const minutesLeft = duration.minutes()
-  const secondsLeft = duration.seconds()
+  // useEffect(() => {
+  //   console.log(initHoursLeft, initMinutesLeft, initSecondsLeft)
+  //   setTotalSeconds(
+  //     initHoursLeft * 60 * 60 + initMinutesLeft * 60 + initSecondsLeft
+  //   )
+  // }, [initHoursLeft, initMinutesLeft, initSecondsLeft])
+
+  // const duration = moment.duration(totalSeconds, 'seconds')
+  const duration = cdHook.duration
+  const monthsLeft = Math.floor(duration.asMonths?.() || 0)
+  const weeksLeft = duration.weeks?.() || 0
+  const daysLeft = duration.days?.() || 0
+  const hoursLeft = duration.hours?.() || 0
+  const minutesLeft = duration.minutes?.() || 0
+  const secondsLeft = duration.seconds?.() || 0
   if (totalSeconds > 0)
     setTimeout(() => {
-      setTotalSeconds(totalSeconds - 1)
+      setTotalSeconds((totalSeconds) => totalSeconds - 1)
     }, 1000)
   // setTimeout(() => {
   //   if (secondsLeft > 0) return setSe

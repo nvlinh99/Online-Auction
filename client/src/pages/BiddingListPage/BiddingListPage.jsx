@@ -30,10 +30,10 @@ const FILTER_OPTIONS = [
     label: 'Tất cả',
     optionValue: 'all',
   },
-  {
-    label: 'Sản phẩm đã kểt thúc',
-    optionValue: 'expired',
-  },
+  // {
+  //   label: 'Sản phẩm đã kểt thúc',
+  //   optionValue: 'expired',
+  // },
   {
     label: 'Sản phẩm có người chiến thắng',
     optionValue: 'has-won',

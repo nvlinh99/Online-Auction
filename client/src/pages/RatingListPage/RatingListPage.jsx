@@ -89,7 +89,7 @@ const RatingListPage = () => {
             )}
             onClick={() => onChange('type', -1)}
           >
-            {ratings.totalItems}
+            {ratings.totalLike - ratings.totalDisLike}
             <AiFillStar className='ml-0.5' size='24px' color='#942dd9' />
           </button>
         </div>

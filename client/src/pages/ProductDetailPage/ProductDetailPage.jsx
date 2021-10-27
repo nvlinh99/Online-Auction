@@ -179,6 +179,7 @@ const ProductDetailPage = () => {
       stepPrice,
       purchasePrice,
       formatedExpiredDate,
+      expiredDate,
       formatedPublishedDate,
       totalBid,
       hoursLeft: initHoursLeft,
@@ -283,6 +284,7 @@ const ProductDetailPage = () => {
                   <div className='product-time-left'>
                     <p className='mb-2'>Thời gian còn lại:</p>
                     <TimeLeft
+                      date={expiredDate}
                       initHoursLeft={initHoursLeft}
                       initMinutesLeft={initMinutesLeft}
                       initSecondsLeft={initSecondsLeft}
