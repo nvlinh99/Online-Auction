@@ -74,6 +74,9 @@ const ProductListPage = () => {
               product={product}
               onToggleWatchList={onToggleWatchList}
               isTogglingWatchList={isTogglingWatchList}
+              onClickCategory={() =>
+                onChange('categoryId', product?.categoryInfo?.id || '')
+              }
             />
           )
         })}

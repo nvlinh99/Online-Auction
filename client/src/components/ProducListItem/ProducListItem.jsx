@@ -2,13 +2,14 @@ import useCountdown from 'hooks/useCountdown'
 import React, { useMemo } from 'react'
 import { RiAuctionFill, RiMoneyDollarCircleFill } from 'react-icons/ri'
 import { getImageURL } from 'utils/helpers/urlHelper'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FavoriteBorder, Favorite } from '@mui/icons-material'
 import classNames from 'classnames'
 import moment from 'moment'
 import hotIcon from 'assets/hot.png'
 import { AiFillLike, AiFillDislike } from 'react-icons/ai'
 import { RATING_TYPE } from 'constants/enumConstants'
+import { useCallback } from 'react'
 // const time = moment().add(10 * 60 - 10 * 60 + 10, 'seconds')
 const ProducListItem = ({
   product = {},
@@ -17,7 +18,9 @@ const ProducListItem = ({
   isTogglingWatchList,
   noWatchList,
   onClickRating,
+  onClickCategory,
 }) => {
+  const navigate = useNavigate()
   const isWatched = useMemo(() => {
     return currentUser?.watchList?.map((i) => i.productId).includes(product?.id)
   }, [currentUser, product])
@@ -47,8 +50,29 @@ const ProducListItem = ({
     }
     return false
   }, [pldd])
+  const handleClickCategory = useCallback(() => {
+    if (onClickCategory) {
+      onClickCategory(product)
+      return
+    }
+    navigate(`/products/?categoryId=${product?.categoryInfo?.id || ''}`)
+  }, [onClickCategory, navigate, product])
   return (
-    <div className='pt-2.5 pb-8 px-2.5 shadow-product bg-white rounded-[10px]'>
+    <div className='relative pt-2.5 pb-8 px-2.5 shadow-product bg-white rounded-[10px]'>
+      {product.categoryInfo?.title && (
+        <button
+          onClick={handleClickCategory}
+          className='z-10  rounded-r-[4px] shadow-product  flex-center text-white bg-gradient-to-tl from-[#f22876] to-[#942dd9] absolute top-4 left-[-3px] max-w-[150px] h-[24px] px-2 py-1    inline-block duration-300 ease-linear transform-gpu'
+        >
+          <span
+            className='border-[#942dd9] absolute inline-block left-0 bottom-[-3px] border-t-[3px] border-l-[3px] border-l-[transparent] filter brightness-50'
+            z-10
+          />
+          <span className='overflow-hidden text-xs overflow-ellipsis whitespace-nowrap'>
+            {product.categoryInfo.title}
+          </span>
+        </button>
+      )}
       <div className='relative rounded-[10px] overflow-hidden bg-[#f6f6ff] justify-center items-center flex '>
         <Link
           to={`/products/${product.id}`}
@@ -60,12 +84,13 @@ const ProducListItem = ({
             className=''
           />
         </Link>
+
         {!noWatchList && (
           <button
             disabled={isTogglingWatchList === product.id}
             onClick={() => onToggleWatchList(product)}
             className={classNames(
-              'flex-center text-white bg-gradient-to-tl from-[#f22876] to-[#942dd9] absolute top-4 right-4 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu',
+              'flex-center text-white bg-gradient-to-tl from-[#f22876] to-[#942dd9] absolute top-2 right-2 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu',
               isTogglingWatchList === product.id && 'spin-animation'
             )}
           >
@@ -77,7 +102,7 @@ const ProducListItem = ({
             <button
               onClick={() => onClickRating(product, RATING_TYPE.LIKE)}
               className={classNames(
-                'flex-center bg-white bg-opacity-50 hover:bg-opacity-100   absolute top-14 right-4 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu'
+                'flex-center bg-white bg-opacity-50 hover:bg-opacity-100   absolute top-2 right-2 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu'
               )}
             >
               <AiFillLike fill='#E4A834' size='20px' />
@@ -85,7 +110,7 @@ const ProducListItem = ({
             <button
               onClick={() => onClickRating(product, RATING_TYPE.DISLIKE)}
               className={classNames(
-                'flex-center bg-white bg-opacity-50 hover:bg-opacity-100  absolute top-24 right-4 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu'
+                'flex-center bg-white bg-opacity-50 hover:bg-opacity-100  absolute top-22 right-2 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu'
               )}
             >
               <AiFillDislike fill='#B13A1A' size='20px' />
