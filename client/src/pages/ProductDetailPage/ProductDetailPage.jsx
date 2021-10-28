@@ -29,6 +29,7 @@ import { toggleWatchListFromApi } from 'store/user/action'
 import classNames from 'classnames'
 import { toast } from 'react-toastify'
 import * as socketService from 'services/socket-service'
+import ProducListItem from 'components/ProducListItem'
 
 const ProductDetailPage = () => {
   const isTogglingWatchList = useSelector(selectIsTogglingWatchList)
@@ -40,9 +41,12 @@ const ProductDetailPage = () => {
   const [product, setProduct] = useState(null)
   const imgListModal = useRef({})
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false)
+  const [isOpenPurchaseConfirmationModal, setIsOpenPurchaseConfirmationModal] =
+    useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isOpenRejectModal, setIsOpenRejectModal] = useState(false)
   const [rejectBidId, setRejectBidId] = useState(-1)
+  const [sameCateProductList, setSameCateProductList] = useState([])
   const openModal = () => {
     return imgListModal.current.openModal && imgListModal.current.openModal()
   }
@@ -89,21 +93,66 @@ const ProductDetailPage = () => {
     }
     setIsOpenConfirmationModal(true)
   }, [isLoggedInUser])
+  const onClickPurchase = useCallback(() => {
+    if (!isLoggedInUser()) {
+      return
+    }
+    setIsOpenPurchaseConfirmationModal(true)
+  }, [isLoggedInUser])
+
+  const onPurchase = useCallback(async () => {
+    if (!product || !product.purchasePrice) return
+    setIsLoading(true)
+    try {
+      const { succeeded, data } = await productApi.bidProduct({
+        productId: product.id,
+        price: product.purchasePrice,
+      })
+      if (!succeeded) {
+        toast.error(data.message || 'Yêu cầu mua sản phẩm thất bại!')
+      } else {
+        toast.info('Bạn là người chiến thắng đấu giá!!')
+      }
+    } catch (e) {
+      toast.error('Yêu cầu mua sản phẩm thất bại!')
+    } finally {
+      setIsLoading(false)
+      loadProductData()
+    }
+  }, [product, loadProductData])
   const loadProductData = useCallback(async () => {
     setIsLoading(true)
     try {
-      const { succeeded, data } = await productApi.postProductById(
+      let { succeeded, data } = await productApi.postProductById(
         params.productId
       )
       if (!succeeded || !data || !data.product || data.product.status == 1)
         setIsNotFound(true)
-      else setProduct(data.product)
+      else {
+        setProduct(data.product)
+      }
     } catch (err) {
       setIsNotFound(true)
     } finally {
       setIsLoading(false)
     }
   }, [params.productId])
+  useEffect(() => {
+    if (!product) return
+    ;(async () => {
+      const { succeeded, data } = await productApi.getProducts({
+        categoryId: product.categoryId,
+        exceptProductId: [product.id],
+        page: 1,
+        sort: {
+          createdAt: -1,
+        },
+      })
+      if (succeeded && data && data.items) {
+        setSameCateProductList(data.items.slice(0, 5))
+      }
+    })()
+  }, [product])
   const onToggleWatchList = useCallback(async () => {
     const { id: productId } = product || {}
     if (!isLoggedInUser() || !productId) {
@@ -223,6 +272,16 @@ const ProductDetailPage = () => {
           title='Xác nhận đấu giá'
         />
         <ConfirmationModal
+          open={isOpenPurchaseConfirmationModal}
+          onCancel={() => setIsOpenPurchaseConfirmationModal(false)}
+          onOK={() => {
+            setIsOpenPurchaseConfirmationModal(false)
+            onPurchase()
+          }}
+          message={`Bạn có thật sự muốn ra giá ${product.purchasePrice}?`}
+          title='Xác nhận đấu giá'
+        />
+        <ConfirmationModal
           open={isOpenRejectModal}
           onCancel={() => {
             setRejectBidId(-1)
@@ -275,7 +334,11 @@ const ProductDetailPage = () => {
                     </div>
                     {formatedPurchasePrice && (
                       <div className='p-4'>
-                        <button className='btn-buy-now' type='button'>
+                        <button
+                          className='btn-buy-now'
+                          type='button'
+                          onClick={onClickPurchase}
+                        >
                           MUA NGAY VỚI GIÁ {formatedPurchasePrice} VND
                         </button>
                       </div>
@@ -488,6 +551,31 @@ const ProductDetailPage = () => {
             pRef={imgListModal}
             imgUrlList={[avatarUrl, ...imageUrls]}
           />
+          <p
+            style={{
+              fontSize: '22px',
+              fontWeight: 'bold',
+              borderBottom: '1px solid #ddd',
+              borderTop: '1px solid #ddd',
+            }}
+            className='mt-14 mb-4'
+          >
+            Sản phẩm cùng danh mục
+          </p>
+          <div className='grid xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 mb-[35px] '>
+            {sameCateProductList?.map((product) => {
+              return (
+                <ProducListItem
+                  currentUser={currentUser}
+                  key={product.id}
+                  product={product}
+                  onToggleWatchList={() => {}}
+                  isTogglingWatchList={null}
+                  noWatchList={true}
+                />
+              )
+            })}
+          </div>
         </Container>
       </>
     )

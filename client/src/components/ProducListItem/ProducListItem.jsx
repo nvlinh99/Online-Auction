@@ -15,6 +15,7 @@ const ProducListItem = ({
   currentUser = {},
   onToggleWatchList,
   isTogglingWatchList,
+  noWatchList,
   onClickRating,
 }) => {
   const isWatched = useMemo(() => {
@@ -32,14 +33,20 @@ const ProducListItem = ({
     }
     return [bidder.firstName, bidder.lastName].filter(Boolean).join(' ')
   }, [product.currentBid?.bidder])
-  const isHot = useMemo(() => {
-    const m = duration.asMinutes?.()
 
+  let pldd = null
+  const diff = moment().diff(moment(product.publishedDate), 'milliseconds')
+  if (diff > 0) {
+    pldd = moment.duration(diff)
+  }
+
+  const isHot = useMemo(() => {
+    const m = pldd.asMinutes?.()
     if (m > 0 && m < 10) {
       return true
     }
     return false
-  }, [duration])
+  }, [pldd])
   return (
     <div className='pt-2.5 pb-8 px-2.5 shadow-product bg-white rounded-[10px]'>
       <div className='relative rounded-[10px] overflow-hidden bg-[#f6f6ff] justify-center items-center flex '>
@@ -53,16 +60,18 @@ const ProducListItem = ({
             className=''
           />
         </Link>
-        <button
-          disabled={isTogglingWatchList === product.id}
-          onClick={() => onToggleWatchList(product)}
-          className={classNames(
-            'flex-center text-white bg-gradient-to-tl from-[#f22876] to-[#942dd9] absolute top-4 right-4 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu',
-            isTogglingWatchList === product.id && 'spin-animation'
-          )}
-        >
-          {isWatched ? <Favorite /> : <FavoriteBorder />}
-        </button>
+        {!noWatchList && (
+          <button
+            disabled={isTogglingWatchList === product.id}
+            onClick={() => onToggleWatchList(product)}
+            className={classNames(
+              'flex-center text-white bg-gradient-to-tl from-[#f22876] to-[#942dd9] absolute top-4 right-4 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu',
+              isTogglingWatchList === product.id && 'spin-animation'
+            )}
+          >
+            {isWatched ? <Favorite /> : <FavoriteBorder />}
+          </button>
+        )}
         {onClickRating && (
           <>
             <button
