@@ -8,6 +8,7 @@ const genRequestValidation = require('../../middleware/gen-request-validation')
 const requestValidationHandler = genRequestValidation({
   body: joi
     .object({
+      exceptProductId: joi.array().optional().items(joi.number().required().invalid(null)),
       categoryId: joi.number().integer().positive().invalid(null),
       text: joi.string().invalid('', null),
       page: joi.number().required().positive().invalid(null),
@@ -26,6 +27,7 @@ const getProductsHandler = async (req, res) => {
   filter.page = body.page || 1
   if (body.text) filter.textSearch = body.text
   if (body.categoryId) filter.categoryId = body.categoryId
+  if (body.exceptProductId && body.exceptProductId.length) filter.exceptProductId = body.exceptProductId
 
   const data = await ProductService.getProductsWithPaging(filter, body.sort)
 

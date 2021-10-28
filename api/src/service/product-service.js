@@ -78,7 +78,7 @@ exports.getTopProducts = async function (limit = TOP_COUNT) {
 }
 
 exports.getProductsWithPaging = async function (
-  { categoryId, textSearch, page = 1 },
+  { categoryId, textSearch, page = 1, exceptProductId },
   sort = {},
 ) {
   const [skip, limit] = pageToSkipAndLimit(page)
@@ -106,7 +106,7 @@ exports.getProductsWithPaging = async function (
     const categoryIds = _.map(categories, 'id') || []
     filter.categoryId = { $in: categoryIds }
   }
-
+  if (exceptProductId) filter.id = { $nin: exceptProductId }
   const products = await ProductModel.find(filter, ...args)
     .populate('totalBids')
     .populate({

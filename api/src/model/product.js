@@ -21,7 +21,7 @@ const productSchema = new mongoose.Schema(
     currentPrice: { type: Number, default: null },
     stepPrice: { type: Number, required: true },
     purchasePrice: { type: Number, default: null },
-    publishedDate: { type: Date, default: Date.now() },
+    publishedDate: { type: Date, default: () => new Date() },
     totalBid: { type: Number, default: 0 },
     sellerId: { type: Number, required: true },
     winnerId: { type: Number, default: null },
