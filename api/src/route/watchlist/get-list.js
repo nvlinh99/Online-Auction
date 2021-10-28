@@ -26,6 +26,7 @@ const handler = async (req, res) => {
         path: "product",
         populate: [
           "totalBids",
+          "categoryInfo",
           {
             path: "currentBid",
             populate: "bidder",

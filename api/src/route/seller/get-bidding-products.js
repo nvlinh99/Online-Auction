@@ -32,6 +32,7 @@ const handler = async (req, res) => {
     limit,
     populate: [
       "totalBids",
+      "categoryInfo",
       {
         path: "currentBid",
         populate: "bidder",
