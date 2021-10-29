@@ -46,7 +46,7 @@ const routeConfig = [
     element: <ForgetPassPage />,
   },
   {
-    path: '/update-password',
+    path: '/user/update-password',
     element: <UpdatePasswordPage />,
   },
   {
