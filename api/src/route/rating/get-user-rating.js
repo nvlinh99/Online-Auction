@@ -27,7 +27,7 @@ const handler = async (req, res) => {
   const data = await RatingModel.paginate(queryObj, {
     page,
     limit,
-    populate: "rateBy",
+    populate: "rateBy product",
   })
   if (!data) {
     return res.reqF({

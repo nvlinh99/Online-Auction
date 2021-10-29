@@ -1,6 +1,6 @@
-const mongoose = require("mongoose")
-const mongoosePaginate = require("mongoose-paginate-v2")
-const nanoid = require("../util/nanoid")
+const mongoose = require('mongoose')
+const mongoosePaginate = require('mongoose-paginate-v2')
+const nanoid = require('../util/nanoid')
 
 const ratingSchema = new mongoose.Schema(
   {
@@ -18,12 +18,18 @@ const ratingSchema = new mongoose.Schema(
     },
   },
 )
-ratingSchema.virtual("rateBy", {
-  ref: "User",
-  localField: "rateById",
-  foreignField: "id",
+ratingSchema.virtual('rateBy', {
+  ref: 'User',
+  localField: 'rateById',
+  foreignField: 'id',
+  justOne: true,
+})
+ratingSchema.virtual('product', {
+  ref: 'Product',
+  localField: 'productId',
+  foreignField: 'id',
   justOne: true,
 })
 ratingSchema.plugin(mongoosePaginate)
 
-module.exports = mongoose.model("Rating", ratingSchema)
+module.exports = mongoose.model('Rating', ratingSchema)

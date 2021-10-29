@@ -29,6 +29,12 @@ ratingSchema.virtual('seller', {
   foreignField: 'id',
   justOne: true,
 })
+ratingSchema.virtual('product', {
+  ref: 'Product',
+  localField: 'productId',
+  foreignField: 'id',
+  justOne: true,
+})
 ratingSchema.plugin(mongoosePaginate)
 
 module.exports = mongoose.model('Transaction', ratingSchema)

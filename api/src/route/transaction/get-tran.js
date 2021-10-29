@@ -24,7 +24,7 @@ const handler = async (req, res) => {
   const data = await TransactionModel.paginate(queryObj, {
     page,
     limit,
-    populate: 'winner seller',
+    populate: 'winner seller product',
   })
   if (!data) {
     return res.reqF('Lấy danh sách giao dịch thất bại')
