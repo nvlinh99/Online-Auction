@@ -15,6 +15,7 @@ import { FavoriteBorder, Favorite } from '@mui/icons-material'
 import { RiUserStarFill, RiAuctionFill, RiDashboardFill } from 'react-icons/ri'
 import { AiFillLike } from 'react-icons/ai'
 import { GiPodiumWinner } from 'react-icons/gi'
+import { GrTransaction } from 'react-icons/gr'
 import ConfirmationModal from 'components/Modal/ConfirmationModal'
 import { bidderApi } from 'services'
 import { toast } from 'react-toastify'
@@ -156,6 +157,15 @@ const HeaderUserInfo = ({ currentUser }) => {
         >
           <AiFillLike className='!w-5 !h-5 mr-1' />
           Danh sách đánh giá
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleClose()
+            navigate('/seller/transaction')
+          }}
+        >
+          <GrTransaction className='!w-5 !h-5 mr-1' />
+          Danh sách giao dịch
         </MenuItem>
         <Divider />
       </>

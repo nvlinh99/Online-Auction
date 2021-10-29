@@ -3,6 +3,7 @@ import DashboardLayout from 'Layouts/DashboardLayout'
 import MainLayout from 'Layouts/MainLayout'
 import SellerBiddingListPage from 'pages/SellerBiddingListPage'
 import SellerWonProductsPage from 'pages/SellerWonProductsPage'
+import SellerTransactionPage from 'pages/SellerTransactionPage'
 
 export default [
   {
@@ -16,6 +17,10 @@ export default [
       {
         path: 'won-products',
         element: <SellerWonProductsPage />,
+      },
+      {
+        path: 'transaction',
+        element: <SellerTransactionPage />,
       },
     ],
   },

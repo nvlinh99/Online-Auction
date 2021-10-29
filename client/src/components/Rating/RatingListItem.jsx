@@ -14,6 +14,7 @@ const RatingListItem = ({ rating = {} }) => {
     <div className='pt-2.5 pb-8 px-2.5 shadow-product bg-white rounded-[10px]'>
       <div className='flex items-center mb-2'>
         <Avatar
+          style={{ transform: 'translateY(-5px)' }}
           className={classNames('!bg-white mr-2  border border-[#942dd9]', {
             'border-[#E4A834]': rating.type === RATING_TYPE.LIKE,
             'border-[#B13A1A]': rating.type === RATING_TYPE.DISLIKE,
@@ -28,7 +29,12 @@ const RatingListItem = ({ rating = {} }) => {
           )}
         </Avatar>
         <div className=''>
-          <h3 className='text-sm font-bold'>{rateByFullName}</h3>
+          <p>
+            Người đánh giá: <strong>{rateByFullName}</strong>
+          </p>
+          <p>
+            Sản phẩm: <strong>{rating?.product?.name}</strong>
+          </p>
           <p className='text-[12px] text-[#484848] font-light'>
             {moment(rating.createdAt).format('MMM DD YYYY')}
           </p>
