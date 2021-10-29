@@ -29,9 +29,10 @@ import ConfirmationModal from 'components/Modal/ConfirmationModal'
 import { TextField } from '@mui/material'
 import { RATING_TYPE } from 'constants/enumConstants'
 const ratingInputDefaultData = {
-  type: RATING_TYPE.LIKEe,
+  type: RATING_TYPE.LIKE,
   comment: '',
   userId: '',
+  productId: '',
 }
 const WonProductsPage = () => {
   const [ratingInputData, setRatingInputData] = useState({
@@ -80,8 +81,8 @@ const WonProductsPage = () => {
       [key]: value,
     }))
   }
-  const onClickRating = ({ sellerId: userId }, type) => {
-    setRatingInputData((old) => ({ ...old, type, userId }))
+  const onClickRating = ({ id, sellerId: userId }, type) => {
+    setRatingInputData((old) => ({ ...old, productId: id, type, userId }))
     setIsOpenConfirmationModal(true)
   }
 

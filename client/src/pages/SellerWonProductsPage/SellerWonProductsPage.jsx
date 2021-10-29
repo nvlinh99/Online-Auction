@@ -86,10 +86,6 @@ const SellerWonProductsPage = () => {
       [key]: value,
     }))
   }
-  const onClickRating = ({ winnerId: userId }, type) => {
-    setRatingInputData((old) => ({ ...old, type, userId }))
-    setIsOpenConfirmationModal(true)
-  }
 
   const onRating = async () => {
     setIsLoading(true)
@@ -164,7 +160,6 @@ const SellerWonProductsPage = () => {
               product={product}
               onToggleWatchList={onToggleWatchList}
               isTogglingWatchList={isTogglingWatchList}
-              onClickRating={onClickRating}
             />
           )
         })}
