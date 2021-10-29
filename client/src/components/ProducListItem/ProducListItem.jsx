@@ -102,7 +102,7 @@ const ProducListItem = ({
             <button
               onClick={() => onClickRating(product, RATING_TYPE.LIKE)}
               className={classNames(
-                'flex-center bg-white bg-opacity-50 hover:bg-opacity-100   absolute top-2 right-2 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu'
+                'border flex-center bg-white bg-opacity-50 hover:bg-opacity-100   absolute top-12 right-2 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu'
               )}
             >
               <AiFillLike fill='#E4A834' size='20px' />
@@ -110,7 +110,7 @@ const ProducListItem = ({
             <button
               onClick={() => onClickRating(product, RATING_TYPE.DISLIKE)}
               className={classNames(
-                'flex-center bg-white bg-opacity-50 hover:bg-opacity-100  absolute top-22 right-2 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu'
+                'border flex-center bg-white bg-opacity-50 hover:bg-opacity-100  absolute top-[88px] right-2 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu'
               )}
             >
               <AiFillDislike fill='#B13A1A' size='20px' />
