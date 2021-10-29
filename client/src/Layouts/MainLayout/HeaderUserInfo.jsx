@@ -15,6 +15,7 @@ import { FavoriteBorder, Favorite } from '@mui/icons-material'
 import { RiUserStarFill, RiAuctionFill, RiDashboardFill } from 'react-icons/ri'
 import { AiFillLike } from 'react-icons/ai'
 import { GiPodiumWinner } from 'react-icons/gi'
+import { MdPassword } from 'react-icons/md'
 import ConfirmationModal from 'components/Modal/ConfirmationModal'
 import { bidderApi } from 'services'
 import { toast } from 'react-toastify'
@@ -236,6 +237,16 @@ const HeaderUserInfo = ({ currentUser }) => {
           <MenuItem onClick={handleClose}>
             <PersonIcon className='!w-5 !h-5 mr-1' />
             Thông tin
+          </MenuItem>
+          <Divider />
+          <MenuItem
+            onClick={() => {
+              handleClose()
+              navigate('/user/update-password')
+            }}
+          >
+            <MdPassword className='!w-5 !h-5 mr-1' />
+            Thay đổi mật khẩu
           </MenuItem>
           <Divider />
 

@@ -3,6 +3,7 @@ import DashboardLayout from 'Layouts/DashboardLayout'
 import MainLayout from 'Layouts/MainLayout'
 import BiddingListPage from 'pages/BiddingListPage'
 import RatingListPage from 'pages/RatingListPage'
+import UpdatePasswordPage from 'pages/UpdatePasswordPage'
 import WatcghListPage from 'pages/WatcghListPage'
 import WonProductsPage from 'pages/WonProductsPage'
 
