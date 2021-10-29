@@ -4,6 +4,7 @@ const numeral = require('numeral')
 const ProductModel = require('../model/product')
 const BidModel = require('../model/bid')
 const UserModel = require('../model/user')
+const TransactionModel = require('../model/transaction')
 const EmailService = require('../service/emailService')
 
 const wait = (ms) => new Promise((res) => setTimeout(res, ms))
@@ -72,7 +73,14 @@ const LIMIT = 5;
                 `${numeral(winBid.price).format('0,0')} VND`
               )
             }
-            await ProductModel.updateOne({ id: product.id }, { $set: { winnerId: winBid.userId } })
+            await Promise.all([
+              ProductModel.updateOne({ id: product.id }, { $set: { winnerId: winBid.userId } }),
+              TransactionModel.create({
+                sellerId: product.sellerId,
+                winnerId: winBid.userId,
+                productId: product.id,
+              })
+            ])
             return res()
           })
         })

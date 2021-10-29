@@ -2,6 +2,7 @@ const joi = require('joi')
 const md5 = require('md5')
 const RatingModel = require('../../model/rating')
 const UserModel = require('../../model/user')
+const ProductModel = require('../../model/product')
 const NotificationModel = require('../../model/notification')
 const ProductService = require('../../service/product-service')
 const configuration = require('../../configuration')
@@ -12,7 +13,7 @@ const { RATING_TYPE } = require('../../constant/rating')
 const requestValidationHandler = genRequestValidation({
   body: joi
     .object({
-      userId: joi.number().required().positive().invalid(null),
+      productId: joi.number().required().positive().invalid(null),
       type: joi.number().required().valid(RATING_TYPE.LIKE, RATING_TYPE.DISLIKE).invalid(null),
       comment: joi.string().trim().required().invalid(null)
     })
@@ -21,8 +22,22 @@ const requestValidationHandler = genRequestValidation({
 
 const rateHandler = async (req, res) => {
   const { body, user } = req
-  if (user.id === body.userId) return res.reqF('Không được đanh giá chính bản thân.')
  
+  const product = await ProductModel.findOne({ 
+    id: body.productId, 
+    winnerId: { $ne: null },
+  })
+
+  if (!product || (user.id !== product.sellerId && user.id !== product.winnerId)) return res.reqF('Thêm đánh giá thất bại.')
+
+  const ratedUserId = product.winnerId === user.id ? product.sellerId : product.winnerId
+  const existsRate = await RatingModel.findOne({
+    userId: ratedUserId,
+    rateById: user.id,
+    productId: product.id,
+  })
+  if (existsRate) return res.reqF('Bạn đã đánh giá người này rồi.')
+
   const userUpdateData = {}
   if (body.type === RATING_TYPE.LIKE) {
     userUpdateData.$inc = { 
@@ -38,12 +53,13 @@ const rateHandler = async (req, res) => {
 
   const [ newRate, ] = await Promise.all([
     RatingModel.create({
-      userId: body.userId,
+      userId: ratedUserId,
       rateById: user.id,
+      productId: product.id,
       type: body.type,
       comment: body.comment
     }),
-    UserModel.updateOne({ id: body.userId, }, userUpdateData)
+    UserModel.updateOne({ id: ratedUserId, }, userUpdateData)
   ])
 
   return res.reqS({

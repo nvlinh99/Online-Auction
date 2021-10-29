@@ -3,7 +3,7 @@ const md5 = require('md5')
 const numeral = require('numeral')
 const moment  = require('moment')
 const _ = require('lodash')
-const { Product:ProductModel,Bid:BidModel, User: UserModel, } = require('../../model')
+const { Product:ProductModel,Bid:BidModel, User: UserModel, Transaction: TransactionModel } = require('../../model')
 const configuration = require('../../configuration')
 const genRequestValidation = require('../../middleware/gen-request-validation')
 const socketEmitter = require('../../service/socket-service').emitter
@@ -83,11 +83,13 @@ const handler = async (req, res) => {
     })
   }
   updateData.currentPrice = price
-  const pm  = [BidModel.create({
-    userId,
-    productId,
-    price,
-  }),]
+  const pm  = [
+    BidModel.create({
+      userId,
+      productId,
+      price,
+    }),
+  ]
   if (!_.isEmpty(updateData)) {
     pm.push(ProductModel.updateOne({
       id:productId,
@@ -98,6 +100,13 @@ const handler = async (req, res) => {
         biderIdList: userId
       }
     }, { upsert: true }))
+  }
+  if (updateData.winnerId) {
+    pm.push(TransactionModel.create({
+      sellerId: product.sellerId,
+      winnerId: updateData.winnerId,
+      productId: product.id,
+    }))
   }
   const [bid, ] = await Promise.all(pm)
   res.json({
