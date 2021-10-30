@@ -244,7 +244,12 @@ const HeaderUserInfo = ({ currentUser }) => {
             },
           }}
         >
-          <MenuItem onClick={handleClose}>
+          <MenuItem
+            onClick={() => {
+              handleClose()
+              navigate('/user/profile')
+            }}
+          >
             <PersonIcon className='!w-5 !h-5 mr-1' />
             Thông tin
           </MenuItem>
