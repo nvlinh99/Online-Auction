@@ -61,9 +61,9 @@ const SellerWonProductsPage = () => {
       setSelectedTranId(-1)
       setIsLoading(false)
       setIsOpenCompleteModal(false)
-      loaddData()
+      loadData()
     }
-  }, [selectedTranId, loaddData])
+  }, [selectedTranId, loadData])
   const onCancel = useCallback(async () => {
     setIsLoading(true)
     try {
@@ -80,10 +80,10 @@ const SellerWonProductsPage = () => {
       setSelectedTranId(-1)
       setIsLoading(false)
       setIsOpenCancelModal(false)
-      loaddData()
+      loadData()
     }
-  }, [selectedTranId, loaddData])
-  const loaddData = useCallback(async () => {
+  }, [selectedTranId, loadData])
+  const loadData = useCallback(async () => {
     if (!isLoggedInUser()) return null
     if (!query) {
       return
@@ -105,8 +105,8 @@ const SellerWonProductsPage = () => {
     }
   }, [isLoggedInUser, query])
   useEffect(() => {
-    loaddData()
-  }, [loaddData])
+    loadData()
+  }, [loadData])
 
   return (
     <div className='container mx-auto mt-[40px]'>

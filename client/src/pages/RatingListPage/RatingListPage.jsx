@@ -18,7 +18,7 @@ const RatingListPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { isLoggedInUser, isLoggingUser, currentUser } = useLogin()
   const { query, onChange } = useQuery()
-  const loaddData = useCallback(async () => {
+  const loadData = useCallback(async () => {
     if (!query) {
       return
     }
@@ -41,8 +41,8 @@ const RatingListPage = () => {
     }
   }, [query])
   useEffect(() => {
-    loaddData()
-  }, [loaddData])
+    loadData()
+  }, [loadData])
   const { isFilterByLike, isFilterByDisLike, isAll } = useMemo(() => {
     const type = query?.type ? parseInt(query?.type) : -1
     if (type === RATING_TYPE.LIKE) {

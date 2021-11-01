@@ -31,7 +31,7 @@ const WatcghListPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { isLoggedInUser, isLoggingUser, currentUser } = useLogin()
   const { query, onChange } = useQuery()
-  const loaddData = useCallback(async () => {
+  const loadData = useCallback(async () => {
     if (!query) {
       return
     }
@@ -52,15 +52,15 @@ const WatcghListPage = () => {
     }
   }, [query])
   useEffect(() => {
-    loaddData()
-  }, [loaddData])
+    loadData()
+  }, [loadData])
 
   const onToggleWatchList = async (product) => {
     const { id: productId } = product || {}
     if (!isLoggedInUser()) {
       return
     }
-    toggleWatchListFromApi({ productId }, () => loaddData())
+    toggleWatchListFromApi({ productId }, () => loadData())
   }
   return (
     <div className='container mx-auto mt-[40px]'>
