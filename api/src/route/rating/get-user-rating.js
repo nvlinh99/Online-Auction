@@ -30,9 +30,7 @@ const handler = async (req, res) => {
     populate: "rateBy product",
   })
   if (!data) {
-    return res.reqF({
-      message: "Lấy danh sách  đánh giá thất bại",
-    })
+    return res.reqF("Lấy danh sách  đánh giá thất bại")
   }
   const totalLike = await RatingModel.countDocuments({
     userId,

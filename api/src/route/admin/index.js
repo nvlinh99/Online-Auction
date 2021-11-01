@@ -1,28 +1,19 @@
 const { Router, } = require('express')
 const loginController = require('./login')
-const categoryController = require('./category')
-const productController = require('./product')
-const userController = require('./user')
-const upgradeController = require('./upgrade')
-const authHandler = require('../../middleware/auth')
+const categoryRoutes = require("./category")
+const productController = require("./product")
+const userController = require("./user")
+const upgradeController = require("./upgrade")
+const authHandler = require("../../middleware/auth")
 
-exports.path = '/admin'
+exports.path = "/admin"
 
 const adminRouter = Router()
-adminRouter.post('/login', loginController)
+adminRouter.post("/login", loginController)
 
 // Auth route: Action require logged in admin
 adminRouter.use(authHandler.authorize, authHandler.restrictToAdmin())
-adminRouter
-  .route('/category')
-  .get(categoryController.getAllCategories)
-  .post(categoryController.validateCreate ,categoryController.createCategory)
-
-adminRouter
-  .route('/category/:id')
-  .get(categoryController.getCategory)
-  .put(categoryController.validateUpdate, categoryController.updateCategory)
-  .delete(categoryController.deleteCategory)
+adminRouter.use(categoryRoutes.path, categoryRoutes.router)
 
 adminRouter
   .route('/product/:id')

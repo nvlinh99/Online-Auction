@@ -56,9 +56,7 @@ const handler = async (req, res) => {
     },
   })
   if (!data) {
-    return res.reqF({
-      message: "Lấy danh sách  sản phẩm thất bại",
-    })
+    return res.reqF("Lấy danh sách  sản phẩm thất bại")
   }
 
   return res.reqS({
