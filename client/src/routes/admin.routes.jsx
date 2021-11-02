@@ -1,6 +1,7 @@
 import { ADMIN_PATH } from 'constants/routeConstants'
 import DashboardLayout from 'Layouts/DashboardLayout'
 import AdminCategoryPage from 'pages/AdminCategoryPage'
+import AdminProductListPage from 'pages/AdminProductListPage'
 
 export default [
   {
@@ -10,6 +11,10 @@ export default [
       {
         path: 'category',
         element: <AdminCategoryPage />,
+      },
+      {
+        path: 'products',
+        element: <AdminProductListPage />,
       },
     ],
   },
