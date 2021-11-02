@@ -14,6 +14,7 @@ export const getCurrentUserFromAPI = async () => {
     const { currentUser } = data
     dispatch(action.setCurrentUser({ currentUser }))
   } catch (error) {
+    dispatch(action.setIsWaitingForLoadUser({ isWaitingForLoadUser: true }))
     console.error(error)
   } finally {
     dispatch(action.setCurrentUserLoading({ isLoading: false }))

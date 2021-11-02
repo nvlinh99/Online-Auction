@@ -149,7 +149,19 @@ const AdminCategoryPage = () => {
 
   return (
     <div>
-      <Table columns={columns} dataSource={categories.items} />
+      <Table
+        columns={columns}
+        dataSource={categories.items}
+        pagination={{
+          defaultPageSize: 25,
+          defaultCurrent: 3,
+          total: 500 || categories.totalItems,
+          current: query?.page || 1,
+          onChange: (page) => {
+            onChange('page', page)
+          },
+        }}
+      />
       <Modal
         title={modalData.title}
         visible={modalData.visible}
