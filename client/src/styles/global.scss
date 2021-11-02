@@ -7,6 +7,10 @@
 .flex-between {
   @apply flex items-center justify-between;
 }
+.panel{
+  @apply shadow-pane mb-10 border  rounded-[5px] px-4;
+  border-color: rgba(13, 21, 75, 0.15);
+}
 @keyframes spin {
   0% {
     transform: rotate(0deg);
