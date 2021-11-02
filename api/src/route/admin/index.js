@@ -1,7 +1,7 @@
 const { Router, } = require('express')
 const loginController = require('./login')
 const categoryRoutes = require("./category")
-const productController = require("./product")
+const deleteProductController = require("./delete-product")
 const userController = require("./user")
 const upgradeController = require("./upgrade")
 const authHandler = require("../../middleware/auth")
@@ -15,9 +15,7 @@ adminRouter.post("/login", loginController)
 adminRouter.use(authHandler.authorize, authHandler.restrictToAdmin())
 adminRouter.use(categoryRoutes.path, categoryRoutes.router)
 
-adminRouter
-  .route('/product/:id')
-  .delete(productController.deleteProduct)
+adminRouter.route("/products/:id").delete(deleteProductController)
 
 adminRouter
   .route('/user')

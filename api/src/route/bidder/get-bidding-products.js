@@ -19,19 +19,23 @@ const requestValidationHandler = genRequestValidation({
 const handler = async (req, res) => {
   const { page = 1, limit = 25, filterType } = req.body
   const { id: userId } = req.user
-  const queryObj = { biderIdList: userId, bannedUser: { $ne: userId } }
+  const queryObj = {
+    biderIdList: userId,
+    bannedUser: { $ne: userId },
+    status: {
+      $ne: 1,
+    },
+  }
   if (filterType === "not-end") {
     queryObj.expiredDate = {
       $gte: new Date(),
     }
     queryObj.winnerId = null
-    queryObj.status = 0
   }
   if (filterType === "has-won") {
     queryObj.winnerId = {
       $ne: null,
     }
-    queryObj.status = { $ne: 1 }
   }
   const data = await ProductModel.paginate(queryObj, {
     page,

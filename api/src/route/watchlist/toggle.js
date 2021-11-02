@@ -16,7 +16,12 @@ const requestValidationHandler = genRequestValidation({
 const toggleWatchlistHandler = async (req, res) => {
   const { productId, } = req.body
   const { id:userId, } = req.user
- const product = await  ProductModel.findOne({ id:productId, })
+ const product = await ProductModel.findOne({
+   id: productId,
+   status: {
+     $ne: 1,
+   },
+ })
   if (!product) {
     return res.json({
       code: -1000,

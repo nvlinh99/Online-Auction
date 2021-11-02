@@ -6,7 +6,7 @@ const requestValidationHandler = genRequestValidation({
   body: joi
     .object({
       title: joi.string().required().invalid(null, ""),
-      parentId: joi.number().integer().positive(),
+      parentId: joi.number().integer().positive().allow(null),
     })
     .unknown(false),
 })

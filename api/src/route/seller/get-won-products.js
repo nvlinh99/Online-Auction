@@ -23,6 +23,9 @@ const handler = async (req, res) => {
     winnerId: {
       $ne: null,
     },
+    status: {
+      $ne: 1,
+    },
   }
 
   const data = await ProductModel.paginate(queryObj, {

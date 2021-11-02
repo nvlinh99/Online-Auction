@@ -18,7 +18,12 @@ const requestValidationHandler = genRequestValidation({
 const handler = async (req, res) => {
   const { page = 1, limit = 25, filterType } = req.body
   const { id: userId } = req.user
-  const queryObj = { winnerId: userId }
+  const queryObj = {
+    winnerId: userId,
+    status: {
+      $ne: 1,
+    },
+  }
 
   const data = await ProductModel.paginate(queryObj, {
     page,

@@ -88,6 +88,9 @@ exports.getProductsWithPaging = async function (
     expiredDate: {
       $gt: new Date(),
     },
+    status: {
+      $ne: 1,
+    },
   }
   const args = []
   if (textSearch) {

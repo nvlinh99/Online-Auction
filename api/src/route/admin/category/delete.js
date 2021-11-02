@@ -16,7 +16,11 @@ const handler = async (req, res) => {
   if (!existedId) {
     return res.reqF("Danh mục không tồn tại")
   }
-  const data = await CategoryModel.findOneAndDelete({ id }, { new: true })
+  const data = await CategoryModel.findOneAndUpdate(
+    { id },
+    { $set: { status: 1 } },
+    { new: true },
+  )
   ProductModel.updateMany({ categoryId: id }, { status: 1 })
   return res.reqS({
     message: "Xóa Danh mục thành công",
