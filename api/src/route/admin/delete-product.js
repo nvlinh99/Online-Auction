@@ -1,6 +1,4 @@
-const joi = require("joi")
 const genRequestValidation = require("../../middleware/gen-request-validation")
-const CategoryModel = require("../../model/category")
 const ProductModel = require("../../model/product")
 
 const requestValidationHandler = genRequestValidation({})
@@ -16,13 +14,13 @@ const handler = async (req, res) => {
   if (!existedId) {
     return res.reqF("Sản phẩm không tồn tại")
   }
-  const data = await ProductModel.findByIdAndUpdate(
+  const data = await ProductModel.findOneAndUpdate(
     { id },
     { $set: { status: 1 } },
     { new: true },
   )
   return res.reqS({
-    message: "Xóa Danh mục thành công",
+    message: "Xóa sản phẩm thành công",
     product: data,
   })
 }
