@@ -263,7 +263,7 @@ const AdminCategoryPage = () => {
     <div className='mt-10'>
       <div className='panel flex-col md:flex-row  flex-between py-4'>
         <h1 className='text-2xl leading-10 font-semibold text-[#171d1c]'>
-          Danh Sách sản phẩm
+          Quản lý danh mục
         </h1>
         <div className='flex-center text-[#171d1c] text-base'>
           <Button type='primary' onClick={() => handleAdd()} className='mr-3'>

@@ -21,6 +21,7 @@ import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { MdOutlineCategory } from 'react-icons/md'
 import { ADMIN_PATH } from 'constants/routeConstants'
 import classNames from 'classnames'
+import { RiAuctionFill } from 'react-icons/ri'
 const drawerWidth = 240
 
 const openedMixin = (theme) => ({
@@ -73,13 +74,13 @@ const DASHBOARD_URL = ADMIN_PATH
 const listItems = [
   {
     url: DASHBOARD_URL + '/category',
-    label: 'Danh mục',
+    label: 'Quản lý danh mục',
     Icon: MdOutlineCategory,
   },
   {
-    url: DASHBOARD_URL + '/category2',
-    label: 'Danh mục',
-    Icon: MdOutlineCategory,
+    url: DASHBOARD_URL + '/products',
+    label: 'Quản lý sản phẩm',
+    Icon: RiAuctionFill,
   },
 ]
 const Sidebar = ({ handleDrawerClose, open }) => {

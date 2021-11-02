@@ -1,6 +1,12 @@
 import useCountdown from 'hooks/useCountdown'
-import React, { useMemo } from 'react'
-import { RiAuctionFill, RiMoneyDollarCircleFill } from 'react-icons/ri'
+import React, { useMemo, useCallback } from 'react'
+import {
+  RiAuctionFill,
+  RiCloseCircleLine,
+  RiCloseLine,
+  RiMoneyDollarCircleFill,
+} from 'react-icons/ri'
+import { FaTrash } from 'react-icons/fa'
 import { getImageURL } from 'utils/helpers/urlHelper'
 import { Link, useNavigate } from 'react-router-dom'
 import { FavoriteBorder, Favorite } from '@mui/icons-material'
@@ -9,7 +15,6 @@ import moment from 'moment'
 import hotIcon from 'assets/hot.png'
 import { AiFillLike, AiFillDislike } from 'react-icons/ai'
 import { RATING_TYPE } from 'constants/enumConstants'
-import { useCallback } from 'react'
 // const time = moment().add(10 * 60 - 10 * 60 + 10, 'seconds')
 const ProducListItem = ({
   product = {},
@@ -19,6 +24,7 @@ const ProducListItem = ({
   noWatchList,
   onClickRating,
   onClickCategory,
+  onDelete,
 }) => {
   const navigate = useNavigate()
   const isWatched = useMemo(() => {
@@ -85,10 +91,21 @@ const ProducListItem = ({
           />
         </Link>
 
+        {onDelete && (
+          <button
+            onClick={() => onDelete(product)}
+            className={classNames(
+              'flex-center text-white hover:bg-opacity-70  bg-[#f22876]  absolute top-2 right-2 w-[40px] h-[40px] rounded-full inline-block duration-300 ease-linear transform-gpu',
+              isTogglingWatchList === product.id && 'spin-animation'
+            )}
+          >
+            {<FaTrash />}
+          </button>
+        )}
         {!noWatchList && (
           <button
             disabled={isTogglingWatchList === product.id}
-            onClick={() => onToggleWatchList(product)}
+            onClick={() => onDelete(product)}
             className={classNames(
               'flex-center text-white bg-gradient-to-tl from-[#f22876] to-[#942dd9] absolute top-2 right-2 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu',
               isTogglingWatchList === product.id && 'spin-animation'
