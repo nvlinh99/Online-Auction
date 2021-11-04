@@ -7,6 +7,7 @@ const handler = async (req, res) => {
   const { id } = req.params
   const body = { status: 1 }
   const existedId = await UpgradeModel.findOne({
+    id,
     status: {
       $ne: 1,
     },

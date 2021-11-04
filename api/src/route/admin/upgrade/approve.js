@@ -10,6 +10,7 @@ const handler = async (req, res) => {
   const { id } = req.params
   const body = { status: 1 }
   const existedId = await UpgradeModel.findOne({
+    id,
     status: {
       $ne: 1,
     },
@@ -20,7 +21,7 @@ const handler = async (req, res) => {
   if (!existedId) {
     return res.reqF("Yêu cầu nâng cấp không tồn tại")
   }
-  const user = UserModel.findOne({
+  const user = await UserModel.findOne({
     id: existedId.userId,
     status: {
       $ne: 1,
@@ -34,11 +35,10 @@ const handler = async (req, res) => {
     { $set: { role: USER_ROLE.SELLER } },
     { new: true },
   )
-  const data = await UpgradeModel.findOneAndUpdate(
-    { id },
-    { $set: body },
-    { new: true },
-  )
+  console.log({ user, updatedUser })
+  const data =
+    false ||
+    (await UpgradeModel.findOneAndUpdate({ id }, { $set: body }, { new: true }))
   if (!data) {
     return res.reqF("Duyệt yêu cầu nâng cấp thất bại")
   }
