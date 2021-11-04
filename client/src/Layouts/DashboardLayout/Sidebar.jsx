@@ -21,7 +21,7 @@ import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { MdOutlineCategory } from 'react-icons/md'
 import { ADMIN_PATH } from 'constants/routeConstants'
 import classNames from 'classnames'
-import { RiAuctionFill } from 'react-icons/ri'
+import { RiAuctionFill, RiDashboardFill } from 'react-icons/ri'
 const drawerWidth = 240
 
 const openedMixin = (theme) => ({
@@ -71,16 +71,23 @@ const Drawer = styled(MuiDrawer, {
   }),
 }))
 const DASHBOARD_URL = ADMIN_PATH
-const listItems = [
+export const adminSidebarListItems = [
+  {
+    url: DASHBOARD_URL,
+    label: 'Trang tổng quan',
+    Icon: RiDashboardFill,
+  },
   {
     url: DASHBOARD_URL + '/category',
     label: 'Quản lý danh mục',
     Icon: MdOutlineCategory,
+    subLabel: 'Thực hiện xem danh sách,thêm , chỉnh sửa, và xóa sản phẩm',
   },
   {
     url: DASHBOARD_URL + '/products',
     label: 'Quản lý sản phẩm',
     Icon: RiAuctionFill,
+    subLabel: 'Thực hiện xem danh sách và xóa sản phẩm',
   },
 ]
 const Sidebar = ({ handleDrawerClose, open }) => {
@@ -100,7 +107,7 @@ const Sidebar = ({ handleDrawerClose, open }) => {
       </DrawerHeader>
       <Divider />
       <List>
-        {listItems.map((item) => {
+        {adminSidebarListItems.map((item) => {
           const isActive = location.pathname === item.url
           return (
             <ListItem

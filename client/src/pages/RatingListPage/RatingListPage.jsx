@@ -58,9 +58,7 @@ const RatingListPage = () => {
     <div className='container mx-auto mt-[40px]'>
       <LdsLoading isFullscreen isLoading={isLoading} />
       <div className='flex-col md:flex-row shadow-pane mb-10 border border-[rgba(13, 21, 75, 0.15)] rounded-[5px] flex-between py-[30px] px-4'>
-        <h1 className='text-2xl leading-10 font-semibold text-[#171d1c]'>
-          Danh Sách đánh giá
-        </h1>
+        <h1 className='panel-title'>Danh Sách đánh giá</h1>
         <div className='flex-center text-[#171d1c] text-base'>
           <button
             className={classNames(
