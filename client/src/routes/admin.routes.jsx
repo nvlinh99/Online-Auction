@@ -4,6 +4,7 @@ import AdminCategoryPage from 'pages/AdminCategoryPage'
 import AdminDashboardPage from 'pages/AdminDashboardPage'
 import AdminProductListPage from 'pages/AdminProductListPage'
 import AdminUpgradePage from 'pages/AdminUpgradePage'
+import AdminUsersPage from 'pages/AdminUsersPage'
 
 export default [
   {
@@ -13,6 +14,10 @@ export default [
       {
         path: '',
         element: <AdminDashboardPage />,
+      },
+      {
+        path: 'users',
+        element: <AdminUsersPage />,
       },
       {
         path: 'category',
