@@ -3,6 +3,7 @@ import DashboardLayout from 'Layouts/DashboardLayout'
 import AdminCategoryPage from 'pages/AdminCategoryPage'
 import AdminDashboardPage from 'pages/AdminDashboardPage'
 import AdminProductListPage from 'pages/AdminProductListPage'
+import AdminUpgradePage from 'pages/AdminUpgradePage'
 
 export default [
   {
@@ -20,6 +21,10 @@ export default [
       {
         path: 'products',
         element: <AdminProductListPage />,
+      },
+      {
+        path: 'upgrade',
+        element: <AdminUpgradePage />,
       },
     ],
   },
