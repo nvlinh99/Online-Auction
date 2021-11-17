@@ -22,6 +22,7 @@ import { MdOutlineCategory } from 'react-icons/md'
 import { ADMIN_PATH } from 'constants/routeConstants'
 import classNames from 'classnames'
 import { RiAuctionFill, RiDashboardFill } from 'react-icons/ri'
+import { GiUpgrade } from 'react-icons/gi'
 const drawerWidth = 240
 
 const openedMixin = (theme) => ({
@@ -81,13 +82,20 @@ export const adminSidebarListItems = [
     url: DASHBOARD_URL + '/category',
     label: 'Quản lý danh mục',
     Icon: MdOutlineCategory,
-    subLabel: 'Thực hiện xem danh sách,thêm , chỉnh sửa, và xóa sản phẩm',
+    subLabel: 'Thực hiện xem danh sách,thêm , chỉnh sửa, và xóa các danh mục',
   },
   {
     url: DASHBOARD_URL + '/products',
     label: 'Quản lý sản phẩm',
     Icon: RiAuctionFill,
     subLabel: 'Thực hiện xem danh sách và xóa sản phẩm',
+  },
+  {
+    url: DASHBOARD_URL + '/upgrade',
+    label: 'Nâng cấp tài khoản',
+    Icon: GiUpgrade,
+    subLabel:
+      'Thực hiện xem danh sách, duyệt hoặc từ chối yêu cầu nâng cấp của người dùng',
   },
 ]
 const Sidebar = ({ handleDrawerClose, open }) => {
