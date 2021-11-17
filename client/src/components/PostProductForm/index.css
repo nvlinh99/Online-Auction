@@ -21,7 +21,7 @@
 .txt-post-prod-input {
   /* display: block; */
   width: 250px;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 5px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 5px !important;
   margin-bottom: 15px;
   /* width: 100%; */
   padding: 10px;

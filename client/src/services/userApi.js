@@ -36,3 +36,7 @@ export const updatePassword = async (body) => {
 export const getCurrentUser = async (body) => {
   return await api.post('/users/get-current-user', body)
 }
+
+export const updateProfle = async (data) => {
+  return await api.post('/users/update-info', data)
+}

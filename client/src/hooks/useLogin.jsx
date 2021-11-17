@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import {
   selectCurrentUser,
   selectCurrentUserLoading,
+  selectIsWaitingForLoadUser,
 } from 'store/user/selector'
 import { getLoginUrl } from 'utils/helpers/urlHelper'
 const useLogin = () => {
@@ -11,14 +12,26 @@ const useLogin = () => {
   const navigate = useNavigate()
   const currentUser = useSelector(selectCurrentUser)
   const isLoggingUser = useSelector(selectCurrentUserLoading)
-  const isLoggedInUser = useCallback(() => {
-    if (!isLoggingUser && !currentUser?.id) {
+  const isWaitingForLoadUser = useSelector(selectIsWaitingForLoadUser)
+  const isLoggedInUser = useCallback(
+    (role) => {
+      console.log({ isLoggingUser, isWaitingForLoadUser, currentUser })
+      if (isLoggingUser || isWaitingForLoadUser) {
+        return true
+      }
+      if ((role ?? true) && currentUser?.role === role) {
+        return true
+      }
+      if (!(role ?? true) && currentUser) {
+        return true
+      }
+
       const loginPath = getLoginUrl(location)
       navigate(loginPath)
       return false
-    }
-    return true
-  }, [currentUser, navigate, location, isLoggingUser])
+    },
+    [isLoggingUser, isWaitingForLoadUser, currentUser, location, navigate]
+  )
   return { isLoggedInUser, isLoggingUser, currentUser }
 }
 

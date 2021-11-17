@@ -64,10 +64,11 @@ module.exports = {
       // Styles: Inject CSS into the head with source maps
       {
         test: /\.(css|scss|sass)$/,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
+      },
+      {
+        test: /\.(scss|sass)$/,
         use: [
-          'style-loader',
-          'css-loader',
-          'sass-loader',
           {
             loader: 'postcss-loader', // postcss loader needed for tailwindcss
             options: {

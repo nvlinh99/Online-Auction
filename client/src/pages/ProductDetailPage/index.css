@@ -255,3 +255,11 @@
   min-width: 8rem;
   word-break: keep-all;
 }
+
+.product-detail-has-winner,
+.product-detail-is-expired {
+  font-weight: bold;
+  color: red;
+  font-style: italic;
+  font-size: 22px;
+}

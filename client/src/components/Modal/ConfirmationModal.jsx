@@ -56,6 +56,7 @@ export default function ConfirmationModal({
   message,
   title = '',
   open,
+  maxWidth = 'sm',
 }) {
   const handleClose = () => {
     onCancel()
@@ -64,10 +65,19 @@ export default function ConfirmationModal({
     onOK()
   }
   return (
-    <BootstrapDialog onClose={handleClose} open={open}>
+    <BootstrapDialog
+      onClose={handleClose}
+      open={open}
+      fullWidth
+      maxWidth={maxWidth}
+    >
       <BootstrapDialogTitle onClose={handleClose}>{title}</BootstrapDialogTitle>
       <DialogContent dividers>
-        <Typography gutterBottom>{message}</Typography>
+        {typeof message === 'string' ? (
+          <Typography gutterBottom>{message}</Typography>
+        ) : (
+          message
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>{cancelText}</Button>

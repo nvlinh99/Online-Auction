@@ -11,7 +11,7 @@ import { selectIsOpenPostProdModal } from 'store/postProdModal/selector'
 import { USER_ROLE } from 'constants/userConstants'
 import PostProductForm from 'components/PostProductForm'
 import IconCancel from '@mui/icons-material/Clear'
-
+import 'antd/dist/antd.css'
 import 'styles/global.scss'
 
 const modalStyle = {

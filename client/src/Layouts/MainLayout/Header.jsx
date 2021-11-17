@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import _ from 'lodash'
+import _, { pick } from 'lodash'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import IconLogin from '@mui/icons-material/Login'
 import { Container, Select, MenuItem, cardHeaderClasses } from '@mui/material'
@@ -18,6 +18,8 @@ import { USER_ROLE } from 'constants/userConstants'
 import { openModal, closeModal } from 'store/postProdModal/action'
 import useQuery from 'hooks/useQuery'
 import { getProductsFromAPI } from 'store/product/action'
+import { parseSortType } from 'utils/helpers/jsHelper'
+import NotiArea from 'components/NotiArea'
 
 const Logo = () => {
   return (
@@ -69,7 +71,11 @@ const Header = () => {
         searchInputData.text === (searchParams.get('text') || '')
 
       if (location.pathname === '/products' && isNotChange) {
-        return getProductsFromAPI()
+        const sort = parseSortType(query?.sortType || 'default')
+        return getProductsFromAPI({
+          ...pick(query, ['text', 'categoryId', 'page']),
+          sort,
+        })
       }
       if (searchInputData.text) {
         searchParams.set('text', searchInputData.text)
@@ -87,7 +93,14 @@ const Header = () => {
         search: searchParams.toString(),
       })
     },
-    [location.search, searchInputData]
+    [
+      location.search,
+      location.pathname,
+      searchInputData.categoryId,
+      searchInputData.text,
+      navigate,
+      query,
+    ]
   )
 
   useEffect(() => {
@@ -100,7 +113,7 @@ const Header = () => {
         ...query,
       }))
     }
-  }, [query])
+  }, [query, location.pathname])
   return (
     <header
       style={{
@@ -183,6 +196,7 @@ const Header = () => {
                 <span>Đăng sản phẩm</span>
               </button>
             )}
+            {!!currentUser && <NotiArea></NotiArea>}
             {currentUser ? (
               <HeaderUserInfo currentUser={currentUser} />
             ) : isCurrentUserLoading ? (

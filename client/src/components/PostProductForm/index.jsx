@@ -1,8 +1,11 @@
 import { useCallback, useState } from 'react'
 import _ from 'lodash'
+import moment from 'moment'
 import { Select, MenuItem, Checkbox, CircularProgress } from '@mui/material'
 import IconCancel from '@mui/icons-material/Clear'
 import ReactQuill from 'react-quill'
+import TextField from '@mui/material/TextField'
+import DateTimePicker from '@mui/lab/DateTimePicker'
 import { categorySelector } from 'store/category'
 import { getCategoriesFromAPI } from 'store/category/action'
 import { useSelector } from 'react-redux'
@@ -45,18 +48,39 @@ const validateInput = ({
 }
 
 const PostProductForm = () => {
+  const now = moment()
   const [name, setName] = useState('')
   const [startPrice, setStartPrice] = useState('')
   const [stepPrice, setStepPrice] = useState('')
-  const [purchasePrice, setpurChasePrice] = useState('')
+  const [purchasePrice, setPurchasePrice] = useState('')
   const [description, setDescription] = useState('')
   const [cateId, setCateId] = useState(-1)
   const [autoRenew, setAutoRenew] = useState(false)
+  const [allowNewUser, setAllowNewUser] = useState(true)
+  const [expiredDate, setExpiredDate] = useState(now.clone().add(7, 'days'))
   const [avatar, setAvatar] = useState('')
   const [imgList, setImgList] = useState([])
   const [isPosting, setIsPosting] = useState(false)
   const allCategories = useSelector(categorySelector.selectCategories)
 
+  const clearData = useCallback(() => {
+    setName('')
+    setStartPrice('')
+    setStepPrice('')
+    setPurchasePrice('')
+    setDescription('')
+    setCateId(-1)
+    setAutoRenew(false)
+    setAllowNewUser(true)
+    const next7Day = moment()
+    next7Day.add(7, 'days')
+    setExpiredDate(next7Day)
+    setAvatar('')
+    setImgList([])
+  }, [])
+  const onExpiredDateChange = useCallback((v) => {
+    setExpiredDate(v)
+  }, [])
   const onCateIdChange = useCallback((e) => {
     setCateId(+e?.target?.value)
   }, [])
@@ -110,10 +134,13 @@ const PostProductForm = () => {
   }, [])
   const onPurchasePriceChange = useCallback((e) => {
     if (!REG_ONLY_NUMER.test(e.target.value) && e.target.value !== '') return
-    setpurChasePrice(parseInt(e.target.value) || '')
+    setPurchasePrice(parseInt(e.target.value) || '')
   }, [])
   const onAutoRenewChange = useCallback((e) => {
     setAutoRenew(e.target.checked)
+  }, [])
+  const onAllowNewUserChange = useCallback((e) => {
+    setAllowNewUser(e.target.checked)
   }, [])
 
   const postingFail = (msg) => {
@@ -128,8 +155,10 @@ const PostProductForm = () => {
       description,
       startPrice,
       stepPrice,
-      purchasePrice,
-      expiredDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      purchasePrice: purchasePrice || undefined,
+      expiredDate: expiredDate.toISOString(),
+      autoRenew,
+      allowNewUser,
     }
     const err = validateInput({ ...payload, avatar, imgList })
     if (err) return postingFail(err)
@@ -143,7 +172,8 @@ const PostProductForm = () => {
     if (!avatarRes.succeeded)
       return postingFail('Đăng sản phẩm thất bại. Vui lòng thử lại!')
     for (const res of imgListRes) {
-      if (!res.succeeded) return postingFail('Đăng sản phẩm thất bại. Vui lòng thử lại!')
+      if (!res.succeeded)
+        return postingFail('Đăng sản phẩm thất bại. Vui lòng thử lại!')
     }
     payload.avatarUrl = avatarRes.data.url
     payload.imageUrls = _.map(imgListRes, 'data.url')
@@ -160,6 +190,7 @@ const PostProductForm = () => {
 
     toast.success('Đăng sản phẩm thành công')
     setIsPosting(false)
+    clearData()
   }
 
   return (
@@ -225,14 +256,26 @@ const PostProductForm = () => {
         onWheel={(e) => e.target.blur()}
         required
       />
-      <lable>
-        <Checkbox onChange={onAutoRenewChange} checked={autoRenew} /> Tự động
-        gia hạn
+      <DateTimePicker
+        label='Thời gian hết hạn'
+        value={expiredDate}
+        minDateTime={now.clone().add(10, 'minutes')}
+        onChange={onExpiredDateChange}
+        renderInput={(params) => <TextField {...params} />}
+      />
+      <lable className='ml-6'>
+        <Checkbox onChange={onAutoRenewChange} checked={autoRenew} />
+        Tự động gia hạn
+      </lable>
+      <lable className='ml-6'>
+        <Checkbox onChange={onAllowNewUserChange} checked={allowNewUser} />
+        Cho phép người mới đấu giá
       </lable>
       <ReactQuill
         value={description}
         onChange={setDescription}
         theme='snow'
+        className='mt-4'
         style={{
           width: '100%',
           boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 5px',

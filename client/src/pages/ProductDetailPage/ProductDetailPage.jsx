@@ -29,10 +29,10 @@ import { toggleWatchListFromApi } from 'store/user/action'
 import classNames from 'classnames'
 import { toast } from 'react-toastify'
 import * as socketService from 'services/socket-service'
+import ProducListItem from 'components/ProducListItem'
 
 const ProductDetailPage = () => {
   const isTogglingWatchList = useSelector(selectIsTogglingWatchList)
-  const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false)
   const { isLoggedInUser } = useLogin()
   const currentUser = useSelector(selectCurrentUser)
   const bidAction = useRef({})
@@ -40,9 +40,13 @@ const ProductDetailPage = () => {
   const [isNotFound, setIsNotFound] = useState(false)
   const [product, setProduct] = useState(null)
   const imgListModal = useRef({})
+  const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false)
+  const [isOpenPurchaseConfirmationModal, setIsOpenPurchaseConfirmationModal] =
+    useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isOpenRejectModal, setIsOpenRejectModal] = useState(false)
   const [rejectBidId, setRejectBidId] = useState(-1)
+  const [sameCateProductList, setSameCateProductList] = useState([])
   const openModal = () => {
     return imgListModal.current.openModal && imgListModal.current.openModal()
   }
@@ -50,7 +54,7 @@ const ProductDetailPage = () => {
     const bidId = +e.target.getAttribute('bid-id')
     setRejectBidId(bidId)
     setIsOpenRejectModal(true)
-  })
+  }, [])
   const onReject = useCallback(async () => {
     setIsLoading(true)
     try {
@@ -70,7 +74,7 @@ const ProductDetailPage = () => {
     } finally {
       setRejectBidId(-1)
     }
-  })
+  }, [loadProductData, rejectBidId])
   const onBid = useCallback(() => {
     setIsLoading(true)
     return bidAction.current?.onBid((succeeded) => {
@@ -89,21 +93,66 @@ const ProductDetailPage = () => {
     }
     setIsOpenConfirmationModal(true)
   }, [isLoggedInUser])
+  const onClickPurchase = useCallback(() => {
+    if (!isLoggedInUser()) {
+      return
+    }
+    setIsOpenPurchaseConfirmationModal(true)
+  }, [isLoggedInUser])
+
+  const onPurchase = useCallback(async () => {
+    if (!product || !product.purchasePrice) return
+    setIsLoading(true)
+    try {
+      const { succeeded, data } = await productApi.bidProduct({
+        productId: product.id,
+        price: product.purchasePrice,
+      })
+      if (!succeeded) {
+        toast.error(data.message || 'Yêu cầu mua sản phẩm thất bại!')
+      } else {
+        toast.info('Bạn là người chiến thắng đấu giá!!')
+      }
+    } catch (e) {
+      toast.error('Yêu cầu mua sản phẩm thất bại!')
+    } finally {
+      setIsLoading(false)
+      loadProductData()
+    }
+  }, [product, loadProductData])
   const loadProductData = useCallback(async () => {
     setIsLoading(true)
     try {
-      const { succeeded, data } = await productApi.postProductById(
+      let { succeeded, data } = await productApi.postProductById(
         params.productId
       )
-      if (!succeeded || !data || !data.product || data.product.status !== 0)
+      if (!succeeded || !data || !data.product || data.product.status == 1)
         setIsNotFound(true)
-      else setProduct(data.product)
+      else {
+        setProduct(data.product)
+      }
     } catch (err) {
       setIsNotFound(true)
     } finally {
       setIsLoading(false)
     }
   }, [params.productId])
+  useEffect(() => {
+    if (!product) return
+    ;(async () => {
+      const { succeeded, data } = await productApi.getProducts({
+        categoryId: product.categoryId,
+        exceptProductId: [product.id],
+        page: 1,
+        sort: {
+          createdAt: -1,
+        },
+      })
+      if (succeeded && data && data.items) {
+        setSameCateProductList(data.items.slice(0, 5))
+      }
+    })()
+  }, [product])
   const onToggleWatchList = useCallback(async () => {
     const { id: productId } = product || {}
     if (!isLoggedInUser() || !productId) {
@@ -118,15 +167,33 @@ const ProductDetailPage = () => {
     const socket = socketService.subProductChange({
       productId: params.productId,
       cb: (data) => {
-        setProduct((old) => ({
-          ...old,
-          ...data.product,
-        }))
+        setProduct((old) => {
+          const newData = {
+            ...old,
+            ...data.product,
+          }
+          const newBid = data.product.newBid
+          if (newBid) {
+            if (currentUser?.id && product?.sellerId === currentUser?.id) {
+              newBid.displayBiderName = `${data.product?.biderInfo?.lastName} ${data.product?.biderInfo?.firstName}`
+            } else {
+              newBid.displayBiderName = `****${data.product?.biderInfo?.firstName}`
+            }
+            const bidHistory = [newBid, ...old.bidHistory]
+            newData.bidHistory = bidHistory
+          }
+          if (data.product.bidHistory) {
+            if (!currentUser?.id || product?.sellerId !== currentUser?.id) {
+              newData.bidHistory = data.product.bidHistory
+            }
+          }
+          return newData
+        })
       },
     })
 
     return socket.disconnect
-  }, [params.productId])
+  }, [currentUser?.id, params.productId, product?.sellerId])
   const isWatched = useMemo(() => {
     return currentUser?.watchList?.map((i) => i.productId).includes(product?.id)
   }, [currentUser, product])
@@ -147,6 +214,8 @@ const ProductDetailPage = () => {
       id,
       categoryId,
       categoryTitle,
+      hasWinner,
+      isExpired,
       description,
       bidHistory,
       title,
@@ -157,7 +226,9 @@ const ProductDetailPage = () => {
       formatedPurchasePrice,
       currentPrice,
       stepPrice,
+      purchasePrice,
       formatedExpiredDate,
+      expiredDate,
       formatedPublishedDate,
       totalBid,
       hoursLeft: initHoursLeft,
@@ -175,6 +246,7 @@ const ProductDetailPage = () => {
       sellerRateIncrease,
       sellerRateDecrease,
     } = formatProductItem(product)
+
     const formatedInitPrice = numeral(currentPrice + stepPrice).format('0,0')
     const imageSlides = [avatarUrl, ...imageUrls].map((url) => {
       return {
@@ -197,6 +269,16 @@ const ProductDetailPage = () => {
           message={`Bạn có thật sự muốn ra giá ${
             bidAction.current?.getPrice?.() || ''
           }?`}
+          title='Xác nhận đấu giá'
+        />
+        <ConfirmationModal
+          open={isOpenPurchaseConfirmationModal}
+          onCancel={() => setIsOpenPurchaseConfirmationModal(false)}
+          onOK={() => {
+            setIsOpenPurchaseConfirmationModal(false)
+            onPurchase()
+          }}
+          message={`Bạn có thật sự muốn ra giá ${product.purchasePrice}?`}
           title='Xác nhận đấu giá'
         />
         <ConfirmationModal
@@ -227,104 +309,128 @@ const ProductDetailPage = () => {
               />
             </div>
             <div className='product-detail-key-info-right'>
-              <div className='product-prices flex items-center'>
-                <div className='mr-8'>
-                  <p>Giá khởi điểm:</p>
-                  <p>Giá hiện tại:</p>
-                </div>
-                <div className='mr-4'>
-                  <p>{formatedStartPrice || '#'}</p>
-                  <p>{formatedCurrentPrice || '#'}</p>
-                </div>
-                <div className='mr-8'>
-                  <p>VND</p>
-                  <p>VND</p>
-                </div>
-                {formatedPurchasePrice && (
-                  <div className='p-4'>
-                    <button className='btn-buy-now' type='button'>
-                      MUA NGAY VỚI GIÁ {formatedPurchasePrice} VND
+              {hasWinner ? (
+                <p className='product-detail-has-winner'>
+                  Sản phẩm đã có người thắng đấu giá!!
+                </p>
+              ) : isExpired ? (
+                <p className='product-detail-is-expired'>
+                  Sản phẩm đã kết thúc thời gian đấu giá!!
+                </p>
+              ) : (
+                <>
+                  <div className='product-prices flex items-center'>
+                    <div className='mr-8'>
+                      <p>Giá khởi điểm:</p>
+                      <p>Giá hiện tại:</p>
+                    </div>
+                    <div className='mr-4'>
+                      <p>{formatedStartPrice || '#'}</p>
+                      <p>{formatedCurrentPrice || '#'}</p>
+                    </div>
+                    <div className='mr-8'>
+                      <p>VND</p>
+                      <p>VND</p>
+                    </div>
+                    {formatedPurchasePrice && (
+                      <div className='p-4'>
+                        <button
+                          className='btn-buy-now'
+                          type='button'
+                          onClick={onClickPurchase}
+                        >
+                          MUA NGAY VỚI GIÁ {formatedPurchasePrice} VND
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <div className='product-time-left'>
+                    <p className='mb-2'>Thời gian còn lại:</p>
+                    <TimeLeft
+                      date={expiredDate}
+                      initHoursLeft={initHoursLeft}
+                      initMinutesLeft={initMinutesLeft}
+                      initSecondsLeft={initSecondsLeft}
+                    />
+                    <div className='flex mt-6 mb-8'>
+                      <div className='mr-6'>
+                        <p className='mb-2'>Kết thúc đấu giá vào:</p>
+                        <p className=''>Sản phẩm đăng vào lúc:</p>
+                      </div>
+                      <div>
+                        <p className='mb-2'>{formatedExpiredDate}</p>
+                        <p className=''>{formatedPublishedDate}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <p className='mb-1'>Nhập số tiền muốn ra giá (VND):</p>
+
+                  <div style={{ position: 'relative' }} className='flex mb-8'>
+                    <BidAction
+                      initBidPrice={currentPrice + stepPrice}
+                      stepPrice={stepPrice}
+                      purchasePrice={purchasePrice}
+                      ref={bidAction}
+                      product={product}
+                    />
+                    <button
+                      className='bid-btn ml-3 alt'
+                      // title='Ra giá ngay'
+                      type='button'
+                      data-tooltip='RA GIÁ NGAY'
+                      onClick={onClickBid}
+                    >
+                      <IconGavel />
+                    </button>
+                    <button
+                      type='button'
+                      // title='Thêm vào danh sách yêu thích'
+                      className={classNames(
+                        'bid-action-add-watch-list-btn ml-3 alt ',
+                        isWatched && 'border-red-400 text-red-400'
+                      )}
+                      data-tooltip={
+                        isWatched ? 'BỎ YÊU THÍCH' : 'THÊM YÊU THÍCH'
+                      }
+                      onClick={onToggleWatchList}
+                      disabled={isTogglingWatchList === product?.id}
+                    >
+                      {isWatched ? (
+                        <FavoriteIcon
+                          fontSize='small'
+                          className={
+                            isTogglingWatchListProduct && 'spin-animation'
+                          }
+                        />
+                      ) : (
+                        <IconFavorit
+                          fontSize='small'
+                          className={
+                            isTogglingWatchListProduct && 'spin-animation'
+                          }
+                        />
+                      )}
                     </button>
                   </div>
-                )}
-              </div>
-              <div className='product-time-left'>
-                <p className='mb-2'>Thời gian còn lại:</p>
-                <TimeLeft
-                  initHoursLeft={initHoursLeft}
-                  initMinutesLeft={initMinutesLeft}
-                  initSecondsLeft={initSecondsLeft}
-                />
-                <div className='flex mt-6 mb-8'>
-                  <div className='mr-6'>
-                    <p className='mb-2'>Kết thúc đấu giá vào:</p>
-                    <p className=''>Sản phẩm đăng vào lúc:</p>
-                  </div>
-                  <div>
-                    <p className='mb-2'>{formatedExpiredDate}</p>
-                    <p className=''>{formatedPublishedDate}</p>
-                  </div>
-                </div>
-              </div>
-              <p className='mb-1'>Nhập số tiền muốn ra giá (VND):</p>
 
-              <div style={{ position: 'relative' }} className='flex mb-8'>
-                <BidAction
-                  initBidPrice={currentPrice + stepPrice}
-                  stepPrice={stepPrice}
-                  ref={bidAction}
-                  product={product}
-                />
-                <button
-                  className='bid-btn ml-3 alt'
-                  // title='Ra giá ngay'
-                  type='button'
-                  data-tooltip='RA GIÁ NGAY'
-                  onClick={onClickBid}
-                >
-                  <IconGavel />
-                </button>
-                <button
-                  type='button'
-                  // title='Thêm vào danh sách yêu thích'
-                  className={classNames(
-                    'bid-action-add-watch-list-btn ml-3 alt ',
-                    isWatched && 'border-red-400 text-red-400'
-                  )}
-                  data-tooltip={isWatched ? 'BỎ YÊU THÍCH' : 'THÊM YÊU THÍCH'}
-                  onClick={onToggleWatchList}
-                  disabled={isTogglingWatchList === product?.id}
-                >
-                  {isWatched ? (
-                    <FavoriteIcon
-                      fontSize='small'
-                      className={isTogglingWatchListProduct && 'spin-animation'}
-                    />
-                  ) : (
-                    <IconFavorit
-                      fontSize='small'
-                      className={isTogglingWatchListProduct && 'spin-animation'}
+                  <SellerBiderInfo
+                    className='mb-4'
+                    title='Thông tin <strong>người bán</strong> :'
+                    name={sellerName}
+                    rateTotal={sellerRateTotal}
+                    rateIncrease={sellerRateIncrease}
+                    rateDecrease={sellerRateDecrease}
+                  />
+                  {biderId && (
+                    <SellerBiderInfo
+                      title='Thông tin <strong>người ra giá</strong> cao nhất hiện tại :'
+                      name={biderName}
+                      rateTotal={biderRateTotal}
+                      rateIncrease={biderRateIncrease}
+                      rateDecrease={biderRateDecrease}
                     />
                   )}
-                </button>
-              </div>
-
-              <SellerBiderInfo
-                className='mb-4'
-                title='Thông tin <strong>người bán</strong> :'
-                name={sellerName}
-                rateTotal={sellerRateTotal}
-                rateIncrease={sellerRateIncrease}
-                rateDecrease={sellerRateDecrease}
-              />
-              {biderId && (
-                <SellerBiderInfo
-                  title='Thông tin <strong>người ra giá</strong> cao nhất hiện tại :'
-                  name={biderName}
-                  rateTotal={biderRateTotal}
-                  rateIncrease={biderRateIncrease}
-                  rateDecrease={biderRateDecrease}
-                />
+                </>
               )}
             </div>
           </div>
@@ -366,9 +472,10 @@ const ProductDetailPage = () => {
                         <th className='bid-hist-cell'>Thời gian</th>
                         <th className='bid-hist-cell'>Người ra giá</th>
                         <th className='bid-hist-cell'>Số tiền</th>
-                        {currentUser && currentUser.role === 1 && (
-                          <th className='bid-hist-cell'></th>
-                        )}
+                        {currentUser?.role === 1 &&
+                          currentUser?.id === sellerId && (
+                            <th className='bid-hist-cell'></th>
+                          )}
                       </tr>
                     </thead>
                     <tbody>
@@ -394,8 +501,8 @@ const ProductDetailPage = () => {
                           >
                             {numeral(his.price).format('0,0')}
                           </td>
-                          {currentUser &&
-                            currentUser.role === 1 &&
+                          {currentUser?.role === 1 &&
+                            currentUser?.id === sellerId &&
                             (his.status === 1 ? (
                               <td
                                 style={{
@@ -444,6 +551,31 @@ const ProductDetailPage = () => {
             pRef={imgListModal}
             imgUrlList={[avatarUrl, ...imageUrls]}
           />
+          <p
+            style={{
+              fontSize: '22px',
+              fontWeight: 'bold',
+              borderBottom: '1px solid #ddd',
+              borderTop: '1px solid #ddd',
+            }}
+            className='mt-14 mb-4'
+          >
+            Sản phẩm cùng danh mục
+          </p>
+          <div className='grid xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 mb-[35px] '>
+            {sameCateProductList?.map((product) => {
+              return (
+                <ProducListItem
+                  currentUser={currentUser}
+                  key={product.id}
+                  product={product}
+                  onToggleWatchList={() => {}}
+                  isTogglingWatchList={null}
+                  noWatchList={true}
+                />
+              )
+            })}
+          </div>
         </Container>
       </>
     )

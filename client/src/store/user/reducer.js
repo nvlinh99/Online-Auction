@@ -4,6 +4,7 @@ const initialState = {
   currentUser: null,
   isCurrentUserLoading: false,
   isTogglingWatchList: '',
+  isWaitingForLoadUser: true,
 }
 
 const slice = createSlice({
@@ -12,7 +13,11 @@ const slice = createSlice({
   reducers: {
     setCurrentUser: (state, action) => {
       const { currentUser } = action.payload || {}
-      return { ...state, currentUser }
+      return { ...state, currentUser, isWaitingForLoadUser: false }
+    },
+    setIsWaitingForLoadUser: (state, action) => {
+      const { isWaitingForLoadUser } = action.payload || {}
+      return { ...state, isWaitingForLoadUser: false }
     },
     logout: (state, action) => {
       return { ...state, currentUser: undefined }
