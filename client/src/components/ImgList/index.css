@@ -1,0 +1,44 @@
+.react-horizontal-scrolling-menu--wrapper {
+  margin-top: 8px;
+  position: relative;
+}
+
+.react-horizontal-scrolling-menu--scroll-container {
+  scrollbar-width: none;
+}
+
+.react-horizontal-scrolling-menu--scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.product-item-small-img-container {
+  margin-right: 8px;
+  width: 120px;
+  height: 90px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.product-item-small-img-container img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+}
+
+.product-item-imgli-btn {
+  background-color: rgba(0, 0, 0, 0.25);
+  color: rgba(255, 255, 255, 0.7);
+  position: absolute;
+  height: 100%;
+  z-index: 99;
+}
+.product-item-imgli-btn:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+  color: #fff;
+}
+.product-item-imgli-lbtn {
+  left: 0;
+}
+.product-item-imgli-rbtn {
+  right: 0;
+}

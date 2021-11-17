@@ -1,0 +1,6 @@
+export const LOGIN_PATH = '/login'
+export const HOME_PATH = '/'
+export const ADMIN_PATH = '/admin'
+export const BIDDER_PATH = '/bidder'
+export const SELLER_PATH = '/seller'
+export const USER_PATH = '/user'

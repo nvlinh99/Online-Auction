@@ -1,0 +1,89 @@
+.cate-list,
+.MuiCircularProgress-root {
+  color: rgb(40, 42, 53) !important;
+}
+
+.spinner {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.Mui-selected,
+.MuiListItemButton-root:hover {
+  border-left: 6px solid rgb(40, 42, 53) !important;
+}
+
+.expand-icon {
+  padding: 12px;
+  padding-right: 1.7rem;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  outline: none;
+}
+
+.expand-icon:focus {
+  outline: none;
+}
+
+.cnt-top-product h3 {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+#topExpiredProducts {
+  background: radial-gradient(#ff5f4a, #dd3e29);
+}
+#topExpiredProducts .slick-arrow::after,
+#topExpiredProducts .slick-arrow::before {
+  color: #dd3e29;
+}
+#topExpiredProducts .product-item-to-detail-btn {
+  color: #dd3e29;
+}
+#topExpiredProducts .product-item-container {
+  background-color: #dc3924;
+}
+#topExpiredProducts .product-item-container .btn-add-watch-list:hover {
+  background-color: #dc3924;
+  color: #fff;
+}
+
+#topBidedProducts {
+  background: radial-gradient(#e5cf02, #c79800);
+}
+#topBidedProducts .slick-arrow::after,
+#topBidedProducts .slick-arrow::before {
+  color: #c79800;
+}
+#topBidedProducts .product-item-to-detail-btn {
+  color: #c79800;
+}
+#topBidedProducts .product-item-container {
+  background-color: #c2af01;
+}
+#topBidedProducts .product-item-container .btn-add-watch-list:hover {
+  background-color: #c2af01;
+  color: #fff;
+}
+
+#topPriceProducts {
+  background: radial-gradient(#3a59f5, #263db3);
+}
+#topPriceProducts .slick-arrow::after,
+#topPriceProducts .slick-arrow::before {
+  color: #263db3;
+}
+#topPriceProducts .product-item-to-detail-btn {
+  color: #263db3;
+}
+#topPriceProducts .product-item-container {
+  background-color: #263db3;
+}
+#topPriceProducts .product-item-container .btn-add-watch-list:hover {
+  background-color: #263db3;
+  color: #fff;
+}

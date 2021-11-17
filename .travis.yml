@@ -1,15 +1,16 @@
 language: node_js
 node_js:
-  - 14
+- 16
+warnings_are_errors: false
 script:
-  - echo '*** Starting build ***'
-  - echo 'install dependencies'
-  - cd api && npm install
-  - echo 'Running test'
-  - npm run test
-deploy:
-  provider: heroku
-  api_key: $heroku_key
-  app: $heroku_app_name
-  on:
-    branch: api_master
+- echo '*** Starting build ***'
+- echo 'install dependencies'
+- cd client && npm install
+- echo 'Running Build'
+- npm run build
+after_success:
+  - npm install -g firebase-tools
+  - firebase --non-interactive deploy --token "$FIREBASE_TOKEN"
+cache:
+  directories:
+  - node_modules

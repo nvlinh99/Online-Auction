@@ -1,0 +1,7 @@
+.date-of-birth-edit .MuiFormControl-root {
+  flex: 1;
+}
+
+.date-of-birth-edit .MuiFormControl-root .MuiOutlinedInput-input {
+  padding: 4px 10px;
+}
