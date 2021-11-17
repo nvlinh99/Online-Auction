@@ -34,7 +34,7 @@ const DashboardLayout = () => {
         isLoggingUser={isLoggingUser}
       />
       <Sidebar handleDrawerClose={handleDrawerClose} open={open} />
-      <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
+      <Box component='main' sx={{ flexGrow: 1, p: 3 }} className='mt-[64px]'>
         <Outlet />
       </Box>
     </Box>
