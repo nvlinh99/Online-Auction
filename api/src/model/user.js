@@ -19,9 +19,16 @@ const userSchema = new mongoose.Schema({
   verifyCode: { type: String, },
   verifyCodeExpireAt: { type: Date, },
 }, {
-  timestamps: true,
+  timestamps: true, 
+  toJSON:{
+    virtuals:true,
+  },
 })
-
+userSchema.virtual('watchList',{
+  ref: 'WatchList',
+  localField: 'id',
+  foreignField: 'userId',
+})
 userSchema.plugin(mongoosePaginate)
 
 module.exports = mongoose.model('User', userSchema)

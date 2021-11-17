@@ -6,8 +6,9 @@ const requestValidationHandler = genRequestValidation({
   body: joi.object({
     firstName: joi.string().trim().required().invalid('', null),
     lastName: joi.string().trim().required().invalid('', null),
+    address: joi.string().trim().required().invalid('', null),
     email: joi.string().trim().required().invalid('', null).email(),
-    dateOfBirth: joi.date().required().invalid('', null),
+    dateOfBirth: joi.date().invalid('').default(null),
   }).unknown(false),
 })
 
@@ -19,6 +20,7 @@ const updateHandler = async (req, res) => {
     $set: {
       firstName: data.firstName,
       lastName: data.lastName,
+      address: data.address,
       email: data.email,
       dateOfBirth: data.dateOfBirth,
     },

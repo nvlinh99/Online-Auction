@@ -7,6 +7,7 @@ const requestValidationHandler = genRequestValidation({})
 const updateHandler = async (req, res) => {
   const currentUser = await UserModel
     .findOne({ id: req.user.id, status:  USER_CONSTANTS.USER_STATUS.ACTIVE, })
+    .populate("watchList")
     .select('-_id -password -status -verifyCode -verifyCodeExpireAt')
     .lean()
   if (!currentUser) {

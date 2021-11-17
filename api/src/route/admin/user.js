@@ -53,17 +53,17 @@ exports.getUser = async (req, res) => {
     data: user,
   })
 }
+exports.validateCreate = genRequestValidation({
+  body: joi.object({
+    firstName: joi.string().trim().required().invalid('', null),
+    lastName: joi.string().trim().required().invalid('', null),
+    email: joi.string().trim().required().invalid('', null).email(),
+    address: joi.string().trim().required().invalid('', null),
+    password: joi.string().trim().required().invalid('', null),
+  }).unknown(false),
+})
 
 exports.createUser = async (req, res) => {
-  genRequestValidation({
-    body: joi.object({
-      firstName: joi.string().trim().required().invalid('', null),
-      lastName: joi.string().trim().required().invalid('', null),
-      email: joi.string().trim().required().invalid('', null).email(),
-      address: joi.string().trim().required().invalid('', null),
-      password: joi.string().trim().required().invalid('', null),
-    }).unknown(false),
-  })
   const data = req.body
   const existsUser = await User.findOne({ email: data.email, })
   if (existsUser && existsUser.status !== UserConstant.USER_STATUS.INACTIVE) {
@@ -138,18 +138,18 @@ exports.createUser = async (req, res) => {
   })
 }
 
-exports.updateUser = async (req, res) => {
-  genRequestValidation({
-    body: joi.object({
-      firstName: joi.string().trim().required().invalid('', null),
-      lastName: joi.string().trim().required().invalid('', null),
-      email: joi.string().trim().required().invalid('', null).email(),
-      address: joi.string().trim().required().invalid('', null),
-      dateOfBirth: joi.date().required().invalid('', null),
-      password: joi.string().trim().required().invalid('', null),
-    })
-      .unknown(false), })
+exports.validateUpdate = genRequestValidation({
+  body: joi.object({
+    firstName: joi.string().trim().required().invalid('', null),
+    lastName: joi.string().trim().required().invalid('', null),
+    email: joi.string().trim().required().invalid('', null).email(),
+    address: joi.string().trim().required().invalid('', null),
+    dateOfBirth: joi.date().required().invalid('', null),
+    password: joi.string().trim().required().invalid('', null),
+  })
+    .unknown(false), })
 
+exports.updateUser = async (req, res) => {
   const { id, } = req.params
   const data = req.body
 

@@ -1,54 +1,32 @@
-const { Router, } = require('express')
-const loginController = require('./login')
-const categoryController = require('./category')
-const productController = require('./product')
-const userController = require('./user')
-const upgradeController = require('./upgrade')
-const authHandler = require('../../middleware/auth')
+const { Router } = require("express")
+const loginController = require("./login")
+const categoryRoutes = require("./category")
+const deleteProductController = require("./delete-product")
+const userController = require("./user")
+const upgradeController = require("./upgrade")
+const authHandler = require("../../middleware/auth")
 
-exports.path = '/admin'
+exports.path = "/admin"
 
 const adminRouter = Router()
-adminRouter.post('/login', loginController)
+adminRouter.post("/login", loginController)
 
 // Auth route: Action require logged in admin
 adminRouter.use(authHandler.authorize, authHandler.restrictToAdmin())
-adminRouter
-  .route('/category')
-  .get(categoryController.getAllCategories)
-  .post(categoryController.createCategory)
+adminRouter.use(categoryRoutes.path, categoryRoutes.router)
+adminRouter.use(upgradeController.path, upgradeController.router)
+
+adminRouter.route("/products/:id").delete(deleteProductController)
 
 adminRouter
-  .route('/category/:id')
-  .get(categoryController.getCategory)
-  .put(categoryController.updateCategory)
-  .delete(categoryController.deleteCategory)
-
-adminRouter
-  .route('/product/:id')
-  .delete(productController.deleteProduct)
-
-adminRouter
-  .route('/user')
+  .route("/user")
   .get(userController.getAllUsers)
-  .post(userController.createUser)
+  .post(userController.validateUpdate, userController.createUser)
 
 adminRouter
-  .route('/user/:id')
+  .route("/user/:id")
   .get(userController.getUser)
-  .put(userController.updateUser)
+  .put(userController.validateUpdate, userController.updateUser)
   .delete(userController.deleteUser)
-
-adminRouter
-  .route('/upgrade')
-  .get(upgradeController.getAllUpgrades)
-
-adminRouter
-  .route('/upgrade/:id')
-  .put(upgradeController.upgrade)
-
-adminRouter
-  .route('/downgrade/:id')
-  .put(upgradeController.downgrade)
 
 exports.router = adminRouter
