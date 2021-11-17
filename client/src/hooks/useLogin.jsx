@@ -19,10 +19,11 @@ const useLogin = () => {
       if (isLoggingUser || isWaitingForLoadUser) {
         return true
       }
-      if ((role ?? true) && currentUser?.role === role) {
+      if ((role || role === 0) && currentUser?.role === role) {
         return true
       }
-      if (!(role ?? true) && currentUser) {
+
+      if (currentUser) {
         return true
       }
 
