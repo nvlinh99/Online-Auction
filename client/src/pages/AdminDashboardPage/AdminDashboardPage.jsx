@@ -2,7 +2,9 @@ import { Card } from 'antd'
 import Meta from 'antd/lib/card/Meta'
 import { adminSidebarListItems } from 'Layouts/DashboardLayout/Sidebar'
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 const AdminDashboardPage = () => {
+  const navigate = useNavigate()
   return (
     <div className='mt-10'>
       <div className='panel py-4'>
@@ -14,6 +16,7 @@ const AdminDashboardPage = () => {
           {adminSidebarListItems.slice(1).map((item) => {
             return (
               <Card
+                onClick={() => navigate(item.url)}
                 key={item.url}
                 className='group hover:cursor-pointer shadow-product rounded-[8px] duration-300 ease-linear transform-gpu'
               >
