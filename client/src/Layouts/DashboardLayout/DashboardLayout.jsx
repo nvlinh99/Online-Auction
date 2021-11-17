@@ -20,10 +20,10 @@ const DashboardLayout = () => {
     setOpen(false)
   }
   useEffect(() => {
-    if (!isLoggingUser && isLoggedInUser(USER_ROLE.ADMIN)) {
+    if (isLoggedInUser(USER_ROLE.ADMIN)) {
       return
     }
-  }, [isLoggedInUser, isLoggingUser])
+  }, [isLoggedInUser])
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
