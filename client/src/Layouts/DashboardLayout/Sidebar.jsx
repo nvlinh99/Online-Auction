@@ -21,7 +21,11 @@ import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { MdOutlineCategory } from 'react-icons/md'
 import { ADMIN_PATH } from 'constants/routeConstants'
 import classNames from 'classnames'
-import { RiAuctionFill, RiDashboardFill } from 'react-icons/ri'
+import {
+  RiAuctionFill,
+  RiDashboardFill,
+  RiAccountBoxFill,
+} from 'react-icons/ri'
 import { GiUpgrade } from 'react-icons/gi'
 const drawerWidth = 240
 
@@ -77,6 +81,12 @@ export const adminSidebarListItems = [
     url: DASHBOARD_URL,
     label: 'Trang tổng quan',
     Icon: RiDashboardFill,
+  },
+  {
+    url: DASHBOARD_URL + '/users',
+    label: 'Quản lý tài khoản',
+    Icon: RiAccountBoxFill,
+    subLabel: 'Thực hiện quản lý tài khoản',
   },
   {
     url: DASHBOARD_URL + '/category',
