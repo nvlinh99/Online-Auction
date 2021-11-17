@@ -46,14 +46,6 @@ const TimeLeft = ({
       </div>
       <div className='time-block'>
         <div>
-          <strong>{weeksLeft > 0 ? weeksLeft : 0}</strong>
-        </div>
-        <div>
-          <span>TUẦN</span>
-        </div>
-      </div>
-      <div className='time-block'>
-        <div>
           <strong>{daysLeft > 0 ? daysLeft : 0}</strong>
         </div>
         <div>
