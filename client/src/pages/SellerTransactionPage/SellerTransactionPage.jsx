@@ -132,9 +132,7 @@ const SellerWonProductsPage = () => {
       />
       <LdsLoading isFullscreen isLoading={isLoading} />
       <div className='flex-col md:flex-row shadow-pane mb-10 border border-[rgba(13, 21, 75, 0.15)] rounded-[5px] flex-between py-[5px]  py-[30px] px-4'>
-        <h1 className='text-2xl leading-10 font-semibold text-[#171d1c]'>
-          Danh sách giao dịch
-        </h1>
+        <h1 className='panel-title'>Danh sách giao dịch</h1>
       </div>
       <div className='grid xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4 mb-[35px] '>
         {trans?.items?.map((tran, idx) => {

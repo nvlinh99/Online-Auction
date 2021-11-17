@@ -262,9 +262,7 @@ const AdminCategoryPage = () => {
   return (
     <div className='mt-10'>
       <div className='panel flex-col md:flex-row  flex-between py-4'>
-        <h1 className='text-2xl leading-10 font-semibold text-[#171d1c]'>
-          Quản lý danh mục
-        </h1>
+        <h1 className='panel-title'>Quản lý danh mục</h1>
         <div className='flex-center text-[#171d1c] text-base'>
           <Button type='primary' onClick={() => handleAdd()} className='mr-3'>
             Thêm

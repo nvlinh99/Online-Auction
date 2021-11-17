@@ -1,8 +1,8 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-legend{
-  width:initial
+legend {
+  width: initial;
 }
 .flex-center {
   @apply flex items-center justify-center;
@@ -10,9 +10,12 @@ legend{
 .flex-between {
   @apply flex items-center justify-between;
 }
-.panel{
+.panel {
   @apply shadow-pane mb-10 border  rounded-[5px] px-4;
   border-color: rgba(13, 21, 75, 0.15);
+  &-title {
+    @apply text-2xl leading-10 font-semibold text-[#171d1c];
+  }
 }
 @keyframes spin {
   0% {
