@@ -16,6 +16,7 @@ const sliderSettings = {
 }
 
 export default function ProductListSlider({
+  currentUser,
   productList,
   formated,
   watchList,
@@ -27,6 +28,7 @@ export default function ProductListSlider({
     <Slider {...sliderSettings}>
       {productList?.map((prod) => (
         <ProductItem
+          currentUser={currentUser}
           key={prod.id}
           product={prod}
           formated={true}

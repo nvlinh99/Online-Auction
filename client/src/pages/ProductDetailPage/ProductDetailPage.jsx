@@ -236,6 +236,7 @@ const ProductDetailPage = () => {
       secondsLeft: initSecondsLeft,
       formatedTimeLeft,
       biderId,
+      biderFirstname,
       biderName,
       biderRateTotal,
       biderRateIncrease,
@@ -424,7 +425,7 @@ const ProductDetailPage = () => {
                   {biderId && (
                     <SellerBiderInfo
                       title='Thông tin <strong>người ra giá</strong> cao nhất hiện tại :'
-                      name={biderName}
+                      name={`****${biderFirstname}`}
                       rateTotal={biderRateTotal}
                       rateIncrease={biderRateIncrease}
                       rateDecrease={biderRateDecrease}

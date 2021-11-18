@@ -188,6 +188,7 @@ const HomePage = () => {
           <div id='topExpiredProducts'>
             <ProductListSlider
               productList={topExpiredProductList}
+              currentUser={currentUser}
               watchList={currentUser?.watchList}
               onToggleWatchList={onToggleWatchList}
               isTogglingWatchList={isTogglingWatchList}
@@ -202,6 +203,7 @@ const HomePage = () => {
           </div>
           <div id='topBidedProducts'>
             <ProductListSlider
+              currentUser={currentUser}
               productList={topBidProductList}
               watchList={currentUser?.watchList}
               onToggleWatchList={onToggleWatchList}
@@ -217,6 +219,7 @@ const HomePage = () => {
           </div>
           <div id='topPriceProducts'>
             <ProductListSlider
+              currentUser={currentUser}
               productList={topPriceProductList}
               watchList={currentUser?.watchList}
               onToggleWatchList={onToggleWatchList}

@@ -121,6 +121,7 @@
 }
 
 .product-item-cate-lable {
+  width: fit-content;
   background-color: #fff;
   color: #000;
   margin-top: 10px;
