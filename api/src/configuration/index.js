@@ -16,7 +16,7 @@ module.exports = deepFreeze({
     port: parseInt(process.env.PORT, 10) || 3000,
   },
   client: {
-    host: 'http://localhost:3000',
+    host: process.env.CLIENT_HOST || 'http://localhost:3000',
   },
   mongodb: {
     uri: process.env.MONGODB_URI,
