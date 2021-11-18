@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 const path = require('path')
+const _  = require('lodash')
 const nodemailer = require('nodemailer')
 
 const configuration = require('../configuration')
@@ -82,19 +83,29 @@ class EmailService {
     await this.send(template, '[Online Auction] - Đấu giá kết thúc!')
   }
 
-  async newBid(bidder, product, price) {
-    const template = `<p><strong>${bidder}</strong> vừa ra giá thành công sản phẩm <strong>${product}</strong> với giá <strong>${price}</strong> trên hệ thống Online Auction.</p>`
+  async newBid(bidder, product, price, productId) {
+    const template = `<p><strong>${bidder}</strong> vừa ra giá thành công sản phẩm <a target="_blank" href="${configuration.client.host}/products/${productId}"><strong>${product}</strong></a> với giá <strong>${price}</strong> trên hệ thống Online Auction.</p>`
     await this.send(template, '[Online Auction] - Lượt ra giá mới!')
   }
 
-  async sendToSellerNewBid(bidder, product, price) {
-    const template = `<p>Sản phẩm của bạn - <strong>${product}</strong> vừa được <strong>${bidder}</strong> ra giá thành công  với giá <strong>${price}</strong> trên hệ thống Online Auction.</p>`
+  async sendToSellerNewBid(bidder, product, price, productId) {
+    const template = `<p>Sản phẩm của bạn - <strong>${product}</strong> vừa được <a target="_blank" href="${configuration.client.host}/products/${productId}"><strong>${bidder}</strong></a> ra giá thành công  với giá <strong>${price}</strong> trên hệ thống Online Auction.</p>`
     await this.send(template, '[Online Auction] - Lượt ra giá mới!')
   }
 
   async update(product) {
     const template = `<p>Giá của sản phẩm <strong>${product}<strong> vừa cập nhật thành công.</p>`
     await this.send(template, '[Online Auction] - Cập nhật giá sản phẩm!')
+  }
+
+  async productUpdateDesc(product, productId, desc) {
+    const template = _.template(`
+    <p>Sản phẩm <a target="_blank" href="<%= clientHost %>/products/<%= productId %>"><strong><%= product %><strong></a> vừa cập nhật mô tả.</p>
+    <div style="border: solid 1px #ddd; padding: 1rem;">
+    <%= desc %>
+    <div>
+    `)({ clientHost: configuration.client.host, product, productId, desc })
+    await this.send(template, '[Online Auction] - Cập nhật mô tả sản phẩm!')
   }
 }
 

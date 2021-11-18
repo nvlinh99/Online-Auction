@@ -174,7 +174,8 @@ const handler = async (req, res) => {
     sendEmailBidderService.newBid(
       'Bạn', 
       newestProduct.name,
-      `${numeral(bid.price).format('0,0')} VND`
+      `${numeral(bid.price).format('0,0')} VND`,
+      newestProduct.id,
     )
 
     const sendEmailSellerService = new SendEmailService({
@@ -184,7 +185,8 @@ const handler = async (req, res) => {
     sendEmailSellerService.sendToSellerNewBid(
       `${bidder.firstName} ${bidder.lastName}`, 
       newestProduct.name, 
-      `${numeral(bid.price).format('0,0')} VND`
+      `${numeral(bid.price).format('0,0')} VND`,
+      newestProduct.id,
     )
 
     const lastBid = await BidModel.findOne({ 
@@ -204,7 +206,8 @@ const handler = async (req, res) => {
       sendEmailLastBidderService.newBid(
         `${bidder.firstName} ${bidder.lastName}`, 
         newestProduct.name,
-        `${numeral(bid.price).format('0,0')} VND`
+        `${numeral(bid.price).format('0,0')} VND`,
+        newestProduct.id,
       )
     } else {
       console.log('NO LAST BIDDER')

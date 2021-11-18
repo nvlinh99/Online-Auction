@@ -10,6 +10,7 @@ const authMdw = require('../../middleware/auth')
 const policyMdw = require('../../middleware/require-role')
 const { USER_ROLE, } = require('../../constant/user')
 const socketEmitter = require('../../service/socket-service').emitter
+const SendEmailService = require('../../service/emailService')
 
 const requestValidationHandler = genRequestValidation({
   params: joi
@@ -54,6 +55,30 @@ const handler = async (req, res) => {
     description: updated.description,
   })
 
+  ProductModel.findOne({ id: productId },).populate({
+    path: "currentBid",
+    populate: "bidder",
+    match: { status: 0 },
+    options: {
+      sort: {
+        price: -1,
+      },
+    },
+  },).then(function (p) {
+    const bidder = _.get(p, 'currentBid.bidder')
+    if (bidder) {
+      const sendEmailSellerService = new SendEmailService({
+        name: `${bidder.firstName} ${bidder.lastName}`, 
+        email: bidder.email, 
+      })
+      sendEmailSellerService.productUpdateDesc(
+        updated.name, 
+        updated.id, 
+        updated.description
+      )
+    }
+  })
+  
   socketEmitter.emit(`product-change-${productId}`, {
     product: {
       description: updated.description,
