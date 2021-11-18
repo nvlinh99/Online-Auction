@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 const path = require('path')
+const _  = require('lodash')
 const nodemailer = require('nodemailer')
 
 const configuration = require('../configuration')
@@ -95,6 +96,16 @@ class EmailService {
   async update(product) {
     const template = `<p>Giá của sản phẩm <strong>${product}<strong> vừa cập nhật thành công.</p>`
     await this.send(template, '[Online Auction] - Cập nhật giá sản phẩm!')
+  }
+
+  async productUpdateDesc(product, productId, desc) {
+    const template = _.template(`
+    <p>Sản phẩm <a target="_blank" href="<%= clientHost %>/products/<%= productId %>"><strong><%= product %><strong></a> vừa cập nhật mô tả.</p>
+    <div style="border: solid 1px #ddd; padding: 1rem;">
+    <%= desc %>
+    <div>
+    `)({ clientHost: configuration.client.host, product, productId, desc })
+    await this.send(template, '[Online Auction] - Cập nhật mô tả sản phẩm!')
   }
 }
 
