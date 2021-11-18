@@ -124,3 +124,9 @@
   background-color: #fff;
   color: rgb(38, 149, 255);
 }
+.category-select {
+  padding: 0 1rem;
+}
+.category-select::before {
+  border: 0 !important;
+}

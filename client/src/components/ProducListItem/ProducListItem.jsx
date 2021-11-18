@@ -35,13 +35,19 @@ const ProducListItem = ({
   })
   const currentPrice =
     product.currentBid?.price || product.currentPrice || product.startPrice
+  const isCurrentBidder = useMemo(
+    () => currentUser?.id === product.currentBid?.bidder?.id,
+    [currentUser?.id, product.currentBid?.bidder?.id]
+  )
   const biderName = useMemo(() => {
     const bidder = product.currentBid?.bidder
     if (!bidder) {
       return 'Chưa có'
     }
-    return [bidder.firstName, bidder.lastName].filter(Boolean).join(' ')
-  }, [product.currentBid?.bidder])
+    return [isCurrentBidder ? bidder.firstName : '***', bidder.lastName]
+      .filter(Boolean)
+      .join(' ')
+  }, [isCurrentBidder, product.currentBid?.bidder])
 
   let pldd = null
   const diff = moment().diff(moment(product.publishedDate), 'milliseconds')
@@ -63,6 +69,7 @@ const ProducListItem = ({
     }
     navigate(`/products/?categoryId=${product?.categoryInfo?.id || ''}`)
   }, [onClickCategory, navigate, product])
+
   return (
     <div className='relative pt-2.5 pb-8 px-2.5 shadow-product bg-white rounded-[10px]'>
       {product.categoryInfo?.title && (
@@ -105,7 +112,7 @@ const ProducListItem = ({
         {!noWatchList && (
           <button
             disabled={isTogglingWatchList === product.id}
-            onClick={() => onDelete(product)}
+            onClick={() => onToggleWatchList(product)}
             className={classNames(
               'flex-center text-white bg-gradient-to-tl from-[#f22876] to-[#942dd9] absolute top-2 right-2 w-[36px] h-[36px] rounded-full inline-block duration-300 ease-linear transform-gpu',
               isTogglingWatchList === product.id && 'spin-animation'
@@ -148,8 +155,17 @@ const ProducListItem = ({
             {moment(product.createdAt).format('HH:mm DD-MM-YYYY')}
           </b>
         </p>
-        <p className=' text-xs mt-1'>
-          Người ra giá: <b className='font-medium'>{biderName}</b>
+        <p className={classNames('text-xs mt-1')}>
+          Người ra giá:{' '}
+          <b
+            className={classNames(
+              isCurrentBidder
+                ? 'px-1 py-0.5 border border-[#f22876] font-bold bg-gradient-to-tl from-[#f22876] to-[#942dd9] text-transparent bg-clip-text'
+                : 'font-medium'
+            )}
+          >
+            {biderName}
+          </b>
         </p>
         <div className='flex flex-wrap mt-4'>
           <div className='py-3 px-2.5 flex items-center border-t-2 border-b-2 border-dotted border-[#deddf5] w-1/2 justify-center relative before:block before:absolute before:w-[1px] before:right-0 before:bottom-[15px] before:top-[15px] before:bg-[#bfbee8]'>

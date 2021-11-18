@@ -57,6 +57,7 @@ const TimeLeft = ({ initHoursLeft, initMinutesLeft, initSecondsLeft }) => {
   )
 }
 const ProductItem = ({
+  currentUser,
   product,
   formated,
   watchList,
@@ -78,6 +79,8 @@ const ProductItem = ({
     minutesLeft: initMinutesLeft,
     secondsLeft: initSecondsLeft,
     formatedTimeLeft,
+    biderFirstname,
+    biderId,
     biderName,
   } = product
   const isWatched = useMemo(() => {
@@ -138,6 +141,14 @@ const ProductItem = ({
               />
             )}
           </button>
+          {currentUser?.id && currentUser?.id === biderId && (
+            <>
+              <br />
+              <div className='product-item-cate-lable'>
+                <span>Bạn đang giữ giá</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
       <Link to={`/products/${id}`} className='product-item-title'>
@@ -179,7 +190,7 @@ const ProductItem = ({
               <Avatar style={{}} className='mr-2'>
                 {_.toUpper(_.first(biderName)) || ''}
               </Avatar>
-              <strong style={{}}>{biderName || ''}</strong>
+              <strong style={{}}>{`***${biderFirstname}` || ''}</strong>
             </>
           )}
         </div>
