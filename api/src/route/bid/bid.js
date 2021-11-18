@@ -185,7 +185,8 @@ const handler = async (req, res) => {
     sendEmailSellerService.sendToSellerNewBid(
       `${bidder.firstName} ${bidder.lastName}`, 
       newestProduct.name, 
-      `${numeral(bid.price).format('0,0')} VND`
+      `${numeral(bid.price).format('0,0')} VND`,
+      newestProduct.id,
     )
 
     const lastBid = await BidModel.findOne({ 
