@@ -23,3 +23,7 @@ export const bidProduct = (body) => {
 export const rejectBid = (bidId) => {
   return api.post(`/bids/${bidId}/reject`)
 }
+
+export const updateDecs = (productId, desc) => {
+  return api.put(`/products/${productId}/append-description`, { appended: desc })
+}

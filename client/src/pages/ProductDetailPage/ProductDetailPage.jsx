@@ -30,6 +30,8 @@ import classNames from 'classnames'
 import { toast } from 'react-toastify'
 import * as socketService from 'services/socket-service'
 import ProducListItem from 'components/ProducListItem'
+import { Button } from 'antd'
+import ReactQuill from 'react-quill'
 
 const ProductDetailPage = () => {
   const isTogglingWatchList = useSelector(selectIsTogglingWatchList)
@@ -37,6 +39,8 @@ const ProductDetailPage = () => {
   const currentUser = useSelector(selectCurrentUser)
   const bidAction = useRef({})
   const params = useParams()
+  const [editing, setEditing] = useState(false)
+  const [editDescription, setEditDescription] = useState('')
   const [isNotFound, setIsNotFound] = useState(false)
   const [product, setProduct] = useState(null)
   const imgListModal = useRef({})
@@ -99,6 +103,30 @@ const ProductDetailPage = () => {
     }
     setIsOpenPurchaseConfirmationModal(true)
   }, [isLoggedInUser])
+
+  const onEditing = () => {
+    setEditing(true)
+  }
+
+  const onUpdateDesc = async () => {
+    try {
+      const { succeeded, data } = await productApi.updateDecs(
+        product.id,
+        editDescription
+      )
+      if (!succeeded) {
+        toast.error(data?.message || 'Thêm mô tả không thành công!')
+        loadProductData()
+      } else {
+        toast.success('Thêm mô tả thành công!')
+      }
+    } catch (e) {
+      toast.error('Đã có lỗi từ hệ thống!')
+    } finally {
+      setEditDescription('')
+      setEditing(false)
+    }
+  }
 
   const onPurchase = useCallback(async () => {
     if (!product || !product.purchasePrice) return
@@ -448,10 +476,34 @@ const ProductDetailPage = () => {
               >
                 Mô tả sản phẩm
               </p>
-              <div
-                style={{ borderRight: '1px solid #ddd', height: '100%' }}
-                dangerouslySetInnerHTML={{ __html: description }}
-              ></div>
+              <div style={{ borderRight: '1px solid #ddd', height: '100%' }}>
+                {currentUser?.role === 1 && currentUser?.id === sellerId && (
+                  <div className='flex justify-center py-4 mb-4 border-b'>
+                    {!editing ? (
+                      <Button onClick={onEditing} type='primary'>
+                        Thêm mô tả
+                      </Button>
+                    ) : (
+                      <Button onClick={onUpdateDesc} type='primary'>
+                        Thêm
+                      </Button>
+                    )}
+                  </div>
+                )}
+                <div dangerouslySetInnerHTML={{ __html: description }} />
+                {editing && (
+                  <ReactQuill
+                    value={editDescription}
+                    onChange={setEditDescription}
+                    theme='snow'
+                    className='mt-4'
+                    style={{
+                      width: '100%',
+                      boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 5px',
+                    }}
+                  />
+                )}
+              </div>
             </div>
             <div style={{ flex: 3 }}>
               <p
