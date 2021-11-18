@@ -89,7 +89,7 @@ class EmailService {
   }
 
   async sendToSellerNewBid(bidder, product, price, productId) {
-    const template = `<p>Sản phẩm của bạn - <strong>${product}</strong> vừa được <a target="_blank" href="${configuration.client.host}/products/${productId}"><strong>${bidder}</strong></a> ra giá thành công  với giá <strong>${price}</strong> trên hệ thống Online Auction.</p>`
+    const template = `<p>Sản phẩm của bạn - <a target="_blank" href="${configuration.client.host}/products/${productId}"><strong>${product}</strong></a> vừa được <strong>${bidder}</strong> ra giá thành công  với giá <strong>${price}</strong> trên hệ thống Online Auction.</p>`
     await this.send(template, '[Online Auction] - Lượt ra giá mới!')
   }
 
