@@ -16,7 +16,7 @@ import { PlusSquareFilled } from '@ant-design/icons'
 
 import useQuery from 'hooks/useQuery'
 import { pick } from 'lodash'
-import { adminApi } from 'services'
+import { adminApi, userAPI } from 'services'
 import { toast } from 'react-toastify'
 import { RiAddFill, RiCloseFill } from 'react-icons/ri'
 import { FiMinus } from 'react-icons/fi'
@@ -191,6 +191,19 @@ const AdminCategoryPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modalData.body])
 
+  const onResetPassword = async (record) => {
+    try {
+      const { succeeded, data } = await userAPI.forgetPassword({
+        email: record.email,
+      })
+      if (!succeeded) {
+        return toast.error(data?.message || 'Reset mật khẩu không thành công.')
+      }
+      return toast.success('Thành công.')
+    } catch (e) {
+      return toast.error('Đã có lỗi từ hệ thống.')
+    }
+  }
   const handleBlock = async (record) => {
     try {
       setIsLoading(true)
@@ -268,7 +281,9 @@ const AdminCategoryPage = () => {
           <Button type='primary' onClick={() => handleEdit(record)}>
             Chỉnh sửa
           </Button>
-
+          <Button type='secondary' onClick={() => onResetPassword(record)}>
+            Reset mật khẩu
+          </Button>
           <Popconfirm
             title='Bạn có chắc chắn muốn xóa mục này?'
             onConfirm={() => handleBlock(record)}
