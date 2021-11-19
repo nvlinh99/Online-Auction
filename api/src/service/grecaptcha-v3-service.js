@@ -9,6 +9,7 @@ exports.verifyToken = async function(token) {
   const url = getUrl(token)
   try {
     const response = await axios.post(url)
+    console.log("🚀 ~ file: grecaptcha-v3-service.js ~ line 12 ~ exports.verifyToken=function ~ response", response)
     if (
       response.status !== 200 || 
       !response.data.success || 
