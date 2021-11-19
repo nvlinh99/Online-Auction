@@ -36,7 +36,7 @@ export function formatProductItem(product) {
   result.avatarUrl = _.get(product, 'avatarUrl', null)
   result.imageUrls = _.get(product, 'imageUrls', null)
   result.totalBid = _.get(product, 'totalBid', null)
-  result.bidHistory = _.get(product, 'bidHistory') || []
+  result.bidHistory = _.uniqBy(_.get(product, 'bidHistory') || [], 'id')
 
   // cate info
   result.categoryId = _.get(product, 'categoryInfo.id', null)
